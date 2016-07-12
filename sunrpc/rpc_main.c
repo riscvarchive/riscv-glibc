@@ -38,7 +38,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#if !defined(__FreeBSD__) && !defined(__APPLE__)
 #include <libintl.h>
+#endif
 #include <locale.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -53,6 +55,10 @@
 
 #include "../version.h"
 #define PACKAGE _libc_intl_domainname
+
+#ifdef __FreeBSD__
+#define stat64 stat
+#endif
 
 #define EXTEND	1		/* alias for TRUE */
 #define DONT_EXTEND	0	/* alias for FALSE */
