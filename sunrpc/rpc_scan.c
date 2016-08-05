@@ -37,7 +37,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#ifndef __FreeBSD__
 #include <libintl.h>
+#endif
 #include "rpc_scan.h"
 #include "rpc_parse.h"
 #include "rpc_util.h"
