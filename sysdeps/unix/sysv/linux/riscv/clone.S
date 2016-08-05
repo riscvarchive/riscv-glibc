@@ -24,10 +24,8 @@
 #include <sysdep.h>
 #define _ERRNO_H	1
 #include <bits/errno.h>
-#ifdef RESET_PID
 #include <tls.h>
 #include "tcb-offsets.h"
-#endif
 
 #define CLONE_VM      0x00000100
 #define CLONE_THREAD  0x00010000
@@ -45,9 +43,7 @@ LEAF(__clone)
 	addi		a1,a1,-32	/* Reserve argument save space.  */
 	REG_S		a0,0(a1)	/* Save function pointer.  */
 	REG_S		a3,SZREG(a1)	/* Save argument pointer.  */
-#ifdef RESET_PID
 	REG_S		a2,(SZREG*2)(a1)	/* Save clone flags.  */
-#endif
 
 	/* The syscall expects the args to be in different slots.  */
 	move		a0,a2
@@ -80,13 +76,11 @@ ENTRY(__thread_start)
 L(thread_start):
 	/* The stackframe has been created on entry of clone().  */
 
-#ifdef RESET_PID
 	/* Check and see if we need to reset the PID.  */
 	li		a1,CLONE_THREAD
 	and		a1,a0,a1
 	beqz		a1,L(restore_pid)
 L(donepid):
-#endif
 
 	/* Restore the arg for user's function.  */
 	REG_L		a1,0(sp)	/* Function pointer.  */
@@ -98,15 +92,13 @@ L(donepid):
 	/* Call _exit with the function's return value.  */
 	j		_exit
 
-#ifdef RESET_PID
 L(restore_pid):
-	li		a2,__NR_getpid
+	li		a7,__NR_getpid
 	scall
 L(gotpid):
 	sw		a2,PID_OFFSET(tp)
 	sw		a2,TID_OFFSET(tp)
 	j		L(donepid)
-#endif
 
 	END(__thread_start)
 
