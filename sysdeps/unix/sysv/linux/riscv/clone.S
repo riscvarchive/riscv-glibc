@@ -82,7 +82,6 @@ L(thread_start):
 
 #ifdef RESET_PID
 	/* Check and see if we need to reset the PID.  */
-	REG_L		a0,(SZREG*2)(sp)
 	li		a1,CLONE_THREAD
 	and		a1,a0,a1
 	beqz		a1,L(restore_pid)
@@ -101,9 +100,6 @@ L(donepid):
 
 #ifdef RESET_PID
 L(restore_pid):
-	and		a1,a0,CLONE_VM
-	li		a2,-1
-	bnez		a1,L(gotpid)
 	li		a2,__NR_getpid
 	scall
 L(gotpid):
