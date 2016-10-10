@@ -1,3 +1,8 @@
+#include <fenv.h>
+#include <fpu_control.h>
+
+#ifdef __riscv32
+
 #define _FP_W_TYPE_SIZE		32
 #define _FP_W_TYPE		unsigned long
 #define _FP_WS_TYPE		signed long
@@ -17,6 +22,31 @@
 #define _FP_NANFRAC_S		((_FP_QNANBIT_S << 1) - 1)
 #define _FP_NANFRAC_D		((_FP_QNANBIT_D << 1) - 1), -1
 #define _FP_NANFRAC_Q		((_FP_QNANBIT_Q << 1) - 1), -1, -1, -1
+
+#else
+
+#define _FP_W_TYPE_SIZE		64
+#define _FP_W_TYPE		unsigned long long
+#define _FP_WS_TYPE		signed long long
+#define _FP_I_TYPE		long long
+
+#define _FP_MUL_MEAT_S(R,X,Y)					\
+  _FP_MUL_MEAT_1_imm(_FP_WFRACBITS_S,R,X,Y)
+#define _FP_MUL_MEAT_D(R,X,Y)					\
+  _FP_MUL_MEAT_1_wide(_FP_WFRACBITS_D,R,X,Y,umul_ppmm)
+#define _FP_MUL_MEAT_Q(R,X,Y)					\
+  _FP_MUL_MEAT_2_wide_3mul(_FP_WFRACBITS_Q,R,X,Y,umul_ppmm)
+
+#define _FP_DIV_MEAT_S(R,X,Y)	_FP_DIV_MEAT_1_imm(S,R,X,Y,_FP_DIV_HELP_imm)
+#define _FP_DIV_MEAT_D(R,X,Y)	_FP_DIV_MEAT_1_udiv_norm(D,R,X,Y)
+#define _FP_DIV_MEAT_Q(R,X,Y)	_FP_DIV_MEAT_2_udiv(Q,R,X,Y)
+
+#define _FP_NANFRAC_S		((_FP_QNANBIT_S << 1) - 1)
+#define _FP_NANFRAC_D		((_FP_QNANBIT_D << 1) - 1)
+#define _FP_NANFRAC_Q		((_FP_QNANBIT_Q << 1) - 1), -1
+
+#endif
+
 #define _FP_NANSIGN_S		0
 #define _FP_NANSIGN_D		0
 #define _FP_NANSIGN_Q		0
@@ -40,8 +70,32 @@
     R##_c = FP_CLS_NAN;						\
   } while (0)
 
-#define FP_EX_INVALID           (1 << 4)
-#define FP_EX_DIVZERO           (1 << 3)
-#define FP_EX_OVERFLOW          (1 << 2)
-#define FP_EX_UNDERFLOW         (1 << 1)
-#define FP_EX_INEXACT           (1 << 0)
+#define _FP_DECL_EX		fpu_control_t _fcw
+
+#define FP_ROUNDMODE		(_fcw >> 5)
+
+#define FP_RND_NEAREST		FE_TONEAREST
+#define FP_RND_ZERO		FE_TOWARDZERO
+#define FP_RND_PINF		FE_UPWARD
+#define FP_RND_MINF		FE_DOWNWARD
+
+#define FP_EX_INVALID		FE_INVALID
+#define FP_EX_OVERFLOW		FE_OVERFLOW
+#define FP_EX_UNDERFLOW		FE_UNDERFLOW
+#define FP_EX_DIVZERO		FE_DIVBYZERO
+#define FP_EX_INEXACT		FE_INEXACT
+
+#ifdef __riscv_hard_float
+#define FP_INIT_ROUNDMODE			\
+do {						\
+  _FPU_GETCW (_fcw);				\
+} while (0)
+
+#define FP_HANDLE_EXCEPTIONS			\
+do {						\
+  if (__builtin_expect (_fex, 0))		\
+    _FPU_SETCW (_fcw | _fex);			\
+} while (0)
+#else
+#define FP_INIT_ROUNDMODE	_fcw = 0 /* No exceptions; FP_RND_NEAREST.  */
+#endif
