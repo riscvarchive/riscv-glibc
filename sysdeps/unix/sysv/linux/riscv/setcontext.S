@@ -24,7 +24,7 @@
 #include "ucontext_i.h"
 
 #define RESTORE_FP_REG(name, num, base)			\
-  fld  name, ((num) * 8 + MCONTEXT_FPREGS)(base)
+  FREG_L name, ((num) * SZFREG + MCONTEXT_FPREGS)(base)
 
 #define RESTORE_FP_REG_CFI(name, num, base)		\
   RESTORE_FP_REG (name, num, base);			\
@@ -57,7 +57,7 @@ LEAF (__setcontext)
 
 	cfi_def_cfa (t0, 0)
 
-#ifdef __riscv_hard_float
+#ifdef __riscv_flen
 	lw	t1, MCONTEXT_FSR(t0)
 
 	RESTORE_FP_REG_CFI (fs0,   8, t0)
@@ -74,7 +74,7 @@ LEAF (__setcontext)
 	RESTORE_FP_REG_CFI (fs11, 27, t0)
 
 	fssr	t1
-#endif /* __riscv_hard_float */
+#endif /* __riscv_flen */
 
 	/* Note the contents of argument registers will be random
 	   unless makecontext() has been called.  */

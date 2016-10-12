@@ -85,7 +85,7 @@
 #define FP_EX_DIVZERO		FE_DIVBYZERO
 #define FP_EX_INEXACT		FE_INEXACT
 
-#ifdef __riscv_hard_float
+#ifdef __riscv_flen
 #define FP_INIT_ROUNDMODE			\
 do {						\
   _FPU_GETCW (_fcw);				\

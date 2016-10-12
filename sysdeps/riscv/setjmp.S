@@ -44,21 +44,21 @@ ENTRY (__sigsetjmp)
 	REG_S s11,12*SZREG(a0)
 	REG_S sp, 13*SZREG(a0)
 
-#ifdef __riscv_hard_float
+#ifdef __riscv_flen
 	frsr a3
 
-	fsd  fs0, 16*SZREG+ 0*8(a0)
-	fsd  fs1, 16*SZREG+ 1*8(a0)
-	fsd  fs2, 16*SZREG+ 2*8(a0)
-	fsd  fs3, 16*SZREG+ 3*8(a0)
-	fsd  fs4, 16*SZREG+ 4*8(a0)
-	fsd  fs5, 16*SZREG+ 5*8(a0)
-	fsd  fs6, 16*SZREG+ 6*8(a0)
-	fsd  fs7, 16*SZREG+ 7*8(a0)
-	fsd  fs8, 16*SZREG+ 8*8(a0)
-	fsd  fs9, 16*SZREG+ 9*8(a0)
-	fsd  fs10,16*SZREG+10*8(a0)
-	fsd  fs11,16*SZREG+11*8(a0)
+	FREG_S fs0, 16*SZREG+ 0*SZFREG(a0)
+	FREG_S fs1, 16*SZREG+ 1*SZFREG(a0)
+	FREG_S fs2, 16*SZREG+ 2*SZFREG(a0)
+	FREG_S fs3, 16*SZREG+ 3*SZFREG(a0)
+	FREG_S fs4, 16*SZREG+ 4*SZFREG(a0)
+	FREG_S fs5, 16*SZREG+ 5*SZFREG(a0)
+	FREG_S fs6, 16*SZREG+ 6*SZFREG(a0)
+	FREG_S fs7, 16*SZREG+ 7*SZFREG(a0)
+	FREG_S fs8, 16*SZREG+ 8*SZFREG(a0)
+	FREG_S fs9, 16*SZREG+ 9*SZFREG(a0)
+	FREG_S fs10,16*SZREG+10*SZFREG(a0)
+	FREG_S fs11,16*SZREG+11*SZFREG(a0)
 
 	REG_S a3, 15*SZREG(a0)
 #endif

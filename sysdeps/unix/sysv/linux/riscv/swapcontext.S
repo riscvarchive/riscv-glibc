@@ -45,24 +45,24 @@ LEAF (__swapcontext)
 	REG_S	s10,(26 * SZREG + MCONTEXT_GREGS)(a0)
 	REG_S	s11,(27 * SZREG + MCONTEXT_GREGS)(a0)
 
-#ifdef __riscv_hard_float
+#ifdef __riscv_flen
 	frsr a1
 
-	fsd	fs0, ( 8 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs1, ( 9 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs2, (18 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs3, (19 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs4, (20 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs5, (21 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs6, (22 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs7, (23 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs8, (24 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs9, (25 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs10,(26 * 8 + MCONTEXT_FPREGS)(a0)
-	fsd	fs11,(27 * 8 + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs0, ( 8 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs1, ( 9 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs2, (18 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs3, (19 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs4, (20 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs5, (21 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs6, (22 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs7, (23 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs8, (24 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs9, (25 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs10,(26 * SZFREG + MCONTEXT_FPREGS)(a0)
+	FREG_S	fs11,(27 * SZFREG + MCONTEXT_FPREGS)(a0)
 
 	sw	a1, MCONTEXT_FSR(a0)
-#endif /* __riscv_hard_float */
+#endif /* __riscv_flen */
 
 /* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
 	li	a3, _NSIG8
@@ -75,24 +75,24 @@ LEAF (__swapcontext)
 
 	bltz	a0, 99f
 
-#ifdef __riscv_hard_float
+#ifdef __riscv_flen
 	lw	t1, MCONTEXT_FSR(t0)
 
-	fld	fs0, ( 8 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs1, ( 9 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs2, (18 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs3, (19 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs4, (20 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs5, (21 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs6, (22 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs7, (23 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs8, (24 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs9, (25 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs10,(26 * 8 + MCONTEXT_FPREGS)(t0)
-	fld	fs11,(27 * 8 + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs0, ( 8 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs1, ( 9 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs2, (18 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs3, (19 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs4, (20 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs5, (21 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs6, (22 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs7, (23 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs8, (24 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs9, (25 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs10,(26 * SZFREG + MCONTEXT_FPREGS)(t0)
+	FREG_L	fs11,(27 * SZFREG + MCONTEXT_FPREGS)(t0)
 
 	fssr	t1
-#endif /* __riscv_hard_float */
+#endif /* __riscv_flen */
 
 	/* Note the contents of argument registers will be random
 	   unless makecontext() has been called.  */
