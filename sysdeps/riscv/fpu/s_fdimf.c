@@ -4,19 +4,12 @@
 
 float __fdimf (float x, float y)
 {
-  float diff = x - y;
-  
-  if (x <= y)
-    return 0.0f;
+  if (islessequal (x, y))
+    return 0.0;
 
-#ifdef __riscv_soft_float
-  if (isinf(diff))
+  if (__builtin_expect (_FCLASS (x - y) & _FCLASS_INF, 0))
     errno = ERANGE;
-#else
-  if (__builtin_expect(_FCLASS(diff) & _FCLASS_INF, 0))
-    errno = ERANGE;
-#endif
 
-  return diff;
+  return x - y;
 }
 weak_alias (__fdimf, fdimf)

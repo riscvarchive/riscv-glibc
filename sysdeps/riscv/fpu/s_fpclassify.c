@@ -5,13 +5,13 @@
 int __fpclassify (double x)
 {
   int cls = _FCLASS(x);
-  if (__builtin_expect(cls & _FCLASS_NORM, _FCLASS_NORM))
+  if (__builtin_expect (cls & _FCLASS_NORM, _FCLASS_NORM))
     return FP_NORMAL;
-  if (__builtin_expect(cls & _FCLASS_ZERO, _FCLASS_ZERO))
+  if (__builtin_expect (cls & _FCLASS_ZERO, _FCLASS_ZERO))
     return FP_ZERO;
-  if (__builtin_expect(cls & _FCLASS_SUBNORM, _FCLASS_SUBNORM))
+  if (__builtin_expect (cls & _FCLASS_SUBNORM, _FCLASS_SUBNORM))
     return FP_SUBNORMAL;
-  if (__builtin_expect(cls & _FCLASS_INF, _FCLASS_INF))
+  if (__builtin_expect (cls & _FCLASS_INF, _FCLASS_INF))
     return FP_INFINITE;
   return FP_NAN;
 }

@@ -38,6 +38,21 @@
 # define REG_L lw
 #endif
 
+#ifdef __riscv_flen
+/* For ABI uniformity, reserve 8 bytes for floats, even if double-precision
+   floating-point is not supported in hardware.  */
+# define SZFREG 8
+# if __riscv_flen == 32
+#  define FREG_L flw
+#  define FREG_S fsw
+# elif __riscv_flen == 64
+#  define FREG_L fld
+#  define FREG_S fsd
+# else
+#  error unsupported FLEN
+# endif
+#endif
+
 /*
  * LEAF - declare leaf routine
  */

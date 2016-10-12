@@ -24,7 +24,7 @@
 
 #include <features.h>
 
-#ifdef __riscv_soft_float
+#ifndef __riscv_flen
 
 #define _FPU_RESERVED 0xffffffff
 #define _FPU_DEFAULT  0x00000000
@@ -37,7 +37,7 @@ typedef unsigned int fpu_control_t;
 #define _FPU_SETFLAGS(cw) do { } while (0)
 extern fpu_control_t __fpu_control;
 
-#else /* __riscv_soft_float */
+#else /* __riscv_flen */
 
 #define _FPU_RESERVED 0
 #define _FPU_DEFAULT  0
@@ -58,9 +58,10 @@ typedef unsigned int fpu_control_t __attribute__ ((__mode__ (__SI__)));
 extern fpu_control_t __fpu_control;
 
 #define _FCLASS(x) ({ int res; \
-  if (sizeof(x) == 4) asm ("fclass.s %0, %1" : "=r"(res) : "f"(x)); \
-  else if (sizeof(x) == 8) asm ("fclass.d %0, %1" : "=r"(res) : "f"(x)); \
-  else abort(); \
+  if (sizeof (x) * 8 > __riscv_flen) abort (); \
+  if (sizeof (x) == 4) asm ("fclass.s %0, %1" : "=r"(res) : "f"(x)); \
+  else if (sizeof (x) == 8) asm ("fclass.d %0, %1" : "=r"(res) : "f"(x)); \
+  else abort (); \
   res; })
 
 #define _FCLASS_MINF     (1<<0)
@@ -79,6 +80,6 @@ extern fpu_control_t __fpu_control;
 #define _FCLASS_INF      (_FCLASS_MINF | _FCLASS_PINF)
 #define _FCLASS_NAN      (_FCLASS_SNAN | _FCLASS_QNAN)
 
-#endif /* __riscv_soft_float */
+#endif /* __riscv_flen */
 
 #endif	/* fpu_control.h */
