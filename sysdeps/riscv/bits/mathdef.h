@@ -36,8 +36,12 @@ typedef double double_t;	/* `double' expressions are evaluated as
 
 #endif	/* ISO C99 */
 
+#ifdef __riscv32
 #if ! defined __NO_LONG_DOUBLE_MATH
 /* Signal that we do not really have a `long double'.  This disables the
    declaration of all the `long double' function variants.  */
-# define __NO_LONG_DOUBLE_MATH	1
+# define __NO_LONG_DOUBLE_MATH 1
+#endif
+#else
+#undef __NO_LONG_DOUBLE_MATH
 #endif
