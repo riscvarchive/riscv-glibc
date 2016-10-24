@@ -1,2 +1,3 @@
 riscv
 wordsize-64
+ieee754/ldbl-128
