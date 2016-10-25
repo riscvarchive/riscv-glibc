@@ -1,6 +1,5 @@
 /* Define the machine-dependent type `jmp_buf'.  RISC-V version.
-   Copyright (C) 1992,1993,1995,1997,2000,2002,2003,2004,2005,2006
-	Free Software Foundation, Inc.
+   Copyright (C) 2011-2016 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -29,10 +28,6 @@ typedef struct __jmp_buf_internal_tag
     long __regs[12];
     /* Stack pointer.  */
     long __sp;
-    /* Thread pointer. */
-    long __tp;
-    /* Floating point status register.  */
-    long __fsr;
 
     /* Callee-saved floating point registers.
        Note that there are an even number of preceding words in this struct,
