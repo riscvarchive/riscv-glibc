@@ -45,7 +45,7 @@ LEAF (__swapcontext)
 	REG_S	s10,(26 * SZREG + MCONTEXT_GREGS)(a0)
 	REG_S	s11,(27 * SZREG + MCONTEXT_GREGS)(a0)
 
-#ifdef __riscv_flen
+#ifndef __riscv_float_abi_soft
 	frsr a1
 
 	FREG_S	fs0, ( 8 * SZFREG + MCONTEXT_FPREGS)(a0)
@@ -62,7 +62,7 @@ LEAF (__swapcontext)
 	FREG_S	fs11,(27 * SZFREG + MCONTEXT_FPREGS)(a0)
 
 	sw	a1, MCONTEXT_FSR(a0)
-#endif /* __riscv_flen */
+#endif /* __riscv_float_abi_soft */
 
 /* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
 	li	a3, _NSIG8
@@ -75,7 +75,7 @@ LEAF (__swapcontext)
 
 	bltz	a0, 99f
 
-#ifdef __riscv_flen
+#ifndef __riscv_float_abi_soft
 	lw	t1, MCONTEXT_FSR(t0)
 
 	FREG_L	fs0, ( 8 * SZFREG + MCONTEXT_FPREGS)(t0)
@@ -92,7 +92,7 @@ LEAF (__swapcontext)
 	FREG_L	fs11,(27 * SZFREG + MCONTEXT_FPREGS)(t0)
 
 	fssr	t1
-#endif /* __riscv_flen */
+#endif /* __riscv_float_abi_soft */
 
 	/* Note the contents of argument registers will be random
 	   unless makecontext() has been called.  */

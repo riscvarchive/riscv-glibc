@@ -44,7 +44,7 @@ ENTRY (__sigsetjmp)
 	REG_S s11,12*SZREG(a0)
 	REG_S sp, 13*SZREG(a0)
 
-#ifdef __riscv_flen
+#ifndef __riscv_float_abi_soft
 	FREG_S fs0, 14*SZREG+ 0*SZFREG(a0)
 	FREG_S fs1, 14*SZREG+ 1*SZFREG(a0)
 	FREG_S fs2, 14*SZREG+ 2*SZFREG(a0)
