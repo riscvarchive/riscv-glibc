@@ -36,7 +36,7 @@ ENTRY (__longjmp)
 	REG_L s11,12*SZREG(a0)
 	REG_L sp, 13*SZREG(a0)
 
-#ifdef __riscv_flen
+#ifndef __riscv_float_abi_soft
 	FREG_L fs0, 14*SZREG+ 0*SZFREG(a0)
 	FREG_L fs1, 14*SZREG+ 1*SZFREG(a0)
 	FREG_L fs2, 14*SZREG+ 2*SZFREG(a0)

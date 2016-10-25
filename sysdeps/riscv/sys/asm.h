@@ -38,14 +38,14 @@
 # define REG_L lw
 #endif
 
-#ifdef __riscv_flen
+#ifndef __riscv_float_abi_soft
 /* For ABI uniformity, reserve 8 bytes for floats, even if double-precision
    floating-point is not supported in hardware.  */
 # define SZFREG 8
-# if __riscv_flen == 32
+# ifdef __riscv_float_abi_single
 #  define FREG_L flw
 #  define FREG_S fsw
-# elif __riscv_flen == 64
+# elif defined(__riscv_float_abi_double)
 #  define FREG_L fld
 #  define FREG_S fsd
 # else

@@ -44,7 +44,7 @@ LEAF (__getcontext)
 	REG_S	s10,(26 * SZREG + MCONTEXT_GREGS)(a0)
 	REG_S	s11,(27 * SZREG + MCONTEXT_GREGS)(a0)
 
-#ifdef __riscv_flen
+#ifndef __riscv_float_abi_soft
 	frsr	a1
 
 	FREG_S fs0, ( 8 * SZFREG + MCONTEXT_FPREGS)(a0)
@@ -61,7 +61,7 @@ LEAF (__getcontext)
 	FREG_S fs11,(27 * SZFREG + MCONTEXT_FPREGS)(a0)
 
 	sw	a1, MCONTEXT_FSR(a0)
-#endif /* __riscv_flen */
+#endif /* __riscv_float_abi_soft */
 
 /* rt_sigprocmask (SIG_BLOCK, NULL, &ucp->uc_sigmask, _NSIG8) */
 	li	a3, _NSIG8

@@ -45,7 +45,7 @@ endif
 ASFLAGS-.os += $(pic-ccflag)
 
 ifneq ($(with-fp),yes)
-+cflags += -msoft-float
-ASFLAGS += -msoft-float
-sysdep-LDFLAGS += -msoft-float
++cflags += -mfloat-abi=soft
+ASFLAGS += -mfloat-abi=soft
+sysdep-LDFLAGS += -mfloat-abi=soft
 endif
