@@ -1,7 +1,7 @@
 /* Low-level functions for atomic operations. RISC-V version.
    Copyright (C) 2011-2016 Free Software Foundation, Inc.
 
-   Contributed by Andrew Waterman (waterman@cs.berkeley.edu) at UC Berkeley.
+   Contributed by Andrew Waterman (andrew@sifive.com).
 
    This file is part of the GNU C Library.
 
