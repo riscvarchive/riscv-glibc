@@ -2,4 +2,5 @@ init_array
 
 ieee754/flt-32
 ieee754/dbl-64
+ieee754/ldbl-128
 riscv/soft-fp
