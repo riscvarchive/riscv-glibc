@@ -23,47 +23,47 @@
 #define __ASSEMBLY__
 #include <linux/sched.h>
 #include <asm/signal.h>
-
-#ifndef SAVE_PID
-#define SAVE_PID
-#endif
-
-#ifndef RESTORE_PID
-#define RESTORE_PID
-#endif
-
+#include <tls.h>
+#include "tcb-offsets.h"
 
 /* int vfork() */
 
 	.text
-LEAF(__vfork)
+LEAF(__libc_vfork)
 
-	SAVE_PID
+	lw	t0, PID_OFFSET(tp)		/* Load the cached PID.  */
+	addi	sp, sp, -16			/* Allocate stack frame.  */
+	sw	t0, 0(sp)			/* Save the cached PID.  */
+	neg	t0, t0				/* Negate it.  */
+	bnez	t0, 1f				/* If it was zero... */
+	li	t0, 0xffffffff80000000		/* use 0x80000000 instead.  */
+1:	sw	t0, PID_OFFSET(tp)		/* Store the temporary PID.  */
 
-#if (CLONE_VFORK | CLONE_VM | SIGCHLD) != 0x4111
-# error
-#endif
-	li		a0, (CLONE_VFORK | CLONE_VM | SIGCHLD)
-	move		a1, sp
-	li		a2, 0
-	li		a3, 0
-	li		a4, 0
+	li	a0, (CLONE_VFORK | CLONE_VM | SIGCHLD)
+	move	a1, sp
+	li	a2, 0
+	li	a3, 0
+	li	a4, 0
 
 	/* Do the system call */
-	li		a7,__NR_clone
+	li	a7, __NR_clone
 	scall
 
-	bltz		a0,L(error)
-
-	RESTORE_PID
-
+	lw	t0, 0(sp)			/* Load the saved PID.  */
+	addi	sp, sp, 16			/* Deallocate stack frame.  */
+	beqz	a0, 1f				/* If we are the parent... */
+	sw	t0, PID_OFFSET(tp)		/* Restore the PID.  */
+1:	bltz	a0, L(error)
 	ret
 
 	/* Something bad happened -- no child created.  */
 L(error):
 	j		__syscall_error
 
-	END(__vfork)
+	END(__libc_vfork)
 
-libc_hidden_def(__vfork)
-weak_alias (__vfork, vfork)
+#if IS_IN (libc)
+weak_alias (__libc_vfork, vfork)
+strong_alias (__libc_vfork, __vfork)
+libc_hidden_def (__vfork)
+#endif

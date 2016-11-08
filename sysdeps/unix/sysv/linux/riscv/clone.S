@@ -28,7 +28,6 @@
 #include "tcb-offsets.h"
 
 #define CLONE_VM      0x00000100
-#define CLONE_THREAD  0x00010000
 
 /* int clone(int (*fn)(void *arg), void *child_stack, int flags, void *arg,
 	     void *parent_tidptr, void *tls, void *child_tidptr) */
@@ -77,9 +76,9 @@ L(thread_start):
 	/* The stackframe has been created on entry of clone().  */
 
 	/* Check and see if we need to reset the PID.  */
-	li		a1,CLONE_THREAD
-	and		a1,a0,a1
-	beqz		a1,L(restore_pid)
+	REG_L		a0,(SZREG*2)(a1)	/* Restore clone flags.  */
+	and		a0,a0,CLONE_VM
+	beqz		a0,L(restore_pid)
 L(donepid):
 
 	/* Restore the arg for user's function.  */
