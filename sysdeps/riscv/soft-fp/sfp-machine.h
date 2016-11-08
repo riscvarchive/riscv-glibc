@@ -52,6 +52,7 @@
 #define _FP_NANSIGN_Q		0
 
 #define _FP_KEEPNANFRACP 1
+#define _FP_QNANNEGATEDP 0
 /* From my experiments it seems X is chosen unless one of the
    NaNs is sNaN,  in which case the result is NANSIGN/NANFRAC.  */
 #define _FP_CHOOSENAN(fs, wc, R, X, Y, OP)			\
@@ -84,6 +85,8 @@
 #define FP_EX_UNDERFLOW		FE_UNDERFLOW
 #define FP_EX_DIVZERO		FE_DIVBYZERO
 #define FP_EX_INEXACT		FE_INEXACT
+
+#define _FP_TININESS_AFTER_ROUNDING 1
 
 #ifdef __riscv_flen
 #define FP_INIT_ROUNDMODE			\
