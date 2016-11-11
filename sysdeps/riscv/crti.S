@@ -1,5 +1,7 @@
 /* Facilitate pthread initialization using init_array.  */
 
+#include <sys/asm.h>
+
 #ifdef PREINIT_FUNCTION
 
 #if PREINIT_FUNCTION_WEAK
@@ -7,10 +9,6 @@
 #endif
 
 	.section .init_array, "aw"
-#ifdef __riscv64
-	.dword PREINIT_FUNCTION
-#else
-	.word PREINIT_FUNCTION
-#endif
+	PTR PREINIT_FUNCTION
 
 #endif
