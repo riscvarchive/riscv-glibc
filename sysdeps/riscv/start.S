@@ -45,7 +45,7 @@
    __libc_start_main wants this in a5.  */
 
 ENTRY(ENTRY_POINT)
-	lla   gp, _gp
+	call  .Lload_gp
 	move  a5, a0  /* rtld_fini */
 	lla   a0, main
 	REG_L a1, 0(sp)      /* argc */
@@ -57,6 +57,19 @@ ENTRY(ENTRY_POINT)
 	
 	tail  __libc_start_main@plt
 END(ENTRY_POINT)
+
+/* Dynamic links need the global pointer to be initialized prior to calling
+   any shared library's initializers, so we use preinit_array to load it.
+   This doesn't cut it for static links, though, since the global pointer
+   needs to be initialized before calling __libc_start_main in that case.
+   So we redundantly initialize it at the beginning of _start.  */
+
+.Lload_gp:
+	lla   gp, _gp
+	ret
+
+	.section .preinit_array,"aw"
+	PTR .Lload_gp
 
 /* Define a symbol for the first piece of initialized data.  */
 	.data
