@@ -66,7 +66,7 @@ LEAF (__getcontext)
 /* rt_sigprocmask (SIG_BLOCK, NULL, &ucp->uc_sigmask, _NSIG8) */
 	li	a3, _NSIG8
 	add     a2, a0, UCONTEXT_SIGMASK
-	move	a1, zero
+	mv	a1, zero
 	li	a0, SIG_BLOCK
 
 	li	a7, SYS_ify (rt_sigprocmask)

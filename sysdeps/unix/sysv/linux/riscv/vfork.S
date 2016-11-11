@@ -40,7 +40,7 @@ LEAF(__libc_vfork)
 1:	sw	t0, PID_OFFSET(tp)		/* Store the temporary PID.  */
 
 	li	a0, (CLONE_VFORK | CLONE_VM | SIGCHLD)
-	move	a1, sp
+	mv	a1, sp
 	li	a2, 0
 	li	a3, 0
 	li	a4, 0

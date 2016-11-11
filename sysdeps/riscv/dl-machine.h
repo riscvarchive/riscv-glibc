@@ -113,10 +113,10 @@ elf_machine_load_address (void)
 #define RTLD_START asm (\
 	".text\n\
 	" _RTLD_PROLOGUE(ENTRY_POINT) "\
-	move a0, sp\n\
+	mv a0, sp\n\
 	jal _dl_start\n\
 	# Stash user entry point in s0.\n\
-	move s0, a0\n\
+	mv s0, a0\n\
 	# See if we were run as a command with the executable file\n\
 	# name as an extra leading argument.\n\
 	lw a0, _dl_skip_args\n\

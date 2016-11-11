@@ -43,10 +43,6 @@
 
 #define ret_ERRVAL ret
 
-#define r0	a0
-#define r1	a1
-#define MOVE(x,y)	move y , x
-
 #define L(label) .L ## label
 
 #define PSEUDO(name, syscall_name, args) \

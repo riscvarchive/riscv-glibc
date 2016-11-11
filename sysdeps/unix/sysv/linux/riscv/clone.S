@@ -45,10 +45,10 @@ LEAF(__clone)
 	REG_S		a2,(SZREG*2)(a1)	/* Save clone flags.  */
 
 	/* The syscall expects the args to be in different slots.  */
-	move		a0,a2
-	move		a2,a4
-	move		a3,a5
-	move		a4,a6
+	mv		a0,a2
+	mv		a2,a4
+	mv		a3,a5
+	mv		a4,a6
 
 	/* Do the system call */
 	li		a7,__NR_clone

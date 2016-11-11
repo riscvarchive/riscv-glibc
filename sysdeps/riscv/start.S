@@ -46,14 +46,14 @@
 
 ENTRY(ENTRY_POINT)
 	call  .Lload_gp
-	move  a5, a0  /* rtld_fini */
+	mv    a5, a0  /* rtld_fini */
 	lla   a0, main
 	REG_L a1, 0(sp)      /* argc */
 	addi  a2, sp, SZREG  /* argv */
 	andi  sp, sp, ALMASK /* Align stack. */
 	lla   a3, __libc_csu_init
 	lla   a4, __libc_csu_fini
-	move  a6, sp  /* stack_end */
+	mv    a6, sp  /* stack_end */
 	
 	tail  __libc_start_main@plt
 END(ENTRY_POINT)

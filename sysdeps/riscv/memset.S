@@ -21,7 +21,7 @@
 
 ENTRY(memset)
   li a6, 15
-  move a4, a0
+  mv a4, a0
   bleu a2, a6, .Ltiny
   and a5, a4, 15
   bnez a5, .Lmisaligned
