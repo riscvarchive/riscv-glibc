@@ -2,11 +2,13 @@
 #include <sys/asm.h>
 
 /* Assembler veneer called from the PLT header code for lazy loading.
-   The PLT header passes its own args in t0-t2. */
+   The PLT header passes its own args in t0-t2.  */
+
+#define FRAME_SIZE (-((-10 * SZREG) & ALMASK))
 
 ENTRY(_dl_runtime_resolve)
   # Save arguments to stack.
-  addi sp, sp, -10*SZREG
+  addi sp, sp, -FRAME_SIZE
   REG_S ra, 9*SZREG(sp)
   REG_S a0, 1*SZREG(sp)
   REG_S a1, 2*SZREG(sp)
@@ -22,7 +24,7 @@ ENTRY(_dl_runtime_resolve)
   mv a0, t0       # link map
   add a1, a1, t1  # reloc offset (== thrice the .got.plt offset)
   jal _dl_fixup
-  move t0, a0
+  move t1, a0
 
   # Restore arguments from stack.
   REG_L ra, 9*SZREG(sp)
@@ -34,8 +36,8 @@ ENTRY(_dl_runtime_resolve)
   REG_L a5, 6*SZREG(sp)
   REG_L a6, 7*SZREG(sp)
   REG_L a7, 8*SZREG(sp)
-  addi sp, sp, 10*SZREG
+  addi sp, sp, FRAME_SIZE
 
   # Invoke the callee.
-  jr t0
+  jr t1
 END(_dl_runtime_resolve)
