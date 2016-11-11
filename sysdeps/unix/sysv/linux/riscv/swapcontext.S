@@ -66,7 +66,7 @@ LEAF (__swapcontext)
 
 /* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
 	li	a3, _NSIG8
-	move	a2, zero
+	mv	a2, zero
 	add     a1, a0, UCONTEXT_SIGMASK
 	li	a0, SIG_SETMASK
 
