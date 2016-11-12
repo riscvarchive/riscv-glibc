@@ -69,7 +69,7 @@ END(ENTRY_POINT)
 	ret
 
 	.section .preinit_array,"aw"
-	PTR .Lload_gp
+	.dc.a .Lload_gp
 
 /* Define a symbol for the first piece of initialized data.  */
 	.data

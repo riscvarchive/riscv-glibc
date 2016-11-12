@@ -25,13 +25,11 @@
  * Macros to handle different pointer/register sizes for 32/64-bit code
  */
 #ifdef __riscv64
-# define PTR .dword
 # define PTRLOG 3
 # define SZREG	8
 # define REG_S sd
 # define REG_L ld
 #else
-# define PTR .word
 # define PTRLOG 2
 # define SZREG	4
 # define REG_S sw
