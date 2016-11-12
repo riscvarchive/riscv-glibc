@@ -9,6 +9,6 @@
 #endif
 
 	.section .init_array, "aw"
-	PTR PREINIT_FUNCTION
+	.dc.a PREINIT_FUNCTION
 
 #endif
