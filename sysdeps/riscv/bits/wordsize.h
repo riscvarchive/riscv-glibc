@@ -16,9 +16,12 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#if defined __riscv64
-#define __WORDSIZE 64
-#define __WORDSIZE_TIME64_COMPAT32 1
+#if __riscv_xlen == (__SIZEOF_POINTER__ * 8)
+# define __WORDSIZE __riscv_xlen
 #else
-#define __WORDSIZE 32
+# error unsupported ABI
+#endif
+
+#if __riscv_xlen == 64
+# define __WORDSIZE_TIME64_COMPAT32 1
 #endif
