@@ -1,8 +1,7 @@
-/* Machine-dependent ELF dynamic relocation inline functions.  MIPS version.
-   Copyright (C) 1996-2001, 2002, 2003, 2004, 2005, 2006, 2007
-   Free Software Foundation, Inc.
+/* Machine-dependent ELF dynamic relocation inline functions.  RISC-V version.
+   Copyright (C) 2011-2016 Free Software Foundation, Inc.
+   Contributed by Andrew Waterman (andrew@sifive.com).
    This file is part of the GNU C Library.
-   Contributed by Kazumoto Kojima <kkojima@info.kanagawa-u.ac.jp>.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -15,11 +14,9 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library.  If not, see
+   <http://www.gnu.org/licenses/>.  */
 
-/*  FIXME: Profiling of shared libraries is not implemented yet.  */
 #ifndef dl_machine_h
 #define dl_machine_h
 
@@ -61,18 +58,16 @@
 	".size\t" __STRING(entry) ", . - " __STRING(entry) "\n\t"
 #endif
 
-/* A reloc type used for ld.so cmdline arg lookups to reject PLT entries.
-   This only makes sense on MIPS when using PLTs, so choose the
-   PLT relocation (not encountered when not using PLTs).  */
-#define ELF_MACHINE_JMP_SLOT			R_RISCV_JUMP_SLOT
+#define ELF_MACHINE_JMP_SLOT R_RISCV_JUMP_SLOT
+
 #define elf_machine_type_class(type)				\
   ((ELF_RTYPE_CLASS_PLT * ((type) == ELF_MACHINE_JMP_SLOT	\
-     || (_RISCV_SZPTR == 32 && (type) == R_RISCV_TLS_DTPREL32)	\
-     || (_RISCV_SZPTR == 32 && (type) == R_RISCV_TLS_DTPMOD32)	\
-     || (_RISCV_SZPTR == 32 && (type) == R_RISCV_TLS_TPREL32)	\
-     || (_RISCV_SZPTR == 64 && (type) == R_RISCV_TLS_DTPREL64)	\
-     || (_RISCV_SZPTR == 64 && (type) == R_RISCV_TLS_DTPMOD64)	\
-     || (_RISCV_SZPTR == 64 && (type) == R_RISCV_TLS_TPREL64)))	\
+     || (__WORDSIZE == 32 && (type) == R_RISCV_TLS_DTPREL32)	\
+     || (__WORDSIZE == 32 && (type) == R_RISCV_TLS_DTPMOD32)	\
+     || (__WORDSIZE == 32 && (type) == R_RISCV_TLS_TPREL32)	\
+     || (__WORDSIZE == 64 && (type) == R_RISCV_TLS_DTPREL64)	\
+     || (__WORDSIZE == 64 && (type) == R_RISCV_TLS_DTPMOD64)	\
+     || (__WORDSIZE == 64 && (type) == R_RISCV_TLS_TPREL64)))	\
    | (ELF_RTYPE_CLASS_COPY * ((type) == R_RISCV_COPY)))
 
 #define ELF_MACHINE_NO_REL 1
@@ -146,13 +141,8 @@ elf_machine_load_address (void)
 );
 
 /* Names of the architecture-specific auditing callback functions.  */
-# ifdef __riscv64
-#  define ARCH_LA_PLTENTER mips_n64_gnu_pltenter
-#  define ARCH_LA_PLTEXIT mips_n64_gnu_pltexit
-# else
-#  define ARCH_LA_PLTENTER mips_n32_gnu_pltenter
-#  define ARCH_LA_PLTEXIT mips_n32_gnu_pltexit
-# endif
+#define ARCH_LA_PLTENTER riscv_gnu_pltenter
+#define ARCH_LA_PLTEXIT riscv_gnu_pltexit
 
 /* Bias .got.plt entry by the offset requested by the PLT header. */
 #define elf_machine_plt_value(map, reloc, value) (value)
