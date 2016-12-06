@@ -64,11 +64,6 @@ symbol:						\
 		cfi_startproc;
 
 /*
- * NESTED - declare nested routine entry point
- */
-#define	NESTED(symbol, framesize, rpc) LEAF(symbol)
-
-/*
  * END - mark end of function
  */
 #undef END
