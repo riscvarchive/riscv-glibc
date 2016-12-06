@@ -39,10 +39,6 @@
 
 #include <entry.h>
 
-#ifndef ENTRY_POINT
-#error ENTRY_POINT needs to be defined for MIPS.
-#endif
-
 #include <sys/asm.h>
 #include <dl-tls.h>
 

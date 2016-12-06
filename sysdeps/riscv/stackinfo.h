@@ -1,4 +1,5 @@
-/* Copyright (C) 2000, 2010 Free Software Foundation, Inc.
+/* Copyright (C) 2011-2016 Free Software Foundation, Inc.
+   Contributed by Andrew Waterman (andrew@sifive.com).
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,9 +13,8 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library.  If not, see
+   <http://www.gnu.org/licenses/>.  */
 
 /* This file contains a bit of information about the stack allocation
    of the processor.  */
@@ -24,7 +24,7 @@
 
 #include <elf.h>
 
-/* On MIPS the stack grows down.  */
+/* On RISC-V the stack grows down.  */
 #define _STACK_GROWS_DOWN	1
 
 /* Default to an executable stack.  PF_X can be overridden if PT_GNU_STACK is
