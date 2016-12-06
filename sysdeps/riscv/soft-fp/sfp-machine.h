@@ -1,7 +1,7 @@
 #include <fenv.h>
 #include <fpu_control.h>
 
-#ifdef __riscv32
+#if __riscv_xlen == 32
 
 #define _FP_W_TYPE_SIZE		32
 #define _FP_W_TYPE		unsigned long

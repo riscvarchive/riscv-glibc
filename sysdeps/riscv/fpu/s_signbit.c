@@ -6,7 +6,7 @@
 
 int __signbit (double x)
 {
-#ifdef __riscv64
+#if __riscv_xlen >= 64
   int64_t hx;
   EXTRACT_WORDS64 (hx, x);
   return hx < 0;

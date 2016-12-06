@@ -20,11 +20,7 @@
 # error "Never use <bits/semaphore.h> directly; include <semaphore.h> instead."
 #endif
 
-#ifdef __riscv64
-# define __SIZEOF_SEM_T	32
-#else
-# define __SIZEOF_SEM_T	16
-#endif
+#define __SIZEOF_SEM_T	(4 * __SIZEOF_POINTER__)
 
 /* Value returned if `sem_open' failed.  */
 #define SEM_FAILED      ((sem_t *) 0)

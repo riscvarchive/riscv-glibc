@@ -42,12 +42,7 @@ typedef uintmax_t uatomic_max_t;
 
 #ifdef __riscv_atomic
 
-#ifdef __riscv64
-# define __HAVE_64B_ATOMICS 1
-#else
-# define __HAVE_64B_ATOMICS 0
-#endif
-
+#define __HAVE_64B_ATOMICS (__riscv_xlen >= 64)
 #define USE_ATOMIC_COMPILER_BUILTINS 1
 
 #define asm_amo(which, ordering, mem, value) ({ 		\
