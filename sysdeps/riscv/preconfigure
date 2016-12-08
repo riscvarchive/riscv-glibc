@@ -4,25 +4,20 @@ riscv32*)	base_machine=riscv machine=riscv/rv32
 		;;
 riscv*)
 		case "$CC $CFLAGS $CPPFLAGS " in
-		*" -m32 "*) riscv_cc_abi=32 ;;
-		*" -m64 "*) riscv_cc_abi=64 ;;
-		*) riscv_cc_abi=default ;;
+		*" -mabi=ilp32 "*)  riscv_cc_abi=ilp32 ;;
+		*" -mabi=ilp32d "*) riscv_cc_abi=ilp32d ;;
+		*" -mabi=lp64 "*)   riscv_cc_abi=lp64 ;;
+		*" -mabi=lp64d "*)  riscv_cc_abi=lp64d ;;
+		*) echo "Unable to determine RISC-V CC ABI from CFLAGS" >&2; exit 1;;
 		esac
-		case $config_os in
-		*64*) riscv_config_abi=64 ;;
-		*32*) riscv_config_abi=32 ;;
-		*) riscv_config_abi=$riscv_cc_abi ;;
-		esac
-		case $riscv_config_abi in
+
+		case $riscv_cc_abi in
 		default) base_machine=riscv machine=riscv/rv64 ;;
-		32) base_machine=riscv machine=riscv/rv32 ;;
-		64) base_machine=riscv machine=riscv/rv64 ;;
+		ilp32*) base_machine=riscv machine=riscv/rv32 ;;
+		lp64*) base_machine=riscv machine=riscv/rv64 ;;
+		*) echo "Unable to determine machine from CC ABI $riscv_cc_abi" >&2; exit 1;;
 		esac
+
 		machine=$machine/$config_machine
-		if test $riscv_config_abi != $riscv_cc_abi; then
-		  # This won't make it to config.make, but we want to
-		  # set this in case configure tests depend on it.
-		  CPPFLAGS="$CPPFLAGS -m$riscv_config_abi"
-		fi
 		;;
 esac
