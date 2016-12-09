@@ -1,15 +1,13 @@
-case "$machine" in
-riscv32*)
-	machine=riscv/rv32
-	;;
-riscv64*)
-	machine=riscv/rv64
+xlen=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_xlen \(.*\)/\1/p'`
+
+case "$xlen" in
+32 | 64)
 	;;
 *)
-	echo "Unable to determine ABI from machine $machine" >&2
+	echo "Unable to determine XLEN" >&2
 	exit 1
 	;;
 esac
 
 base_machine=riscv
-machine=$machine/$config_machine
+machine=riscv/rv$xlen/$config_machine
