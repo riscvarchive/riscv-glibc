@@ -43,9 +43,3 @@ sysdep_headers += sys/asm.h
 endif
 
 ASFLAGS-.os += $(pic-ccflag)
-
-ifneq ($(with-fp),yes)
-+cflags += -mfloat-abi=soft
-ASFLAGS += -mfloat-abi=soft
-sysdep-LDFLAGS += -mfloat-abi=soft
-endif
