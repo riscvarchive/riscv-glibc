@@ -27,8 +27,6 @@
 #include <tls.h>
 #include "tcb-offsets.h"
 
-#define CLONE_VM      0x00000100
-
 /* int clone(int (*fn)(void *arg), void *child_stack, int flags, void *arg,
 	     void *parent_tidptr, void *tls, void *child_tidptr) */
 
@@ -39,10 +37,9 @@ LEAF(__clone)
 	beqz		a0,L(invalid)	/* No NULL function pointers.  */
 	beqz		a1,L(invalid)	/* No NULL stack pointers.  */
 
-	addi		a1,a1,-32	/* Reserve argument save space.  */
+	addi		a1,a1,-16	/* Reserve argument save space.  */
 	REG_S		a0,0(a1)	/* Save function pointer.  */
 	REG_S		a3,SZREG(a1)	/* Save argument pointer.  */
-	REG_S		a2,(SZREG*2)(a1)	/* Save clone flags.  */
 
 	/* The syscall expects the args to be in different slots.  */
 	mv		a0,a2
@@ -73,14 +70,6 @@ L(error):
 
 ENTRY(__thread_start)
 L(thread_start):
-	/* The stackframe has been created on entry of clone().  */
-
-	/* Check and see if we need to reset the PID.  */
-	REG_L		a0,(SZREG*2)(a1)	/* Restore clone flags.  */
-	and		a0,a0,CLONE_VM
-	beqz		a0,L(restore_pid)
-L(donepid):
-
 	/* Restore the arg for user's function.  */
 	REG_L		a1,0(sp)	/* Function pointer.  */
 	REG_L		a0,SZREG(sp)	/* Argument pointer.  */
@@ -90,14 +79,6 @@ L(donepid):
 
 	/* Call _exit with the function's return value.  */
 	j		_exit
-
-L(restore_pid):
-	li		a7,__NR_getpid
-	scall
-L(gotpid):
-	sw		a2,PID_OFFSET(tp)
-	sw		a2,TID_OFFSET(tp)
-	j		L(donepid)
 
 	END(__thread_start)
 

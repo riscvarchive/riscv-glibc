@@ -71,4 +71,5 @@ ENTRY (__sigsetjmp)
 
 END(__sigsetjmp)
 
+hidden_def (__sigsetjmp)
 weak_alias(_setjmp, __GI__setjmp)
