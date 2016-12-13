@@ -17,8 +17,8 @@ case "$prefix" in
       libc_cv_localedir='${exec_prefix}/lib/locale'
     fi
     ;;
-  *)
-    libc_cv_slibdir="/lib"
+  riscv/rv64* )
+    libc_cv_slibdir="/lib64"
     ;;
   esac
 esac
