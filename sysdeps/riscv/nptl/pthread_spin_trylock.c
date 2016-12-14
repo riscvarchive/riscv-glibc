@@ -16,11 +16,12 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
+#ifdef __riscv_atomic
+
 #include <errno.h>
 
 int pthread_spin_trylock(pthread_spinlock_t* lock)
 {
-#ifdef __riscv_atomic
   int tmp1, tmp2;
 
   asm volatile ("\n\
@@ -33,7 +34,10 @@ int pthread_spin_trylock(pthread_spinlock_t* lock)
   );
 
   return tmp1;
-#else
-  return pthread_mutex_trylock(lock);
-#endif
 }
+
+#else  /* __riscv_atomic */
+
+#include <sysdeps/../nptl/pthread_spin_trylock.c>
+
+#endif  /* !__riscv_atomic */

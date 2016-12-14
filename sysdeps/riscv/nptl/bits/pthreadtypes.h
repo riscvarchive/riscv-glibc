@@ -215,12 +215,7 @@ typedef union
 
 #ifdef __USE_XOPEN2K
 /* POSIX spinlock data type.  */
-#ifdef __riscv_atomic
 typedef volatile int pthread_spinlock_t;
-#else
-typedef pthread_mutex_t pthread_spinlock_t;
-#endif
-
 
 /* POSIX barriers data type.  The structure of the type is
    deliberately not exposed.  */

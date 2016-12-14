@@ -40,6 +40,8 @@ typedef uintptr_t uatomicptr_t;
 typedef intmax_t atomic_max_t;
 typedef uintmax_t uatomic_max_t;
 
+#define atomic_full_barrier() __sync_synchronize()
+
 #ifdef __riscv_atomic
 
 #define __HAVE_64B_ATOMICS (__riscv_xlen >= 64)
@@ -106,8 +108,6 @@ typedef uintmax_t uatomic_max_t;
 #define atomic_bit_test_set(mem, bit)                   \
   ({ typeof(*mem) __mask = (typeof(*mem))1 << (bit);    \
      asm_amo("amoor", "", mem, __mask) & __mask; })
-
-#define atomic_full_barrier() __sync_synchronize()
 
 #define catomic_exchange_and_add(mem, value)		\
   atomic_exchange_and_add(mem, value)
