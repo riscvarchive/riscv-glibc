@@ -68,14 +68,12 @@ L(syse1):
 #undef INLINE_SYSCALL
 #define INLINE_SYSCALL(name, nr, args...)				\
   ({ INTERNAL_SYSCALL_DECL(err);					\
-     long result_var = INTERNAL_SYSCALL (name, err, nr, args);		\
-     if (result_var < 0)						\
-       {								\
-	 /* __syscall_error handles result_var <= -4096 corner case */	\
-	 extern long __syscall_error (long) attribute_hidden;		\
-	 result_var = __syscall_error (result_var);			\
-       }								\
-     result_var; })
+     long result = INTERNAL_SYSCALL (name, err, nr, args);		\
+     register long __a0 asm ("a0") = result;				\
+     if (__a0 < 0)							\
+	__asm__ volatile ("call t0, __syscall_set_errno"		\
+			  : "+r" (__a0) : : "t0", "t1", "t2"); 		\
+     __a0; })
 
 #define INTERNAL_SYSCALL_DECL(err) do { } while (0)
 

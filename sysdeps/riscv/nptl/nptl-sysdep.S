@@ -1,2 +1,2 @@
 /* Pull in __syscall_error.  */
-#include <sysdep.c>
+#include <sysdep.S>

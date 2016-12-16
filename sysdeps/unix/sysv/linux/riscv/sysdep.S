@@ -17,15 +17,34 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <sysdep.h>
-#include <errno.h>
 
-long __syscall_error(long a0)
-{
-  /* We got here because a0 < 0, but only codes in the range [-4095, -1]
-     represent errors.  Otherwise, just return the result normally.  */
-  if (a0 <= -4096)
-    return a0;
+#if IS_IN (libc)
+# define errno __libc_errno
+#endif
 
-  errno = -a0;
-  return -1;
-}
+/* Non-standard calling convention: argument in a0, return address in t0,
+   and clobber only t1.  */
+ENTRY (__syscall_set_errno)
+	/* We got here because a0 < 0, but only codes in the range [-4095, -1]
+	  represent errors.  Otherwise, just return the result normally.  */
+	li t1, -4096
+	bleu a0, t1, 1f
+	neg a0, a0
+#if RTLD_PRIVATE_ERRNO
+	sw a0, rtld_errno, t1
+#elif defined(__PIC__)
+	la.tls.ie t1, errno
+	sw a0, 0(t1)
+#else
+	lui t1, %tprel_hi(errno)
+	add t1, t1, tp, %tprel_add(errno)
+	sw a0, %tprel_lo(errno)(t1)
+#endif
+	li a0, -1
+1:	jr t0
+END (__syscall_set_errno)
+
+ENTRY (__syscall_error)
+	mv t0, ra
+	j __syscall_set_errno
+END (__syscall_error)
