@@ -22,6 +22,11 @@
 # define errno __libc_errno
 #endif
 
+ENTRY (__syscall_error)
+	mv t0, ra
+	/* Fall through to __syscall_set_errno.  */
+END (__syscall_error)
+
 /* Non-standard calling convention: argument in a0, return address in t0,
    and clobber only t1.  */
 ENTRY (__syscall_set_errno)
@@ -34,6 +39,7 @@ ENTRY (__syscall_set_errno)
 	sw a0, rtld_errno, t1
 #elif defined(__PIC__)
 	la.tls.ie t1, errno
+	add t1, t1, tp
 	sw a0, 0(t1)
 #else
 	lui t1, %tprel_hi(errno)
@@ -43,8 +49,3 @@ ENTRY (__syscall_set_errno)
 	li a0, -1
 1:	jr t0
 END (__syscall_set_errno)
-
-ENTRY (__syscall_error)
-	mv t0, ra
-	j __syscall_set_errno
-END (__syscall_error)
