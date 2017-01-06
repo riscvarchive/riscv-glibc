@@ -58,7 +58,7 @@ LEAF(__clone)
 	ret
 
 L(invalid):
-	li		a0, 0
+	li		a0, -EINVAL
 	/* Something bad happened -- no child created */
 L(error):
 	j		__syscall_error
