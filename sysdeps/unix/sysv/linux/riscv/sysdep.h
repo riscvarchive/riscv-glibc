@@ -75,6 +75,14 @@ L(syse1):
 			  : "+r" (__a0) : : "t0", "t1", "t2"); 		\
      __a0; })
 
+/* Set error number and return -1.  Return the internal function,
+   __syscall_error, which sets errno from the negative error number
+   and returns -1.  */
+#undef INLINE_SYSCALL_ERROR_RETURN_VALUE
+#define INLINE_SYSCALL_ERROR_RETURN_VALUE(resultvar)			\
+  ({ extern int __syscall_error (long neg_errno);			\
+     __syscall_error (-(resultvar)); })
+
 #define INTERNAL_SYSCALL_DECL(err) do { } while (0)
 
 #define INTERNAL_SYSCALL_ERROR_P(val, err)   ((unsigned long) (val) > -4096UL)
