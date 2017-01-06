@@ -28,10 +28,7 @@ int
 epoll_create (int size)
 {
   if (size <= 0)
-    {
-      __set_errno (EINVAL);
-      return -1;
-    }
+    return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
 
   return INLINE_SYSCALL (epoll_create1, 1, 0);
 }

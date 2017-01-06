@@ -29,10 +29,7 @@ __ptr_t
 __mmap (__ptr_t addr, size_t len, int prot, int flags, int fd, off_t offset)
 {
   if (offset & (MMAP_PAGE_UNIT - 1))
-    {
-      __set_errno (EINVAL);
-      return MAP_FAILED;
-    }
+    return (__ptr_t) INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
   return (__ptr_t) INLINE_SYSCALL (mmap2, 6, addr, len, prot, flags, fd,
                                    offset / MMAP_PAGE_UNIT);
 }

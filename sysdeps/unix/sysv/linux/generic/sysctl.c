@@ -26,7 +26,6 @@ int
 sysctl (int *name, int nlen, void *oldval, size_t *oldlenp,
         void *newval, size_t newlen)
 {
-  __set_errno (ENOSYS);
-  return -1;
+  return INLINE_SYSCALL_ERROR_RETURN_VALUE (ENOSYS);
 }
 stub_warning (sysctl)

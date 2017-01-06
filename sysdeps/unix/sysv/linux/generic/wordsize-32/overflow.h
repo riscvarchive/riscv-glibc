@@ -30,8 +30,7 @@ static inline off_t lseek_overflow (loff_t res)
   if (retval == res)
     return retval;
 
-  __set_errno (EOVERFLOW);
-  return (off_t) -1;
+  return (off_t) INLINE_SYSCALL_ERROR_RETURN_VALUE (EOVERFLOW);
 }
 
 static inline int stat_overflow (struct stat *buf)
@@ -40,8 +39,7 @@ static inline int stat_overflow (struct stat *buf)
       buf->__st_blocks_pad == 0)
     return 0;
 
-  __set_errno (EOVERFLOW);
-  return -1;
+  return INLINE_SYSCALL_ERROR_RETURN_VALUE (EOVERFLOW);
 }
 
 /* Note that f_files and f_ffree may validly be a sign-extended -1.  */
@@ -55,6 +53,5 @@ static inline int statfs_overflow (struct statfs *buf)
        (buf->f_ffree == -1U && buf->__f_ffree_pad == -1)))
     return 0;
 
-  __set_errno (EOVERFLOW);
-  return -1;
+  return INLINE_SYSCALL_ERROR_RETURN_VALUE (EOVERFLOW);
 }

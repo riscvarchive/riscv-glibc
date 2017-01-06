@@ -35,10 +35,7 @@ int
 __fxstatat (int vers, int fd, const char *file, struct stat *st, int flag)
 {
   if (vers != _STAT_VER_KERNEL && vers != _STAT_VER_LINUX)
-    {
-      __set_errno (EINVAL);
-      return -1;
-    }
+    return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
 
   return INLINE_SYSCALL (newfstatat, 4, fd, file, st, flag);
 }

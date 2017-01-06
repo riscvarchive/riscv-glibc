@@ -34,8 +34,7 @@ __fxstat (int vers, int fd, struct stat *buf)
   if (vers == _STAT_VER_KERNEL || vers == _STAT_VER_LINUX)
     return INLINE_SYSCALL (fstat, 2, fd, buf);
 
-  __set_errno (EINVAL);
-  return -1;
+  return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
 }
 
 hidden_def (__fxstat)

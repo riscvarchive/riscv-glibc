@@ -30,10 +30,7 @@ sendfile (int out_fd, int in_fd, off_t *offset, size_t count)
   if (offset != NULL)
     {
       if (*offset < 0 || (off_t) (*offset + count) < 0)
-        {
-          __set_errno (EINVAL);
-          return -1;
-        }
+	return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
       off64 = *offset;
     }
 

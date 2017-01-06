@@ -26,7 +26,6 @@
 int
 ustat (dev_t dev, struct ustat *ubuf)
 {
-  __set_errno (ENOSYS);
-  return -1;
+  return INLINE_SYSCALL_ERROR_RETURN_VALUE (ENOSYS);
 }
 stub_warning (ustat)
