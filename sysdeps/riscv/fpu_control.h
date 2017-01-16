@@ -58,10 +58,10 @@ typedef unsigned int fpu_control_t __attribute__ ((__mode__ (__SI__)));
 extern fpu_control_t __fpu_control;
 
 #define _FCLASS(x) ({ int res; \
-  if (sizeof (x) * 8 > __riscv_flen) abort (); \
-  if (sizeof (x) == 4) asm ("fclass.s %0, %1" : "=r"(res) : "f"(x)); \
-  else if (sizeof (x) == 8) asm ("fclass.d %0, %1" : "=r"(res) : "f"(x)); \
-  else abort (); \
+  if (sizeof (x) * 8 > __riscv_flen) __builtin_trap (); \
+  if (sizeof (x) == 4) asm ("fclass.s %0, %1" : "=r" (res) : "f" (x)); \
+  else if (sizeof (x) == 8) asm ("fclass.d %0, %1" : "=r" (res) : "f" (x)); \
+  else __builtin_trap (); \
   res; })
 
 #define _FCLASS_MINF     (1<<0)
