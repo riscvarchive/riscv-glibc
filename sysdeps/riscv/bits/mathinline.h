@@ -41,4 +41,102 @@ __NTH (__signbit (double __x))
   return __builtin_signbit (__x);
 }
 
+/* Leave it to the compiler to optimize these if __NO_MATH_ERRNO__.  */
+# if defined __riscv_flen && !defined __NO_MATH_ERRNO__
+
+#  if __riscv_xlen >= 64
+
+__MATH_INLINE long long int
+__NTH (llrintf (float __x))
+{
+  long long int __res;
+  __asm__ __volatile__ ("fcvt.l.s %0, %1" : "=r" (__res) : "f" (__x));
+  return __res;
+}
+
+__MATH_INLINE long long int
+__NTH (llroundf (float __x))
+{
+  long long int __res;
+  __asm__ __volatile__ ("fcvt.l.s %0, %1, rmm" : "=r" (__res) : "f" (__x));
+  return __res;
+}
+
+#  endif /* __riscv_xlen >= 64 */
+
+__MATH_INLINE long int
+__NTH (lrintf (float __x))
+{
+#ifdef __LP64__
+  return (long int) llrintf (__x);
+#else
+  long int __res;
+  __asm__ __volatile__ ("fcvt.w.s %0, %1" : "=r" (__res) : "f" (__x));
+  return __res;
+#endif
+}
+
+__MATH_INLINE long int
+__NTH (lroundf (float __x))
+{
+#ifdef __LP64__
+  return (long int) llroundf (__x);
+#else
+  long int __res;
+  __asm__ __volatile__ ("fcvt.w.s %0, %1, rmm" : "=r" (__res) : "f" (__x));
+  return __res;
+#endif
+}
+
+# endif /* __riscv_flen && !__NO_MATH_ERRNO__ */
+
+/* Leave it to the compiler to optimize these if __NO_MATH_ERRNO__.  */
+# if defined __riscv_flen && __riscv_flen >= 64 && !defined __NO_MATH_ERRNO__
+
+#  if __riscv_xlen >= 64
+
+__MATH_INLINE long long int
+__NTH (llrint (double __x))
+{
+  long long int __res;
+  __asm__ __volatile__ ("fcvt.l.d %0, %1" : "=r" (__res) : "f" (__x));
+  return __res;
+}
+
+__MATH_INLINE long long int
+__NTH (llround (double __x))
+{
+  long long int __res;
+  __asm__ __volatile__ ("fcvt.l.d %0, %1, rmm" : "=r" (__res) : "f" (__x));
+  return __res;
+}
+
+#  endif /* __riscv_xlen >= 64 */
+
+__MATH_INLINE long int
+__NTH (lrint (double __x))
+{
+#ifdef __LP64__
+  return (long int) llrint (__x);
+#else
+  long int __res;
+  __asm__ __volatile__ ("fcvt.w.d %0, %1" : "=r" (__res) : "f" (__x));
+  return __res;
+#endif
+}
+
+__MATH_INLINE long int
+__NTH (lround (double __x))
+{
+#ifdef __LP64__
+  return (long int) llround (__x);
+#else
+  long int __res;
+  __asm__ __volatile__ ("fcvt.w.d %0, %1, rmm" : "=r" (__res) : "f" (__x));
+  return __res;
+#endif
+}
+
+# endif /* __riscv_flen >= 64 && !__NO_MATH_ERRNO__ */
+
 #endif
