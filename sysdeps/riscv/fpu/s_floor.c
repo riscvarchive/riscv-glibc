@@ -40,8 +40,8 @@ __floor (double x)
       long i;
       double new_x;
 
-      asm ("fcvt.l.d %0, %1, rdn" : "=r" (i) : "f" (x));
-      asm ("fcvt.d.l %0, %1, rdn" : "=f" (new_x) : "r" (i));
+      asm volatile ("fcvt.l.d %0, %1, rdn" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.d.l %0, %1, rdn" : "=f" (new_x) : "r" (i));
 
       /* floor(-0) == -0, and in general we'll always have the same
 	 sign as our input.  */

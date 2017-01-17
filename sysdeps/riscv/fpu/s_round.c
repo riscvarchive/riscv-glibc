@@ -40,8 +40,8 @@ __round (double x)
       long i;
       double new_x;
 
-      asm ("fcvt.l.d %0, %1, rmm" : "=r" (i) : "f" (x));
-      asm ("fcvt.d.l %0, %1, rmm" : "=f" (new_x) : "r" (i));
+      asm volatile ("fcvt.l.d %0, %1, rmm" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.d.l %0, %1, rmm" : "=f" (new_x) : "r" (i));
 
       /* round(-0) == -0, and in general we'll always have the same
 	 sign as our input.  */

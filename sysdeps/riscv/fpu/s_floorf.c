@@ -38,8 +38,8 @@ __floorf (float x)
       int i;
       float new_x;
 
-      asm ("fcvt.w.s %0, %1, rdn" : "=r" (i) : "f" (x));
-      asm ("fcvt.s.w %0, %1, rdn" : "=f" (new_x) : "r" (i));
+      asm volatile ("fcvt.w.s %0, %1, rdn" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.s.w %0, %1, rdn" : "=f" (new_x) : "r" (i));
 
       /* floor(-0) == -0, and in general we'll always have the same
 	 sign as our input.  */
