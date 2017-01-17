@@ -19,18 +19,14 @@
 #if __riscv_flen >= 64 && __riscv_xlen >= 64
 
 #include <math.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 double
 __ceil (double x)
 {
-  int flags, nan;
-  double mag;
-
-  _FPU_GETFLAGS (flags);
-
-  nan = isnan (x);
-  mag = fabs (x);
+  int flags = riscv_getflags ();
+  int nan = isnan (x);
+  double mag = fabs (x);
 
   if (nan)
     return x + x;
@@ -47,7 +43,7 @@ __ceil (double x)
 	 sign as our input.  */
       x = copysign (new_x, x);
 
-      _FPU_SETFLAGS (flags);
+      riscv_setflags (flags);
     }
 
   return x;

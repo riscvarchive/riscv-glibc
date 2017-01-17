@@ -16,8 +16,8 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include "math.h"
-#include "fpu_control.h"
+#include <math.h>
+#include <math_private.h>
 
 int
 __isinff (float x)

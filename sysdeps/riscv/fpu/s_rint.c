@@ -19,7 +19,7 @@
 #if __riscv_flen >= 64 && __riscv_xlen >= 64
 
 #include <math.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 double
 __rint (double x)

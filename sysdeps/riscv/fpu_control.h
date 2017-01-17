@@ -30,11 +30,7 @@
 #define _FPU_DEFAULT  0x00000000
 typedef unsigned int fpu_control_t;
 #define _FPU_GETCW(cw) (cw) = 0
-#define _FPU_GETROUND(cw) (cw) = 0
-#define _FPU_GETFLAGS(cw) (cw) = 0
 #define _FPU_SETCW(cw) do { } while (0)
-#define _FPU_SETROUND(cw) do { } while (0)
-#define _FPU_SETFLAGS(cw) do { } while (0)
 extern fpu_control_t __fpu_control;
 
 #else /* __riscv_flen */
@@ -48,11 +44,7 @@ typedef unsigned int fpu_control_t __attribute__ ((__mode__ (__SI__)));
 
 /* Macros for accessing the hardware control word.  */
 #define _FPU_GETCW(cw) __asm__ volatile ("frsr %0" : "=r" (cw))
-#define _FPU_GETROUND(cw) __asm__ volatile ("frrm %0" : "=r" (cw))
-#define _FPU_GETFLAGS(cw) __asm__ volatile ("frflags %0" : "=r" (cw))
 #define _FPU_SETCW(cw) __asm__ volatile ("fssr %z0" : : "rJ" (cw))
-#define _FPU_SETROUND(cw) __asm__ volatile ("fsrm %z0" : : "rJ" (cw))
-#define _FPU_SETFLAGS(cw) __asm__ volatile ("fsflags %z0" : : "rJ" (cw))
 
 /* Default control word set at startup.  */
 extern fpu_control_t __fpu_control;

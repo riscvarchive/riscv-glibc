@@ -19,7 +19,7 @@
    02111-1307 USA.  */
 
 #include <fenv.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 int
 __fesetround (int round)
@@ -30,7 +30,7 @@ __fesetround (int round)
     case FE_TOWARDZERO:
     case FE_DOWNWARD:
     case FE_UPWARD:
-      _FPU_SETROUND (round);
+      riscv_setround (round);
       return 0;
     default:
       return round; /* a nonzero value */

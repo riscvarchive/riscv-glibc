@@ -19,14 +19,13 @@
    02111-1307 USA.  */
 
 #include <fenv.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 int
 fegetexceptflag (fexcept_t *flagp, int excepts)
 {
   /* Get the current exceptions.  */
-  _FPU_GETFLAGS (*flagp);
-  *flagp &= excepts;
+  *flagp = riscv_getflags () & excepts;
 
   /* Success.  */
   return 0;

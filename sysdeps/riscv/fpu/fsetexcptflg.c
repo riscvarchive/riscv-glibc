@@ -25,8 +25,8 @@ int
 fesetexceptflag (const fexcept_t *flagp, int excepts)
 {
   fexcept_t flags = *flagp;
-  asm volatile ("csrc fflags, %0" : : "r"(excepts));
-  asm volatile ("csrs fflags, %0" : : "r"(flags & excepts));
+  asm volatile ("csrc fflags, %0" : : "r" (excepts));
+  asm volatile ("csrs fflags, %0" : : "r" (flags & excepts));
 
   return 0;
 }

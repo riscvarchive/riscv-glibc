@@ -21,12 +21,38 @@
 
 #include <fenv.h>
 #include <fpu_control.h>
+#include <get-rounding-mode.h>
+
+static __always_inline int
+riscv_getround (void)
+{
+  return get_rounding_mode ();
+}
+
+static __always_inline void
+riscv_setround (int rm)
+{
+  asm volatile ("fsrm %z0" : : "rJ" (rm));
+}
+
+static __always_inline int
+riscv_getflags (void)
+{
+  int flags;
+  asm volatile ("frflags %0" : "=r" (flags));
+  return flags;
+}
+
+static __always_inline void
+riscv_setflags (int flags)
+{
+  asm volatile ("fsflags %z0" : : "rJ" (flags));
+}
 
 static __always_inline void
 libc_feholdexcept_riscv (fenv_t *envp)
 {
-  _FPU_GETCW (*envp);
-  _FPU_SETFLAGS (0);
+  asm volatile ("csrrc %0, fcsr, %1" : "=r" (*envp) : "i" (FE_ALL_EXCEPT));
 }
 
 #define libc_feholdexcept  libc_feholdexcept_riscv
@@ -36,7 +62,7 @@ libc_feholdexcept_riscv (fenv_t *envp)
 static __always_inline void
 libc_fesetround_riscv (int round)
 {
-  _FPU_SETROUND (round);
+  riscv_setround (round);
 }
 
 #define libc_fesetround  libc_fesetround_riscv
@@ -57,11 +83,7 @@ libc_feholdexcept_setround_riscv (fenv_t *envp, int round)
 static __always_inline int
 libc_fetestexcept_riscv (int ex)
 {
-  int cw;
-
-  _FPU_GETFLAGS (cw);
-
-  return cw & ex;
+  return riscv_getflags () & ex;
 }
 
 #define libc_fetestexcept  libc_fetestexcept_riscv
@@ -89,12 +111,9 @@ static __always_inline int
 libc_feupdateenv_test_riscv (const fenv_t *envp, int ex)
 {
   fenv_t env = *envp;
-  int excepts;
-
-  _FPU_SETROUND (0);
-  asm volatile ("csrrs %0, fcsr, %1" : "=r"(excepts) : "r"(env));
-
-  return excepts & ex;
+  int flags = riscv_getflags ();
+  asm volatile ("csrw fcsr, %z1" : : "rJ" (env | flags));
+  return flags & ex;
 }
 
 #define libc_feupdateenv_test  libc_feupdateenv_test_riscv
@@ -104,10 +123,7 @@ libc_feupdateenv_test_riscv (const fenv_t *envp, int ex)
 static __always_inline void
 libc_feupdateenv_riscv (const fenv_t *envp)
 {
-  fenv_t env = *envp;
-
-  _FPU_SETROUND (0);
-  asm volatile ("csrs fcsr, %0" : : "r"(env));
+  _FPU_SETCW (*envp | riscv_getflags ());
 }
 
 #define libc_feupdateenv  libc_feupdateenv_riscv
@@ -120,7 +136,7 @@ libc_feholdsetround_riscv (fenv_t *envp, int round)
   /* Note this implementation makes an improperly-formatted fenv_t and
      so should only be used in conjunction with libc_feresetround.  */
   int old_round;
-  asm volatile ("csrrw %0, frm, %1" : "=r"(old_round) : "r"(round));
+  asm volatile ("csrrw %0, frm, %z1" : "=r" (old_round) : "rJ" (round));
   *envp = old_round;
 }
 
@@ -133,7 +149,7 @@ libc_feresetround_riscv (fenv_t *envp)
 {
   /* Note this implementation takes an improperly-formatted fenv_t and
      so should only be used in conjunction with libc_feholdsetround.  */
-  _FPU_SETROUND (*envp);
+  riscv_setround (*envp);
 }
 
 #define libc_feresetround  libc_feresetround_riscv

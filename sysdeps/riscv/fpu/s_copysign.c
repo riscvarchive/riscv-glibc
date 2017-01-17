@@ -18,7 +18,7 @@
 
 #if __riscv_flen >= 64
 
-#include "math.h"
+#include <math.h>
 
 double
 __copysign (double x, double y)

@@ -19,8 +19,7 @@
 #if __riscv_flen >= 64
 
 #include <math.h>
-#include "fpu_control.h"
-#include "math_private.h"
+#include <math_private.h>
 
 int
 __fpclassify (double x)

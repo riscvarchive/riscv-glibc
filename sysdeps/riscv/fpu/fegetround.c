@@ -19,14 +19,12 @@
    02111-1307 USA.  */
 
 #include <fenv.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 int
 __fegetround (void)
 {
-  int round;
-  _FPU_GETROUND (round);
-  return round;
+  return riscv_getround ();
 }
 libm_hidden_def (__fegetround)
 weak_alias (__fegetround, fegetround)

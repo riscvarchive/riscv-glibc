@@ -16,7 +16,7 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include "math.h"
+#include <math.h>
 
 float
 __fabsf (float x)

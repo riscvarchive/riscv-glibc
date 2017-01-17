@@ -17,18 +17,14 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <math.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 float
 __floorf (float x)
 {
-  int flags, nan;
-  float mag;
-
-  _FPU_GETFLAGS (flags);
-
-  nan = isnanf (x);
-  mag = fabsf (x);
+  int flags = riscv_getflags ();
+  int nan = isnanf (x);
+  float mag = fabsf (x);
 
   if (nan)
     return x + x;
@@ -45,7 +41,7 @@ __floorf (float x)
 	 sign as our input.  */
       x = copysignf (new_x, x);
 
-      _FPU_SETFLAGS (flags);
+      riscv_setflags (flags);
     }
 
   return x;

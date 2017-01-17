@@ -21,18 +21,14 @@
 #ifndef _RISCV_GET_ROUNDING_MODE_H
 #define _RISCV_GET_ROUNDING_MODE_H
 
-#include <fenv.h>
-#include <fpu_control.h>
-
 /* Return the floating-point rounding mode.  */
 
 static inline int
 get_rounding_mode (void)
 {
-  fpu_control_t fpcr;
-
-  _FPU_GETROUND (fpcr);
-  return fpcr;
+  int rm;
+  asm volatile ("frrm %0" : "=r" (rm));
+  return rm;
 }
 
 #endif /* get-rounding-mode.h */

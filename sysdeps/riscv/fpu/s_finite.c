@@ -18,8 +18,8 @@
 
 #if __riscv_flen >= 64
 
-#include "math.h"
-#include "fpu_control.h"
+#include <math.h>
+#include <math_private.h>
 
 int
 __finite (double x)

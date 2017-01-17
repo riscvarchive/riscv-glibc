@@ -17,7 +17,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <math.h>
-#include <fpu_control.h>
+#include <math_private.h>
 
 float
 __rintf (float x)
