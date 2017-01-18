@@ -112,7 +112,7 @@ libc_feupdateenv_test_riscv (const fenv_t *envp, int ex)
 {
   fenv_t env = *envp;
   int flags = riscv_getflags ();
-  asm volatile ("csrw fcsr, %z1" : : "rJ" (env | flags));
+  asm volatile ("csrw fcsr, %z0" : : "rJ" (env | flags));
   return flags & ex;
 }
 
