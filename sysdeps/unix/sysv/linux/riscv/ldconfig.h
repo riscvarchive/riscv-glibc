@@ -18,9 +18,20 @@
 
 #include <sysdeps/generic/ldconfig.h>
 
-#define SYSDEP_KNOWN_INTERPRETER_NAMES \
-  { "/lib32/ld.so.1", FLAG_ELF_LIBC6 }, \
-  { "/lib/ld.so.1", FLAG_ELF_LIBC6 },
-#define SYSDEP_KNOWN_LIBRARY_NAMES \
+#define LD_SO_PREFIX "/lib/ld-linux-"
+#define LD_SO_SUFFIX ".so.1"
+
+#if __riscv_xlen == 64
+# define LD_SO_ABI "riscv64-lp64"
+#else
+# define LD_SO_ABI "riscv32-ilp32"
+#endif
+
+#define SYSDEP_KNOWN_INTERPRETER_NAMES				\
+  { LD_SO_PREFIX LD_SO_ABI "d" LD_SO_SUFFIX, FLAG_ELF_LIBC6 },	\
+  { LD_SO_PREFIX LD_SO_ABI "f" LD_SO_SUFFIX, FLAG_ELF_LIBC6 },	\
+  { LD_SO_PREFIX LD_SO_ABI     LD_SO_SUFFIX, FLAG_ELF_LIBC6 },
+
+#define SYSDEP_KNOWN_LIBRARY_NAMES	\
   { "libc.so.6", FLAG_ELF_LIBC6 },	\
   { "libm.so.6", FLAG_ELF_LIBC6 },
