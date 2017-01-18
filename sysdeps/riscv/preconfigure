@@ -1,4 +1,5 @@
 xlen=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_xlen \(.*\)/\1/p'`
+flen=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_flen \(.*\)/\1/p'`
 float_abi=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_float_abi_\([^ ]*\) .*/\1/p'`
 
 case "$xlen" in
@@ -10,15 +11,29 @@ case "$xlen" in
 	;;
 esac
 
+# Ignore --with-fp; the compiler flags determine ISA extension support.
+case "$flen" in
+32 | 64)
+	with_fp=yes
+	;;
+"")
+	with_fp=no
+	;;
+*)
+	echo "Unable to determine FLEN" >&2
+	exit 1
+	;;
+esac
+
 case "$float_abi" in
 soft)
-	flen=0
+	abi_flen=0
 	;;
 single)
-	flen=32
+	abi_flen=32
 	;;
 double)
-	flen=64
+	abi_flen=64
 	;;
 *)
 	echo "Unable to determine floating-point ABI" >&2
@@ -30,4 +45,4 @@ base_machine=riscv
 machine=riscv/rv$xlen/$config_machine
 
 $as_echo "#define RISCV_ABI_XLEN $xlen" >>confdefs.h
-$as_echo "#define RISCV_ABI_FLEN $flen" >>confdefs.h
+$as_echo "#define RISCV_ABI_FLEN $abi_flen" >>confdefs.h
