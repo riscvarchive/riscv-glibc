@@ -1,4 +1,5 @@
 xlen=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_xlen \(.*\)/\1/p'`
+float_abi=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_float_abi_\([^ ]*\) .*/\1/p'`
 
 case "$xlen" in
 32 | 64)
@@ -9,5 +10,24 @@ case "$xlen" in
 	;;
 esac
 
+case "$float_abi" in
+soft)
+	flen=0
+	;;
+single)
+	flen=32
+	;;
+double)
+	flen=64
+	;;
+*)
+	echo "Unable to determine floating-point ABI" >&2
+	exit 1
+	;;
+esac
+
 base_machine=riscv
 machine=riscv/rv$xlen/$config_machine
+
+$as_echo "#define RISCV_ABI_XLEN $xlen" >>confdefs.h
+$as_echo "#define RISCV_ABI_FLEN $flen" >>confdefs.h
