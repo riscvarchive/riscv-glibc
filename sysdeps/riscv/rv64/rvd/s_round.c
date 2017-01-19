@@ -16,20 +16,35 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #include <math.h>
+#include <math_private.h>
 
 double
-__fmax (double x, double y)
+__round (double x)
 {
-  asm ("fmax.d %0, %1, %2" : "=f" (x) : "f" (x), "f" (y));
+  int flags = riscv_getflags ();
+  int nan = isnan (x);
+  double mag = fabs (x);
+
+  if (nan)
+    return x + x;
+
+  if (mag < (1ULL << __DBL_MANT_DIG__))
+    {
+      long i;
+      double new_x;
+
+      asm volatile ("fcvt.l.d %0, %1, rmm" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.d.l %0, %1, rmm" : "=f" (new_x) : "r" (i));
+
+      /* round(-0) == -0, and in general we'll always have the same
+	 sign as our input.  */
+      x = copysign (new_x, x);
+
+      riscv_setflags (flags);
+    }
+
   return x;
 }
-weak_alias (__fmax, fmax)
 
-#else
-
-#include <math/s_fmax.c>
-
-#endif
+weak_alias (__round, round)

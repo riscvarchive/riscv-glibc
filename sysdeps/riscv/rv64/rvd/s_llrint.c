@@ -16,24 +16,16 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_xlen >= 64
-
 long long
-__llrintf (float x)
+__llrint (double x)
 {
   long long res;
-  asm ("fcvt.l.s %0, %1" : "=r" (res) : "f" (x));
+  asm ("fcvt.l.d %0, %1" : "=r" (res) : "f" (x));
   return res;
 }
 
-weak_alias (__llrintf, llrintf)
+weak_alias (__llrint, llrint)
 #ifdef __LP64__
-strong_alias (__llrintf, __lrintf)
-weak_alias (__llrintf, lrintf)
-#endif
-
-#else
-
-#include <sysdeps/ieee754/flt-32/s_llrintf.c>
-
+strong_alias (__llrint, __lrint)
+weak_alias (__llrint, lrint)
 #endif

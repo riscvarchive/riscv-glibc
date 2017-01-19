@@ -16,28 +16,12 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
+#include <math.h>
 
-long long
-__llround (double x)
+double
+__ieee754_sqrt (double x)
 {
-  long long res;
-  asm ("fcvt.l.d %0, %1, rmm" : "=r" (res) : "f" (x));
-  return res;
+  asm ("fsqrt.d %0, %1" : "=f" (x) : "f" (x));
+  return x;
 }
-
-weak_alias (__llround, llround)
-#ifdef __LP64__
-strong_alias (__llround, __lround)
-weak_alias (__llround, lround)
-#endif
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_llround.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_llround.c>
-#endif
-
-#endif
+strong_alias (__ieee754_sqrt, __sqrt_finite)

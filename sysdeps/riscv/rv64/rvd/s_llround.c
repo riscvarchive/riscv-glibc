@@ -16,20 +16,16 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
-#include <math.h>
-
-double
-__fabs (double x)
+long long
+__llround (double x)
 {
-  asm ("fabs.d %0, %1" : "=f" (x) : "f" (x));
-  return x;
+  long long res;
+  asm ("fcvt.l.d %0, %1, rmm" : "=r" (res) : "f" (x));
+  return res;
 }
-weak_alias (__fabs, fabs)
 
-#else
-
-#include <sysdeps/ieee754/dbl-64/s_fabs.c>
-
+weak_alias (__llround, llround)
+#ifdef __LP64__
+strong_alias (__llround, __lround)
+weak_alias (__llround, lround)
 #endif

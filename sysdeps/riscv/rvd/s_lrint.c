@@ -16,30 +16,18 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #ifndef __LP64__
 
 #include <math.h>
 
 long
-__lround (double x)
+__lrint (double x)
 {
   long res;
-  asm ("fcvt.w.d %0, %1, rmm" : "=r" (res) : "f" (x));
+  asm ("fcvt.w.d %0, %1" : "=r" (res) : "f" (x));
   return res;
 }
 
-weak_alias (__lround, lround)
-
-#endif
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_lround.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_lround.c>
-#endif
+weak_alias (__lrint, lrint)
 
 #endif

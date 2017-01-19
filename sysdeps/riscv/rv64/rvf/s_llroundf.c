@@ -16,26 +16,16 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
-#include <math.h>
-#include <math_private.h>
-
-int
-__isinf (double x)
+long long
+__llroundf (float x)
 {
-  int cls = _FCLASS (x);
-  return -((cls & _FCLASS_MINF) ? 1 : 0) | ((cls & _FCLASS_PINF) ? 1 : 0);
+  long long res;
+  asm ("fcvt.l.s %0, %1, rmm" : "=r" (res) : "f" (x));
+  return res;
 }
-hidden_def (__isinf)
-weak_alias (__isinf, isinf)
 
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_isinf.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_isinf.c>
-#endif
-
+weak_alias (__llroundf, llroundf)
+#ifdef __LP64__
+strong_alias (__llroundf, __lroundf)
+weak_alias (__llroundf, lroundf)
 #endif

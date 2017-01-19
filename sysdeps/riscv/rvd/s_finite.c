@@ -16,20 +16,13 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #include <math.h>
+#include <math_private.h>
 
-double
-__fmin (double x, double y)
+int
+__finite (double x)
 {
-  asm ("fmin.d %0, %1, %2" : "=f" (x) : "f" (x), "f" (y));
-  return x;
+  return _FCLASS (x) & ~(_FCLASS_INF | _FCLASS_NAN);
 }
-weak_alias (__fmin, fmin)
-
-#else
-
-#include <math/s_fmin.c>
-
-#endif
+hidden_def (__finite)
+weak_alias (__finite, finite)

@@ -16,8 +16,6 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
-
 #include <math.h>
 #include <math_private.h>
 
@@ -50,13 +48,3 @@ __floor (double x)
 }
 
 weak_alias (__floor, floor)
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_floor.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_floor.c>
-#endif
-
-#endif

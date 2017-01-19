@@ -16,29 +16,13 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #include <math.h>
 #include <math_private.h>
 
 int
-__fpclassify (double x)
+__isnan (double x)
 {
-  int cls = _FCLASS (x);
-  if (__builtin_expect (cls & _FCLASS_NORM, _FCLASS_NORM))
-    return FP_NORMAL;
-  if (__builtin_expect (cls & _FCLASS_ZERO, _FCLASS_ZERO))
-    return FP_ZERO;
-  if (__builtin_expect (cls & _FCLASS_SUBNORM, _FCLASS_SUBNORM))
-    return FP_SUBNORMAL;
-  if (__builtin_expect (cls & _FCLASS_INF, _FCLASS_INF))
-    return FP_INFINITE;
-  return FP_NAN;
+  return _FCLASS (x) & _FCLASS_NAN;
 }
-libm_hidden_def (__fpclassify)
-
-#else
-
-#include <sysdeps/ieee754/dbl-64/s_fpclassify.c>
-
-#endif
+hidden_def (__isnan)
+weak_alias (__isnan, isnan)

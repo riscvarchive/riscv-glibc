@@ -16,26 +16,12 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
-#ifndef __LP64__
-
 #include <math.h>
 
-long
-__lrint (double x)
+double
+__fabs (double x)
 {
-  long res;
-  asm ("fcvt.w.d %0, %1" : "=r" (res) : "f" (x));
-  return res;
+  asm ("fabs.d %0, %1" : "=f" (x) : "f" (x));
+  return x;
 }
-
-weak_alias (__lrint, lrint)
-
-#endif
-
-#else
-
-#include <sysdeps/ieee754/dbl-64/s_lrint.c>
-
-#endif
+weak_alias (__fabs, fabs)

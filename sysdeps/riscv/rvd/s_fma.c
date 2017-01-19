@@ -16,24 +16,14 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
+#include <math.h>
+#include <fenv.h>
+#include <ieee754.h>
 
-long long
-__llrint (double x)
+double
+__fma (double x, double y, double z)
 {
-  long long res;
-  asm ("fcvt.l.d %0, %1" : "=r" (res) : "f" (x));
-  return res;
+  asm ("fmadd.d %0, %1, %2, %3" : "=f" (x) : "f" (x), "f" (y), "f" (z));
+  return x;
 }
-
-weak_alias (__llrint, llrint)
-#ifdef __LP64__
-strong_alias (__llrint, __lrint)
-weak_alias (__llrint, lrint)
-#endif
-
-#else
-
-#include <sysdeps/ieee754/dbl-64/s_llrint.c>
-
-#endif
+weak_alias (__fma, fma)

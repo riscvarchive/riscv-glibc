@@ -11,13 +11,15 @@ case "$xlen" in
 	;;
 esac
 
-# Ignore --with-fp; the compiler flags determine ISA extension support.
 case "$flen" in
-32 | 64)
-	with_fp=yes
+64)
+	float_machine=rvd
+	;;
+32)
+	float_machine=rvf
 	;;
 "")
-	with_fp=no
+	float_machine=
 	;;
 *)
 	echo "Unable to determine FLEN" >&2
@@ -42,7 +44,7 @@ double)
 esac
 
 base_machine=riscv
-machine=riscv/rv$xlen/$config_machine
+machine=riscv/rv$xlen/$float_machine
 
 $as_echo "#define RISCV_ABI_XLEN $xlen" >>confdefs.h
 $as_echo "#define RISCV_ABI_FLEN $abi_flen" >>confdefs.h

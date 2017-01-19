@@ -16,13 +16,11 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
-
 #include <math.h>
 #include <math_private.h>
 
 double
-__round (double x)
+__trunc (double x)
 {
   int flags = riscv_getflags ();
   int nan = isnan (x);
@@ -36,10 +34,10 @@ __round (double x)
       long i;
       double new_x;
 
-      asm volatile ("fcvt.l.d %0, %1, rmm" : "=r" (i) : "f" (x));
-      asm volatile ("fcvt.d.l %0, %1, rmm" : "=f" (new_x) : "r" (i));
+      asm volatile ("fcvt.l.d %0, %1, rtz" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.d.l %0, %1, rtz" : "=f" (new_x) : "r" (i));
 
-      /* round(-0) == -0, and in general we'll always have the same
+      /* trunc(-0) == -0, and in general we'll always have the same
 	 sign as our input.  */
       x = copysign (new_x, x);
 
@@ -49,14 +47,4 @@ __round (double x)
   return x;
 }
 
-weak_alias (__round, round)
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_round.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_round.c>
-#endif
-
-#endif
+weak_alias (__trunc, trunc)

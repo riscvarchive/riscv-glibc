@@ -16,19 +16,15 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
-
 #include <math.h>
 #include <math_private.h>
 
 double
-__rint (double x)
+__nearbyint (double x)
 {
-  int nan;
-  double mag;
-
-  nan = isnan (x);
-  mag = fabs (x);
+  int flags = riscv_getflags ();
+  int nan = isnan (x);
+  double mag = fabs (x);
 
   if (nan)
     return x + x;
@@ -38,25 +34,17 @@ __rint (double x)
       long i;
       double new_x;
 
-      asm ("fcvt.l.d %0, %1" : "=r" (i) : "f" (x));
-      asm ("fcvt.d.l %0, %1" : "=f" (new_x) : "r" (i));
+      asm volatile ("fcvt.l.d %0, %1" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.d.l %0, %1" : "=f" (new_x) : "r" (i));
 
-      /* rint(-0) == -0, and in general we'll always have the same
+      /* nearbyint(-0) == -0, and in general we'll always have the same
 	 sign as our input.  */
       x = copysign (new_x, x);
+
+      riscv_setflags (flags);
     }
 
   return x;
 }
 
-weak_alias (__rint, rint)
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_rint.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_rint.c>
-#endif
-
-#endif
+weak_alias (__nearbyint, nearbyint)

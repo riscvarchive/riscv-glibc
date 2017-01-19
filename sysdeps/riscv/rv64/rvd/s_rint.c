@@ -16,25 +16,35 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #include <math.h>
 #include <math_private.h>
 
-int
-__finite (double x)
+double
+__rint (double x)
 {
-  return _FCLASS (x) & ~(_FCLASS_INF | _FCLASS_NAN);
+  int nan;
+  double mag;
+
+  nan = isnan (x);
+  mag = fabs (x);
+
+  if (nan)
+    return x + x;
+
+  if (mag < (1ULL << __DBL_MANT_DIG__))
+    {
+      long i;
+      double new_x;
+
+      asm ("fcvt.l.d %0, %1" : "=r" (i) : "f" (x));
+      asm ("fcvt.d.l %0, %1" : "=f" (new_x) : "r" (i));
+
+      /* rint(-0) == -0, and in general we'll always have the same
+	 sign as our input.  */
+      x = copysign (new_x, x);
+    }
+
+  return x;
 }
-hidden_def (__finite)
-weak_alias (__finite, finite)
 
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_finite.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_finite.c>
-#endif
-
-#endif
+weak_alias (__rint, rint)

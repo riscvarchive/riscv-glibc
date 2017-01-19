@@ -16,22 +16,35 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #include <math.h>
-#include <fenv.h>
-#include <ieee754.h>
+#include <math_private.h>
 
 double
-__fma (double x, double y, double z)
+__ceil (double x)
 {
-  asm ("fmadd.d %0, %1, %2, %3" : "=f" (x) : "f" (x), "f" (y), "f" (z));
+  int flags = riscv_getflags ();
+  int nan = isnan (x);
+  double mag = fabs (x);
+
+  if (nan)
+    return x + x;
+
+  if (mag < (1ULL << __DBL_MANT_DIG__))
+    {
+      long i;
+      double new_x;
+
+      asm volatile ("fcvt.l.d %0, %1, rup" : "=r" (i) : "f" (x));
+      asm volatile ("fcvt.d.l %0, %1, rup" : "=f" (new_x) : "r" (i));
+
+      /* ceil(-0) == -0, and in general we'll always have the same
+	 sign as our input.  */
+      x = copysign (new_x, x);
+
+      riscv_setflags (flags);
+    }
+
   return x;
 }
-weak_alias (__fma, fma)
 
-#else
-
-#include <sysdeps/ieee754/dbl-64/s_fma.c>
-
-#endif
+weak_alias (__ceil, ceil)

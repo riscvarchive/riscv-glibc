@@ -16,47 +16,16 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
-
-#include <math.h>
-#include <math_private.h>
-
-double
-__ceil (double x)
+long long
+__llrintf (float x)
 {
-  int flags = riscv_getflags ();
-  int nan = isnan (x);
-  double mag = fabs (x);
-
-  if (nan)
-    return x + x;
-
-  if (mag < (1ULL << __DBL_MANT_DIG__))
-    {
-      long i;
-      double new_x;
-
-      asm volatile ("fcvt.l.d %0, %1, rup" : "=r" (i) : "f" (x));
-      asm volatile ("fcvt.d.l %0, %1, rup" : "=f" (new_x) : "r" (i));
-
-      /* ceil(-0) == -0, and in general we'll always have the same
-	 sign as our input.  */
-      x = copysign (new_x, x);
-
-      riscv_setflags (flags);
-    }
-
-  return x;
+  long long res;
+  asm ("fcvt.l.s %0, %1" : "=r" (res) : "f" (x));
+  return res;
 }
 
-weak_alias (__ceil, ceil)
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_ceil.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_ceil.c>
-#endif
-
+weak_alias (__llrintf, llrintf)
+#ifdef __LP64__
+strong_alias (__llrintf, __lrintf)
+weak_alias (__llrintf, lrintf)
 #endif

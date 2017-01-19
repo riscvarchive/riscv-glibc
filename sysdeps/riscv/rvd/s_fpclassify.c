@@ -16,47 +16,21 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64 && __riscv_xlen >= 64
-
 #include <math.h>
 #include <math_private.h>
 
-double
-__trunc (double x)
+int
+__fpclassify (double x)
 {
-  int flags = riscv_getflags ();
-  int nan = isnan (x);
-  double mag = fabs (x);
-
-  if (nan)
-    return x + x;
-
-  if (mag < (1ULL << __DBL_MANT_DIG__))
-    {
-      long i;
-      double new_x;
-
-      asm volatile ("fcvt.l.d %0, %1, rtz" : "=r" (i) : "f" (x));
-      asm volatile ("fcvt.d.l %0, %1, rtz" : "=f" (new_x) : "r" (i));
-
-      /* trunc(-0) == -0, and in general we'll always have the same
-	 sign as our input.  */
-      x = copysign (new_x, x);
-
-      riscv_setflags (flags);
-    }
-
-  return x;
+  int cls = _FCLASS (x);
+  if (__builtin_expect (cls & _FCLASS_NORM, _FCLASS_NORM))
+    return FP_NORMAL;
+  if (__builtin_expect (cls & _FCLASS_ZERO, _FCLASS_ZERO))
+    return FP_ZERO;
+  if (__builtin_expect (cls & _FCLASS_SUBNORM, _FCLASS_SUBNORM))
+    return FP_SUBNORMAL;
+  if (__builtin_expect (cls & _FCLASS_INF, _FCLASS_INF))
+    return FP_INFINITE;
+  return FP_NAN;
 }
-
-weak_alias (__trunc, trunc)
-
-#else
-
-#if __riscv_xlen >= 64
-#include <sysdeps/ieee754/dbl-64/wordsize-64/s_trunc.c>
-#else
-#include <sysdeps/ieee754/dbl-64/s_trunc.c>
-#endif
-
-#endif
+libm_hidden_def (__fpclassify)

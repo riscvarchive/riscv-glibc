@@ -16,20 +16,12 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_flen >= 64
-
 #include <math.h>
 
 double
-__ieee754_sqrt (double x)
+__fmax (double x, double y)
 {
-  asm ("fsqrt.d %0, %1" : "=f" (x) : "f" (x));
+  asm ("fmax.d %0, %1, %2" : "=f" (x) : "f" (x), "f" (y));
   return x;
 }
-strong_alias (__ieee754_sqrt, __sqrt_finite)
-
-#else
-
-#include <sysdeps/ieee754/dbl-64/e_sqrt.c>
-
-#endif
+weak_alias (__fmax, fmax)

@@ -16,24 +16,18 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if __riscv_xlen >= 64
+#ifndef __LP64__
 
-long long
-__llroundf (float x)
+#include <math.h>
+
+long
+__lround (double x)
 {
-  long long res;
-  asm ("fcvt.l.s %0, %1, rmm" : "=r" (res) : "f" (x));
+  long res;
+  asm ("fcvt.w.d %0, %1, rmm" : "=r" (res) : "f" (x));
   return res;
 }
 
-weak_alias (__llroundf, llroundf)
-#ifdef __LP64__
-strong_alias (__llroundf, __lroundf)
-weak_alias (__llroundf, lroundf)
-#endif
-
-#else
-
-#include <sysdeps/ieee754/flt-32/s_llroundf.c>
+weak_alias (__lround, lround)
 
 #endif
