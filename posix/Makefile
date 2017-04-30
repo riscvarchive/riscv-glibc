@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2016 Free Software Foundation, Inc.
+# Copyright (C) 1991-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -23,7 +23,8 @@ subdir	:= posix
 include ../Makeconfig
 
 headers	:= sys/utsname.h sys/times.h sys/wait.h sys/types.h unistd.h	      \
-	   glob.h regex.h wordexp.h fnmatch.h getopt.h			      \
+	   glob.h regex.h wordexp.h fnmatch.h 				      \
+	   getopt.h bits/getopt_core.h bits/getopt_ext.h bits/getopt_posix.h  \
 	   bits/types.h bits/typesizes.h bits/pthreadtypes.h		      \
 	   bits/posix1_lim.h bits/posix2_lim.h bits/posix_opt.h		      \
 	   bits/local_lim.h tar.h bits/utsname.h bits/confname.h	      \
@@ -45,7 +46,7 @@ routines :=								      \
 	pathconf sysconf fpathconf					      \
 	glob glob64 fnmatch regex					      \
 	confstr								      \
-	getopt getopt1 getopt_init					      \
+	getopt getopt1 							      \
 	sched_setp sched_getp sched_sets sched_gets sched_yield sched_primax  \
 	sched_primin sched_rr_gi sched_getaffinity sched_setaffinity	      \
 	getaddrinfo gai_strerror wordexp				      \
@@ -62,7 +63,7 @@ routines :=								      \
 	get_child_max sched_cpucount sched_cpualloc sched_cpufree
 
 aux		:= init-posix environ
-tests		:= tstgetopt testfnm runtests runptests	     \
+tests		:= test-errno tstgetopt testfnm runtests runptests \
 		   tst-preadwrite tst-preadwrite64 test-vfork regexbug1 \
 		   tst-mmap tst-mmap-offset tst-getaddrinfo tst-truncate \
 		   tst-truncate64 tst-fork tst-fnmatch tst-regexloc tst-dir \
@@ -90,12 +91,15 @@ tests		:= tstgetopt testfnm runtests runptests	     \
 		   bug-getopt5 tst-getopt_long1 bug-regex34 bug-regex35 \
 		   tst-pathconf tst-getaddrinfo4 tst-rxspencer-no-utf8 \
 		   tst-fnmatch3 bug-regex36 tst-getaddrinfo5 \
-		   tst-posix_spawn-fd \
+		   tst-posix_spawn-fd tst-posix_spawn-setsid \
 		   tst-posix_fadvise tst-posix_fadvise64
 xtests		:= bug-ga2
 ifeq (yes,$(build-shared))
 test-srcs	:= globtest
 tests           += wordexp-test tst-exec tst-spawn tst-spawn2 tst-spawn3
+endif
+ifeq (yesyes,$(build-shared)$(have-thread-library))
+tests		+= tst-getopt-cancel
 endif
 tests-static	= tst-exec-static tst-spawn-static
 tests		+= $(tests-static)
@@ -253,6 +257,8 @@ testcases.h: TESTS TESTS2C.sed
 ptestcases.h: PTESTS PTESTS2C.sed
 	LC_ALL=C sed -f PTESTS2C.sed < $< > $@T
 	mv -f $@T $@
+
+$(objpfx)tst-getopt-cancel: $(shared-thread-library)
 
 test-xfail-annexc = yes
 $(objpfx)annexc.out: $(objpfx)annexc

@@ -1,4 +1,4 @@
-/* Copyright (C) 2008-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2008-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -28,8 +28,10 @@
 /* Bits to be set in the FLAGS parameter of `timerfd_settime'.  */
 enum
   {
-    TFD_TIMER_ABSTIME = 1 << 0
+    TFD_TIMER_ABSTIME = 1 << 0,
 #define TFD_TIMER_ABSTIME TFD_TIMER_ABSTIME
+    TFD_TIMER_CANCEL_ON_SET = 1 << 1
+#define TFD_TIMER_CANCEL_ON_SET TFD_TIMER_CANCEL_ON_SET
   };
 
 

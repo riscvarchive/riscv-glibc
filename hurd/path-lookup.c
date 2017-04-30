@@ -1,5 +1,5 @@
 /* Filename lookup using a search path
-   Copyright (C) 1995-2016 Free Software Foundation, Inc.
+   Copyright (C) 1995-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Miles Bader <miles@gnu.ai.mit.edu>
 
@@ -33,7 +33,7 @@ file_name_path_scan (const char *file_name, const char *path,
 		     error_t (*fun)(const char *name),
 		     char **prefixed_name)
 {
-  if (path == NULL || index (file_name, '/'))
+  if (path == NULL || strchr (file_name, '/'))
     {
       if (prefixed_name)
 	*prefixed_name = 0;
@@ -47,7 +47,7 @@ file_name_path_scan (const char *file_name, const char *path,
       for (;;)
 	{
 	  error_t err;
-	  const char *next = index (path, ':') ?: path + strlen (path);
+	  const char *next = strchr (path, ':') ?: path + strlen (path);
 	  size_t pfx_len = next - path;
 	  char pfxed_name[pfx_len + 2 + file_name_len + 1];
 

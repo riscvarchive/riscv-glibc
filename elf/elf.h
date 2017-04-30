@@ -1,5 +1,5 @@
 /* This file defines standard ELF types, structures, and macros.
-   Copyright (C) 1995-2016 Free Software Foundation, Inc.
+   Copyright (C) 1995-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -1169,6 +1169,18 @@ typedef struct
 #define AT_L1D_CACHESHAPE	35
 #define AT_L2_CACHESHAPE	36
 #define AT_L3_CACHESHAPE	37
+
+/* Shapes of the caches, with more room to describe them.
+   *GEOMETRY are comprised of cache line size in bytes in the bottom 16 bits
+   and the cache associativity in the next 16 bits.  */
+#define AT_L1I_CACHESIZE	40
+#define AT_L1I_CACHEGEOMETRY	41
+#define AT_L1D_CACHESIZE	42
+#define AT_L1D_CACHEGEOMETRY	43
+#define AT_L2_CACHESIZE		44
+#define AT_L2_CACHEGEOMETRY	45
+#define AT_L3_CACHESIZE		46
+#define AT_L3_CACHEGEOMETRY	47
 
 /* Note section contents.  Each entry in the note section begins with
    a header of a fixed form.  */

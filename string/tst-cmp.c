@@ -1,5 +1,5 @@
 /* Alignment/padding coverage test for string comparison.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,6 +23,7 @@
 #include <limits.h>
 #include <malloc.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -106,7 +107,7 @@ strncasecmp_max (const char *left, const char *right)
   return strncasecmp (left, right, SIZE_MAX);
 }
 
-static int
+int
 do_test (void)
 {
   enum {
@@ -208,5 +209,4 @@ do_test (void)
    machines.  */
 #define TIMEOUT 300
 
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/test-driver.c>

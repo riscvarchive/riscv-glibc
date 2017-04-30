@@ -1,5 +1,5 @@
 /* Support for reading /etc/ld.so.cache files written by Linux ldconfig.
-   Copyright (C) 1996-2016 Free Software Foundation, Inc.
+   Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -302,7 +302,7 @@ _dl_load_cache_lookup (const char *name)
   char *temp;
   temp = alloca (strlen (best) + 1);
   strcpy (temp, best);
-  return strdup (temp);
+  return __strdup (temp);
 }
 
 #ifndef MAP_COPY

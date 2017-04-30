@@ -1,5 +1,5 @@
 /* Default memset/bzero implementation for PowerPC64.
-   Copyright (C) 2013-2016 Free Software Foundation, Inc.
+   Copyright (C) 2013-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -30,21 +30,7 @@ END_GEN_TB (__bzero_ppc,TB_TOCLESS)
 
 
 #if defined SHARED && IS_IN (libc)
-# undef EALIGN
-# define EALIGN(name, alignt, words)				\
-  .section ".text";						\
-  ENTRY_2(__memset_ppc)						\
-  .align ALIGNARG(alignt);					\
-  EALIGN_W_##words;						\
-  BODY_LABEL(__memset_ppc):					\
-  cfi_startproc;						\
-  LOCALENTRY(__memset_ppc)
-
-# undef END_GEN_TB
-# define END_GEN_TB(name, mask)					\
-  cfi_endproc;							\
-  TRACEBACK_MASK(__memset_ppc,mask)				\
-  END_2(__memset_ppc)
+# define MEMSET __memset_ppc
 
 # undef libc_hidden_builtin_def
 # define libc_hidden_builtin_def(name)

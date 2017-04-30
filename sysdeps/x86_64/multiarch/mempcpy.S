@@ -1,6 +1,6 @@
 /* Multiple versions of mempcpy
    All versions must be listed in ifunc-impl-list.c.
-   Copyright (C) 2010-2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2017 Free Software Foundation, Inc.
    Contributed by Intel Corporation.
    This file is part of the GNU C Library.
 
@@ -32,6 +32,8 @@ ENTRY(__mempcpy)
 	lea	__mempcpy_erms(%rip), %RAX_LP
 	HAS_ARCH_FEATURE (Prefer_ERMS)
 	jnz	2f
+	HAS_ARCH_FEATURE (Prefer_No_AVX512)
+	jnz	1f
 	HAS_ARCH_FEATURE (AVX512F_Usable)
 	jz	1f
 	lea	__mempcpy_avx512_no_vzeroupper(%rip), %RAX_LP

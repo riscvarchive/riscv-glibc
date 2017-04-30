@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -869,8 +869,7 @@ extern int setlogin (const char *__name) __THROW __nonnull ((1));
 /* Get definitions and prototypes for functions to process the
    arguments in ARGV (ARGC of them, minus the program name) for
    options given in OPTS.  */
-# define __need_getopt
-# include <getopt.h>
+# include <bits/getopt_posix.h>
 #endif
 
 
@@ -1157,6 +1156,11 @@ extern int pthread_atfork (void (*__prepare) (void),
 			   void (*__child) (void)) __THROW;
 #endif
 
+#ifdef __USE_MISC
+/* Write LENGTH bytes of randomness starting at BUFFER.  Return 0 on
+   success or -1 on error.  */
+int getentropy (void *__buffer, size_t __length) __wur;
+#endif
 
 /* Define some macros helping to catch buffer overflows.  */
 #if __USE_FORTIFY_LEVEL > 0 && defined __fortify_function

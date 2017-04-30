@@ -1,5 +1,5 @@
 /* Store current representation for exceptions.
-   Copyright (C) 1997-2016 Free Software Foundation, Inc.
+   Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
@@ -24,6 +24,7 @@ int
 __fegetexceptflag (fexcept_t *flagp, int excepts)
 {
   /* Nothing to do.  */
+  *flagp = 0;
   return 0;
 }
 #if SHLIB_COMPAT (libm, GLIBC_2_1, GLIBC_2_2)

@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (c) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@vt.uni-paderborn.de>, 1997.
 
@@ -25,6 +25,7 @@ nis_domain_of (const_nis_name name)
 
   return nis_domain_of_r (name, result, NIS_MAXNAMELEN);
 }
+libnsl_hidden_nolink_def (nis_domain_of, GLIBC_2_1)
 
 const_nis_name
 __nis_domain_of (const_nis_name name)

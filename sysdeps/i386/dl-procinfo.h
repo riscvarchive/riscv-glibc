@@ -1,5 +1,5 @@
 /* i386 version of processor capability information handling macros.
-   Copyright (C) 1998-2016 Free Software Foundation, Inc.
+   Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1998.
 
@@ -68,13 +68,6 @@ __attribute__ ((unused))
 _dl_hwcap_string (int idx)
 {
   return GLRO(dl_x86_cap_flags)[idx];
-};
-
-static inline const char *
-__attribute__ ((unused))
-_dl_platform_string (int idx)
-{
-  return GLRO(dl_x86_platforms)[idx - _DL_FIRST_PLATFORM];
 };
 
 static inline int

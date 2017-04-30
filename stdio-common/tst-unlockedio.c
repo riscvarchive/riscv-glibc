@@ -1,5 +1,5 @@
 /* Test for some *_unlocked stdio interfaces.
-   Copyright (C) 2004-2016 Free Software Foundation, Inc.
+   Copyright (C) 2004-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 2004.
 
@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 int fd;
 static void do_prepare (void);

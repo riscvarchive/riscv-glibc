@@ -1,5 +1,5 @@
 /* Check __ppc_get_hwcap() and __ppc_get_at_plaftorm() functionality.
-   Copyright (C) 2015-2016 Free Software Foundation, Inc.
+   Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
+
+#include <support/check.h>
+#include <support/xthread.h>
 
 #include <sys/auxv.h>
 
@@ -148,7 +151,6 @@ do_test (void)
   pthread_attr_t attr;
   pthread_attr_init (&attr);
   pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_JOINABLE);
-  void *status;
 
   long i = 0;
 
@@ -160,22 +162,10 @@ do_test (void)
 
   /* Check for other thread.  */
   i++;
-  if (pthread_create (&threads[i], &attr, t1, (void *)i))
-    {
-      printf ("FAIL: error creating thread %ld.\n", i);
-      return 1;
-    }
+  threads[i] = xpthread_create (&attr, t1, (void *)i);
 
   pthread_attr_destroy (&attr);
-  if (pthread_join (threads[i], &status))
-    {
-      printf ("FAIL: error joining thread %ld.\n", i);
-      return 1;
-    }
-  if (status)
-    {
-      return 1;
-    }
+  TEST_VERIFY_EXIT (xpthread_join (threads[i]) == NULL);
 
   printf("PASS: HWCAP, HWCAP2 and AT_PLATFORM are correctly set in the TCB for"
 	 " all threads.\n");
@@ -184,5 +174,4 @@ do_test (void)
 
 }
 
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/test-driver.c>

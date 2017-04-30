@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2016 Free Software Foundation, Inc.
+# Copyright (C) 1991-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -140,6 +140,9 @@ CFLAGS-scanf15.c = -I../libio -I../stdlib -I../wcsmbs -I../time -I../string \
 		   -I../wctype
 CFLAGS-scanf17.c = -I../libio -I../stdlib -I../wcsmbs -I../time -I../string \
 		   -I../wctype
+
+# tst-gets.c tests a deprecated function.
+CFLAGS-tst-gets.c += -Wno-deprecated-declarations
 
 CPPFLAGS += $(libio-mtsafe)
 

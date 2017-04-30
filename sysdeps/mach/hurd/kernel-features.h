@@ -1,5 +1,5 @@
 /* Set flags signalling availability of certain operating system features.
-   Copyright (C) 2012-2016 Free Software Foundation, Inc.
+   Copyright (C) 2012-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,7 +19,3 @@
 /* This file can define __ASSUME_* macros checked by certain source files.
    Almost none of these are used outside of sysdeps/unix/sysv/linux code.
    But those referring to POSIX-level features like O_* flags can be.  */
-
-#define __ASSUME_O_CLOEXEC	1
-#define __ASSUME_DUP3		1
-#define __ASSUME_ACCEPT4	1

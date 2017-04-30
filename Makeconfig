@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2016 Free Software Foundation, Inc.
+# Copyright (C) 1991-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -386,6 +386,13 @@ LDFLAGS.so += $(hashstyle-LDFLAGS)
 LDFLAGS-rtld += $(hashstyle-LDFLAGS)
 endif
 
+# If lazy relocations are disabled, add the -z now flag.  Use
+# LDFLAGS-lib.so instead of LDFLAGS.so, to avoid adding the flag to
+# test modules.
+ifeq ($(bind-now),yes)
+LDFLAGS-lib.so += -Wl,-z,now
+endif
+
 # Command to run after every final link (executable or shared object).
 # This is invoked with $(call after-link,...), so it should operate on
 # the file $1.  This can be set to do some sort of post-processing on
@@ -393,6 +400,9 @@ endif
 ifndef after-link
 after-link =
 endif
+
+# Additional libraries to link into every test.
+link-extra-libs-tests = $(libsupport)
 
 # Command for linking PIE programs with the C library.
 ifndef +link-pie
@@ -545,7 +555,7 @@ link-libc-printers-tests = $(link-libc-rpath) \
 			   $(link-libc-tests-after-rpath-link)
 
 # This is how to find at build-time things that will be installed there.
-rpath-dirs = math elf dlfcn nss nis rt resolv crypt mathvec
+rpath-dirs = math elf dlfcn nss nis rt resolv crypt mathvec support
 rpath-link = \
 $(common-objdir):$(subst $(empty) ,:,$(patsubst ../$(subdir),.,$(rpath-dirs:%=$(common-objpfx)%)))
 else  # build-static
@@ -804,6 +814,11 @@ endif
 # disable any optimization that assume default rounding mode.
 +math-flags = -frounding-math
 
+# We might want to compile with some stack-protection flag.
+ifneq ($(stack-protector),)
++stack-protector=$(stack-protector)
+endif
+
 # This is the program that generates makefile dependencies from C source files.
 # The -MP flag tells GCC >= 3.2 (which we now require) to produce dummy
 # targets for headers so that removed headers don't break the build.
@@ -863,7 +878,8 @@ ifeq	"$(strip $(+cflags))" ""
 +cflags	:= $(default_cflags)
 endif	# $(+cflags) == ""
 
-+cflags += $(cflags-cpu) $(+gccwarn) $(+merge-constants) $(+math-flags)
++cflags += $(cflags-cpu) $(+gccwarn) $(+merge-constants) $(+math-flags) \
+	   $(+stack-protector)
 +gcc-nowarn := -w
 
 # Don't duplicate options if we inherited variables from the parent.
@@ -892,7 +908,7 @@ libio-include = -I$(..)libio
 # List of non-library modules that we build.
 built-modules = iconvprogs iconvdata ldconfig lddlibc4 libmemusage \
 		libSegFault libpcprofile librpcsvc locale-programs \
-		memusagestat nonlib nscd extramodules libnldbl
+		memusagestat nonlib nscd extramodules libnldbl libsupport
 
 in-module = $(subst -,_,$(firstword $(libof-$(basename $(@F))) \
 				    $(libof-$(<F)) \
@@ -925,6 +941,11 @@ CPPFLAGS = $(config-extra-cppflags) $(CPPUNDEFS) $(CPPFLAGS-config) \
 	   $(foreach lib,$(libof-$(basename $(@F))) \
 			 $(libof-$(<F)) $(libof-$(@F)),$(CPPFLAGS-$(lib))) \
 	   $(CPPFLAGS-$(<F)) $(CPPFLAGS-$(@F)) $(CPPFLAGS-$(basename $(@F)))
+
+ifneq (no,$(have-tunables))
+CPPFLAGS += -DTOP_NAMESPACE=glibc
+endif
+
 override CFLAGS	= -std=gnu11 -fgnu89-inline $(config-extra-cflags) \
 		  $(filter-out %frame-pointer,$(+cflags)) $(+gccwarn-c) \
 		  $(sysdep-CFLAGS) $(CFLAGS-$(suffix $@)) $(CFLAGS-$(<F)) \
@@ -1099,6 +1120,17 @@ $(common-objpfx)libc-modules.stmp: $(..)scripts/gen-libc-modules.awk \
 
 endif
 
+# Build the tunables list header early since it could be used by any module in
+# glibc.
+ifneq (no,$(have-tunables))
+before-compile += $(common-objpfx)dl-tunable-list.h
+
+$(common-objpfx)dl-tunable-list.h: $(..)scripts/gen-tunables.awk \
+				   $(..)elf/dl-tunables.list
+	$(AWK) -f $^ > $@.tmp
+	mv $@.tmp $@
+endif
+
 common-generated += libc-modules.h libc-modules.stmp
 
 # The name under which the run-time dynamic linker is installed.
@@ -1133,6 +1165,12 @@ libm = $(common-objpfx)math/libm.a
 libmvec = $(common-objpfx)mathvec/libmvec.a
 endif
 
+ifeq ($(build-shared),yes)
+libsupport = $(common-objpfx)support/libsupport_nonshared.a
+else
+libsupport = $(common-objpfx)support/libsupport.a
+endif
+
 # These are the subdirectories containing the library source.  The order
 # is more or less arbitrary.  The sorting step will take care of the
 # dependencies.
@@ -1140,7 +1178,7 @@ all-subdirs = csu assert ctype locale intl catgets math setjmp signal	    \
 	      stdlib stdio-common libio malloc string wcsmbs time dirent    \
 	      grp pwd posix io termios resource misc socket sysvipc gmon    \
 	      gnulib iconv iconvdata wctype manual shadow gshadow po argp   \
-	      crypt localedata timezone rt conform debug mathvec	    \
+	      crypt localedata timezone rt conform debug mathvec support    \
 	      $(add-on-subdirs) dlfcn elf
 
 ifndef avoid-generated

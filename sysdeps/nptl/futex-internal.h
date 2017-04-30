@@ -1,6 +1,6 @@
 /* futex operations for glibc-internal use.  Stub version; do not include
    this file directly.
-   Copyright (C) 2014-2016 Free Software Foundation, Inc.
+   Copyright (C) 2014-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 /* This file defines futex operations used internally in glibc.  A futex
    consists of the so-called futex word in userspace, which is of type

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2016 Free Software Foundation, Inc.
+# Copyright (C) 1998-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -48,9 +48,16 @@ routines  = backtrace backtracesyms backtracesymsfd noophooks \
 	    vdprintf_chk obprintf_chk \
 	    longjmp_chk ____longjmp_chk \
 	    fdelt_chk poll_chk ppoll_chk \
+	    explicit_bzero_chk \
 	    stack_chk_fail fortify_fail \
 	    $(static-only-routines)
 static-only-routines := warning-nop stack_chk_fail_local
+
+# Building the stack-protector failure routines with stack protection
+# makes no sense.
+
+CFLAGS-stack_chk_fail.c = $(no-stack-protector)
+CFLAGS-stack_chk_fail_local.c = $(no-stack-protector)
 
 CFLAGS-backtrace.c = -fno-omit-frame-pointer
 CFLAGS-sprintf_chk.c = $(libio-mtsafe)
@@ -96,21 +103,22 @@ CFLAGS-tst-longjmp_chk3.c = -fexceptions -fasynchronous-unwind-tables
 CPPFLAGS-tst-longjmp_chk3.c = -D_FORTIFY_SOURCE=1
 
 # We know these tests have problems with format strings, this is what
-# we are testing.  Disable that warning.  They also generate warnings
-# from warning attributes, which cannot be disabled via pragmas, so
-# require -Wno-error to be used.
-CFLAGS-tst-chk1.c = -Wno-format -Wno-error
-CFLAGS-tst-chk2.c = -Wno-format -Wno-error
-CFLAGS-tst-chk3.c = -Wno-format -Wno-error
-CFLAGS-tst-chk4.cc = -Wno-format -Wno-error
-CFLAGS-tst-chk5.cc = -Wno-format -Wno-error
-CFLAGS-tst-chk6.cc = -Wno-format -Wno-error
-CFLAGS-tst-lfschk1.c = -Wno-format -Wno-error
-CFLAGS-tst-lfschk2.c = -Wno-format -Wno-error
-CFLAGS-tst-lfschk3.c = -Wno-format -Wno-error
-CFLAGS-tst-lfschk4.cc = -Wno-format -Wno-error
-CFLAGS-tst-lfschk5.cc = -Wno-format -Wno-error
-CFLAGS-tst-lfschk6.cc = -Wno-format -Wno-error
+# we are testing.  Disable that warning.  They are also testing
+# deprecated functions (notably gets) so disable that warning as well.
+# And they also generate warnings from warning attributes, which
+# cannot be disabled via pragmas, so require -Wno-error to be used.
+CFLAGS-tst-chk1.c = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-chk2.c = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-chk3.c = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-chk4.cc = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-chk5.cc = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-chk6.cc = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-lfschk1.c = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-lfschk2.c = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-lfschk3.c = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-lfschk4.cc = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-lfschk5.cc = -Wno-format -Wno-deprecated-declarations -Wno-error
+CFLAGS-tst-lfschk6.cc = -Wno-format -Wno-deprecated-declarations -Wno-error
 LDLIBS-tst-chk4 = -lstdc++
 LDLIBS-tst-chk5 = -lstdc++
 LDLIBS-tst-chk6 = -lstdc++

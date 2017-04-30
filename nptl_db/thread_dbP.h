@@ -1,5 +1,5 @@
 /* Private header for thread debug library
-   Copyright (C) 2003-2016 Free Software Foundation, Inc.
+   Copyright (C) 2003-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@
 #include "../nptl/pthreadP.h"  	/* This is for *_BITMASK only.  */
 #include <list.h>
 #include <gnu/lib-names.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 /* Indeces for the symbol names.  */
 enum

@@ -1,4 +1,4 @@
-/* Copyright (C) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@vt.uni-paderborn.de>, 1997.
 
@@ -142,7 +142,7 @@ __nis_findfastest_with_timeout (dir_binding *bind,
     }
 
   /* Create RPC handle */
-  sock = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  sock = socket (AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
   clnt = clntudp_create (&saved_sin, NIS_PROG, NIS_VERSION, *timeout, &sock);
   if (clnt == NULL)
     {

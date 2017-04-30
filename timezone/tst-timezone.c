@@ -1,4 +1,4 @@
-/* Copyright (C) 1998-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Andreas Jaeger <aj@suse.de>, 1998.
 
@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <unistd.h>
 
 int failed = 0;

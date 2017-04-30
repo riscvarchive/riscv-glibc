@@ -1,5 +1,5 @@
 /* Optimized strnlen implementation for PowerPC64/POWER7 using cmpb insn.
-   Copyright (C) 2010-2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2017 Free Software Foundation, Inc.
    Contributed by Luis Machado <luisgpm@br.ibm.com>.
    This file is part of the GNU C Library.
 
@@ -19,9 +19,13 @@
 
 #include <sysdep.h>
 
+#ifndef STRNLEN
+# define STRNLEN __strnlen
+#endif
+
 /* int [r3] strnlen (char *s [r3], int size [r4])  */
 	.machine  power7
-ENTRY (__strnlen)
+ENTRY (STRNLEN)
 	CALL_MCOUNT 2
 	dcbt	0,r3
 	clrrdi	r8,r3,3
@@ -172,7 +176,7 @@ L(loop_small):
 	mr	r3,r4
 	blr
 
-END (__strnlen)
+END (STRNLEN)
 libc_hidden_def (__strnlen)
 weak_alias (__strnlen, strnlen)
 libc_hidden_def (strnlen)

@@ -1,5 +1,5 @@
 /* Test for proper error/errno handling in clone.
-   Copyright (C) 2006-2016 Free Software Foundation, Inc.
+   Copyright (C) 2006-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,6 +22,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sched.h>
+
+#ifdef __ia64__
+extern int __clone2 (int (*__fn) (void *__arg), void *__child_stack_base,
+		     size_t __child_stack_size, int __flags, void *__arg, ...);
+#endif
 
 int child_fn(void *arg)
 {

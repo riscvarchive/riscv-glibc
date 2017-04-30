@@ -1,6 +1,6 @@
 /* IFUNC resolver function for CPU specific functions.
    32/64 bit S/390 version.
-   Copyright (C) 2015-2016 Free Software Foundation, Inc.
+   Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -83,3 +83,8 @@
 	   ? RESOLVERFUNC##_vx						\
 	   : RESOLVERFUNC##_c,						\
 	   unsigned long int dl_hwcap, s390_vx_libc_ifunc_init);
+
+#define s390_libc_ifunc_expr_init()
+#define s390_libc_ifunc_expr(TYPE_FUNC, FUNC, EXPR)		\
+  __ifunc (TYPE_FUNC, FUNC, EXPR, unsigned long int hwcap,	\
+	   s390_libc_ifunc_expr_init);

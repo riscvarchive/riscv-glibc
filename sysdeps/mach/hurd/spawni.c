@@ -1,5 +1,5 @@
 /* spawn a new process running an executable.  Hurd version.
-   Copyright (C) 2001-2016 Free Software Foundation, Inc.
+   Copyright (C) 2001-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -280,6 +280,9 @@ __spawni (pid_t *pid, const char *file,
 	_exit (SPAWN_ERROR);
     }
 #endif
+
+  if (!err && (flags & POSIX_SPAWN_SETSID) != 0)
+    err = __proc_setsid (proc);
 
   /* Set the process group ID.  */
   if (!err && (flags & POSIX_SPAWN_SETPGROUP) != 0)

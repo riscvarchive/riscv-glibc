@@ -1,4 +1,4 @@
-# Copyright (C) 1997-2016 Free Software Foundation, Inc.
+# Copyright (C) 1997-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -62,6 +62,11 @@ modules	:= ISO8859-1 ISO8859-2 ISO8859-3 ISO8859-4 ISO8859-5		 \
 	   IBM1364 IBM1371 IBM1388 IBM1390 IBM1399 ISO_11548-1 MIK BRF	 \
 	   MAC-CENTRALEUROPE KOI8-RU ISO8859-9E				 \
 	   CP770 CP771 CP772 CP773 CP774
+
+# If lazy binding is disabled, use BIND_NOW for the gconv modules.
+ifeq ($(bind-now),yes)
+LDFLAGS.so += -Wl,-z,now
+endif
 
 modules.so := $(addsuffix .so, $(modules))
 

@@ -1,5 +1,5 @@
 /* Host and service name lookups using Name Service Switch modules.
-   Copyright (C) 1996-2016 Free Software Foundation, Inc.
+   Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -59,7 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <nss.h>
-#include <resolv.h>
+#include <resolv/resolv-internal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdio_ext.h>
@@ -267,7 +267,7 @@ convert_hostent_to_gaih_addrtuple (const struct addrinfo *req,
       if (herrno == NETDB_INTERNAL)					      \
 	{								      \
 	  __set_h_errno (herrno);					      \
-	  _res.options |= old_res_options & RES_USE_INET6;		      \
+	  _res.options |= old_res_options & DEPRECATED_RES_USE_INET6;	      \
 	  result = -EAI_SYSTEM;						      \
 	  goto free_and_return;						      \
 	}								      \
@@ -283,7 +283,7 @@ convert_hostent_to_gaih_addrtuple (const struct addrinfo *req,
 	addrmem = NULL;							      \
       if (!convert_hostent_to_gaih_addrtuple (req, _family,h, &addrmem))      \
 	{								      \
-	  _res.options |= old_res_options & RES_USE_INET6;		      \
+	  _res.options |= old_res_options & DEPRECATED_RES_USE_INET6;	      \
 	  result = -EAI_SYSTEM;						      \
 	  goto free_and_return;						      \
 	}								      \
@@ -536,7 +536,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 		      }
 		    else
 		      {
-			namebuf = strndup (name, scope_delim - name);
+			namebuf = __strndup (name, scope_delim - name);
 			if (namebuf == NULL)
 			  {
 			    assert (!malloc_name);
@@ -808,7 +808,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 	     addresses to IPv6 addresses.  Currently this is decided
 	     by setting the RES_USE_INET6 bit in _res.options.  */
 	  old_res_options = _res.options;
-	  _res.options &= ~RES_USE_INET6;
+	  _res.options &= ~DEPRECATED_RES_USE_INET6;
 
 	  while (!no_more)
 	    {
@@ -845,7 +845,8 @@ gaih_inet (const char *name, const struct gaih_service *service,
 
 		      if (!scratch_buffer_grow (tmpbuf))
 			{
-			  _res.options |= old_res_options & RES_USE_INET6;
+			  _res.options
+			    |= old_res_options & DEPRECATED_RES_USE_INET6;
 			  result = -EAI_MEMORY;
 			  goto free_and_return;
 			}
@@ -962,7 +963,8 @@ gaih_inet (const char *name, const struct gaih_service *service,
 				      if (canonbuf == NULL)
 					{
 					  _res.options
-					    |= old_res_options & RES_USE_INET6;
+					    |= old_res_options
+					       & DEPRECATED_RES_USE_INET6;
 					  result = -EAI_MEMORY;
 					  goto free_and_return;
 					}
@@ -1024,7 +1026,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 		nip = nip->next;
 	    }
 
-	  _res.options |= old_res_options & RES_USE_INET6;
+	  _res.options |= old_res_options & DEPRECATED_RES_USE_INET6;
 
 	  if (h_errno == NETDB_INTERNAL)
 	    {
@@ -1139,7 +1141,7 @@ gaih_inet (const char *name, const struct gaih_service *service,
 		  malloc_canonbuf = false;
 		else
 		  {
-		    canon = strdup (canon);
+		    canon = __strdup (canon);
 		    if (canon == NULL)
 		      {
 			result = -EAI_MEMORY;
@@ -2470,7 +2472,7 @@ getaddrinfo (const char *name, const char *service,
 		  close_retry:
 		    close_not_cancel_no_status (fd);
 		  af = q->ai_family;
-		  fd = __socket (af, SOCK_DGRAM, IPPROTO_IP);
+		  fd = __socket (af, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_IP);
 		}
 	      else
 		{

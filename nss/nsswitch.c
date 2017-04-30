@@ -1,4 +1,4 @@
-/* Copyright (C) 1996-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
 
@@ -94,7 +94,7 @@ static name_database *service_table;
 static name_database_entry *defconfig_entries;
 
 
-#ifdef USE_NSCD
+#if defined USE_NSCD && (!defined DO_STATIC_NSS || defined SHARED)
 /* Nonzero if this is the nscd process.  */
 static bool is_nscd;
 /* The callback passed to the init functions when nscd is used.  */

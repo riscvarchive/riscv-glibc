@@ -1,4 +1,4 @@
-/* Copyright (C) 2010-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2010-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -53,7 +53,10 @@ __memchr (const void *s, int xc, size_t n)
   /* Align the source, and decrement the count by the number
      of bytes searched in the first word.  */
   s_align = (const word *)((word)s & -8);
-  n += ((word)s & 7);
+  {
+    size_t inc = n + ((word)s & 7);
+    n = inc | -(inc < n);
+  }
 
   /* Deal with misalignment in the first word for the comparison.  */
   mask = (1ul << ((word)s & 7)) - 1;

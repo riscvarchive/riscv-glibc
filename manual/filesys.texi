@@ -478,7 +478,7 @@ symbols are declared in the header file @file{dirent.h}.
 @comment dirent.h
 @comment POSIX.1
 @deftypefun {struct dirent *} readdir (DIR *@var{dirstream})
-@safety{@prelim{}@mtunsafe{@mtasurace{:dirstream}}@asunsafe{@asulock{}}@acunsafe{@aculock{}}}
+@safety{@prelim{}@mtsafe{}@asunsafe{@asulock{}}@acunsafe{@aculock{}}}
 @c This function holds dirstream's non-recursive lock, which brings
 @c about the usual issues with locks and async signals and cancellation,
 @c but the lock taking is not enough to make the returned value safe to
@@ -507,13 +507,24 @@ must set @code{errno} to zero before calling @code{readdir}.  To avoid
 entering an infinite loop, you should stop reading from the directory
 after the first error.
 
-In POSIX.1-2008, @code{readdir} is not thread-safe.  In @theglibc{}
-implementation, it is safe to call @code{readdir} concurrently on
-different @var{dirstream}s, but multiple threads accessing the same
-@var{dirstream} result in undefined behavior.  @code{readdir_r} is a
-fully thread-safe alternative, but suffers from poor portability (see
-below).  It is recommended that you use @code{readdir}, with external
-locking if multiple threads access the same @var{dirstream}.
+@strong{Caution:} The pointer returned by @code{readdir} points to
+a buffer within the @code{DIR} object.  The data in that buffer will
+be overwritten by the next call to @code{readdir}.  You must take care,
+for instance, to copy the @code{d_name} string if you need it later.
+
+Because of this, it is not safe to share a @code{DIR} object among
+multiple threads, unless you use your own locking to ensure that
+no thread calls @code{readdir} while another thread is still using the
+data from the previous call.  In @theglibc{}, it is safe to call
+@code{readdir} from multiple threads as long as each thread uses
+its own @code{DIR} object.  POSIX.1-2008 does not require this to
+be safe, but we are not aware of any operating systems where it
+does not work.
+
+@code{readdir_r} allows you to provide your own buffer for the
+@code{struct dirent}, but it is less portable than @code{readdir}, and
+has problems with very long filenames (see below).  We recommend
+you use @code{readdir}, but do not share @code{DIR} objects.
 @end deftypefun
 
 @comment dirent.h
@@ -592,7 +603,7 @@ of the last two functions.
 @comment dirent.h
 @comment LFS
 @deftypefun {struct dirent64 *} readdir64 (DIR *@var{dirstream})
-@safety{@prelim{}@mtunsafe{@mtasurace{:dirstream}}@asunsafe{@asulock{}}@acunsafe{@aculock{}}}
+@safety{@prelim{}@mtsafe{}@asunsafe{@asulock{}}@acunsafe{@aculock{}}}
 The @code{readdir64} function is just like the @code{readdir} function
 except that it returns a pointer to a record of type @code{struct
 dirent64}.  Some of the members of this data type (notably @code{d_ino})
@@ -928,12 +939,10 @@ parameter to the function is a pointer to a variable of type
 int (*) (const char *, const struct stat *, int, struct FTW *)
 @end smallexample
 
-@vindex FTW_DP
-@vindex FTW_SLN
 The first three arguments are the same as for the @code{__ftw_func_t}
 type.  However for the third argument some additional values are defined
 to allow finer differentiation:
-@table @code
+@vtable @code
 @item FTW_DP
 The current item is a directory and all subdirectories have already been
 visited and reported.  This flag is returned instead of @code{FTW_D} if
@@ -941,7 +950,7 @@ the @code{FTW_DEPTH} flag is passed to @code{nftw} (see below).
 @item FTW_SLN
 The current item is a stale symbolic link.  The file it points to does
 not exist.
-@end table
+@end vtable
 
 The last parameter of the callback function is a pointer to a structure
 with some extra information as described below.
@@ -2209,49 +2218,42 @@ This is a bit mask used to extract the file type code from a mode value.
 
 These are the symbolic names for the different file type codes:
 
-@table @code
+@vtable @code
 @comment sys/stat.h
 @comment BSD
 @item S_IFDIR
-@vindex S_IFDIR
 This is the file type constant of a directory file.
 
 @comment sys/stat.h
 @comment BSD
 @item S_IFCHR
-@vindex S_IFCHR
 This is the file type constant of a character-oriented device file.
 
 @comment sys/stat.h
 @comment BSD
 @item S_IFBLK
-@vindex S_IFBLK
 This is the file type constant of a block-oriented device file.
 
 @comment sys/stat.h
 @comment BSD
 @item S_IFREG
-@vindex S_IFREG
 This is the file type constant of a regular file.
 
 @comment sys/stat.h
 @comment BSD
 @item S_IFLNK
-@vindex S_IFLNK
 This is the file type constant of a symbolic link.
 
 @comment sys/stat.h
 @comment BSD
 @item S_IFSOCK
-@vindex S_IFSOCK
 This is the file type constant of a socket.
 
 @comment sys/stat.h
 @comment BSD
 @item S_IFIFO
-@vindex S_IFIFO
 This is the file type constant of a FIFO or pipe.
-@end table
+@end vtable
 
 The POSIX.1b standard introduced a few more objects which possibly can
 be implemented as objects in the filesystem.  These are message queues,
@@ -2404,15 +2406,13 @@ All of the symbols listed in this section are defined in the header file
 These symbolic constants are defined for the file mode bits that control
 access permission for the file:
 
-@table @code
+@vtable @code
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IRUSR
-@vindex S_IRUSR
 @comment sys/stat.h
 @comment BSD
 @itemx S_IREAD
-@vindex S_IREAD
 Read permission bit for the owner of the file.  On many systems this bit
 is 0400.  @code{S_IREAD} is an obsolete synonym provided for BSD
 compatibility.
@@ -2420,22 +2420,18 @@ compatibility.
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IWUSR
-@vindex S_IWUSR
 @comment sys/stat.h
 @comment BSD
 @itemx S_IWRITE
-@vindex S_IWRITE
 Write permission bit for the owner of the file.  Usually 0200.
 @w{@code{S_IWRITE}} is an obsolete synonym provided for BSD compatibility.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IXUSR
-@vindex S_IXUSR
 @comment sys/stat.h
 @comment BSD
 @itemx S_IEXEC
-@vindex S_IEXEC
 Execute (for ordinary files) or search (for directories) permission bit
 for the owner of the file.  Usually 0100.  @code{S_IEXEC} is an obsolete
 synonym provided for BSD compatibility.
@@ -2443,69 +2439,58 @@ synonym provided for BSD compatibility.
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IRWXU
-@vindex S_IRWXU
 This is equivalent to @samp{(S_IRUSR | S_IWUSR | S_IXUSR)}.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IRGRP
-@vindex S_IRGRP
 Read permission bit for the group owner of the file.  Usually 040.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IWGRP
-@vindex S_IWGRP
 Write permission bit for the group owner of the file.  Usually 020.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IXGRP
-@vindex S_IXGRP
 Execute or search permission bit for the group owner of the file.
 Usually 010.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IRWXG
-@vindex S_IRWXG
 This is equivalent to @samp{(S_IRGRP | S_IWGRP | S_IXGRP)}.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IROTH
-@vindex S_IROTH
 Read permission bit for other users.  Usually 04.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IWOTH
-@vindex S_IWOTH
 Write permission bit for other users.  Usually 02.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IXOTH
-@vindex S_IXOTH
 Execute or search permission bit for other users.  Usually 01.
 
 @comment sys/stat.h
 @comment POSIX.1
 @item S_IRWXO
-@vindex S_IRWXO
 This is equivalent to @samp{(S_IROTH | S_IWOTH | S_IXOTH)}.
 
 @comment sys/stat.h
 @comment POSIX
 @item S_ISUID
-@vindex S_ISUID
 This is the set-user-ID on execute bit, usually 04000.
 @xref{How Change Persona}.
 
 @comment sys/stat.h
 @comment POSIX
 @item S_ISGID
-@vindex S_ISGID
 This is the set-group-ID on execute bit, usually 02000.
 @xref{How Change Persona}.
 
@@ -2513,7 +2498,6 @@ This is the set-group-ID on execute bit, usually 02000.
 @comment sys/stat.h
 @comment BSD
 @item S_ISVTX
-@vindex S_ISVTX
 This is the @dfn{sticky} bit, usually 01000.
 
 For a directory it gives permission to delete a file in that directory
@@ -2558,7 +2542,7 @@ This bit is only available on BSD systems (and those derived from
 them).  Therefore one has to use the @code{_GNU_SOURCE} feature select
 macro, or not define any feature test macros, to get the definition
 (@pxref{Feature Test Macros}).
-@end table
+@end vtable
 
 The actual bit values of the symbols are listed in the table above
 so you can decode file mode values when debugging your programs.

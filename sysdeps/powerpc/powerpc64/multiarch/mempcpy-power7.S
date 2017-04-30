@@ -1,5 +1,5 @@
 /* Optimized mempcpy implementation for PowerPC/POWER7.
-   Copyright (C) 2013-2016 Free Software Foundation, Inc.
+   Copyright (C) 2013-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,21 +18,7 @@
 
 #include <sysdep.h>
 
-#undef EALIGN
-#define EALIGN(name, alignt, words)				\
-  .section ".text";						\
-  ENTRY_2(__mempcpy_power7)					\
-  .align ALIGNARG(alignt);					\
-  EALIGN_W_##words;						\
-  BODY_LABEL(__mempcpy_power7):					\
-  cfi_startproc;						\
-  LOCALENTRY(__mempcpy_power7)
-
-#undef END_GEN_TB
-#define END_GEN_TB(name, mask)					\
-  cfi_endproc;							\
-  TRACEBACK_MASK(__mempcpy_power7,mask)				\
-  END_2(__mempcpy_power7)
+#define MEMPCPY __mempcpy_power7
 
 #undef libc_hidden_builtin_def
 #define libc_hidden_builtin_def(name)

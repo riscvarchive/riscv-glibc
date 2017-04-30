@@ -1,5 +1,5 @@
 /* Defines for bits in AT_HWCAP.  AArch64 Linux version.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -32,3 +32,4 @@
 #define HWCAP_ATOMICS		(1 << 8)
 #define HWCAP_FPHP		(1 << 9)
 #define HWCAP_ASIMDHP		(1 << 10)
+#define HWCAP_CPUID		(1 << 11)

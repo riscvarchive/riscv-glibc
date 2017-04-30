@@ -1,4 +1,4 @@
-/* Copyright (C) 2014-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2014-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -40,10 +40,18 @@
       memset.  */
 
 #ifdef USE_AS_STPNCPY
-# define FUNC_NAME __stpncpy
+# ifndef STPNCPY
+#  define FUNC_NAME __stpncpy
+# else
+#  define FUNC_NAME STPNCPY
+# endif
 #else
-# define FUNC_NAME strncpy
-#endif
+# ifndef STRNCPY
+#  define FUNC_NAME strncpy
+# else
+#  define FUNC_NAME STRNCPY
+# endif
+#endif  /* !USE_AS_STPNCPY  */
 
 #define		FRAMESIZE	(FRAME_MIN_SIZE+32)
 

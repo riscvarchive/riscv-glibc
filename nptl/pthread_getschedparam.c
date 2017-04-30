@@ -1,4 +1,4 @@
-/* Copyright (C) 2002-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@redhat.com>, 2002.
 
@@ -35,6 +35,7 @@ __pthread_getschedparam (pthread_t threadid, int *policy,
 
   int result = 0;
 
+  /* See CREATE THREAD NOTES in nptl/pthread_create.c.  */
   lll_lock (pd->lock, LLL_PRIVATE);
 
   /* The library is responsible for maintaining the values at all

@@ -1,3 +1,42 @@
+2017-04-19  Christopher Chittleborough  <cchittleborough@cluemail.com>
+
+	[BZ #21399]
+	* charmaps/CP1254: Fix U+00EC comment.
+
+2017-03-28  Egmont Koblinger  <egmont@gmail.com>
+
+	[BZ #18934]
+	* locales/hu_HU: Fix multiple collate bugs.
+	* hu_HU.in: New file.
+	* Makefile (test-input): Add hu_HU.UTF-8.
+
+2017-02-20  Mike FABIAN  <mfabian@redhat.com>
+
+	[BZ #20313]
+	* unicode-gen/Makefile (UNICODE_VERSION): Set to 9.0.0.
+	* unicode-gen/UnicodeData.txt: Update to Unicode 9.0.0 release.
+	* unicode-gen/DerivedCoreProperties.txt: Likewise.
+	* unicode-gen/EastAsianWidth.txt: Likewise.
+	* charmaps/UTF-8: Regenerate.
+	* locales/i18n: Regenerate.
+	* locales/translit_circle: Regenerate.
+	* locales/translit_cjk_compat: Regenerate.
+	* locales/translit_combining: Regenerate.
+	* locales/translit_compat: Regenerate.
+	* locales/translit_font: Regenerate.
+	* locales/translit_fraction: Regenerate.
+
+2017-01-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* All files with FSF copyright notices: Update copyright dates
+	using scripts/update-copyrights.
+
+2016-12-30  Mike Frysinger  <vapier@gentoo.org>
+
+	[BZ #20974]
+	* localedata/bs_BA (LC_MESSAGES): Delete "*." from the end of
+	yesexpr and noexpr.
+
 2016-11-26  Mike Frysinger  <vapier@gentoo.org>
 
 	[BZ #20864]

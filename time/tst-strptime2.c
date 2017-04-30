@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <time.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 /* Dummy string is used to match strptime's %s specifier.  */
 
@@ -73,7 +73,7 @@ mkbuf (char *buf, bool neg, bool colon, unsigned int hhmm, size_t ndigits)
      This test is explicitly using short buffers to force snprintf to truncate
      the output so we ignore the warnings.  */
   DIAG_PUSH_NEEDS_COMMENT;
-  DIAG_IGNORE_NEEDS_COMMENT (7.0, "-Wformat-length");
+  DIAG_IGNORE_NEEDS_COMMENT (7.0, "-Wformat-truncation");
 #endif
   if (colon)
     snprintf (buf + i, ndigits + 2, "%02u:%02u", hh, mm);

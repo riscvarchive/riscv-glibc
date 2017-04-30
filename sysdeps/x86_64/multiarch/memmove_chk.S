@@ -1,6 +1,6 @@
 /* Multiple versions of __memmove_chk
    All versions must be listed in ifunc-impl-list.c.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -29,6 +29,8 @@
 ENTRY(__memmove_chk)
 	.type	__memmove_chk, @gnu_indirect_function
 	LOAD_RTLD_GLOBAL_RO_RDX
+	HAS_ARCH_FEATURE (Prefer_No_AVX512)
+	jnz	1f
 	HAS_ARCH_FEATURE (AVX512F_Usable)
 	jz	1f
 	lea	__memmove_chk_avx512_no_vzeroupper(%rip), %RAX_LP

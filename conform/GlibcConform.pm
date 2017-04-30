@@ -2,7 +2,7 @@
 
 # Shared code for glibc conformance tests.
 
-# Copyright (C) 2014-2016 Free Software Foundation, Inc.
+# Copyright (C) 2014-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -29,8 +29,8 @@ $CFLAGS{"ISO"} = "-ansi";
 $CFLAGS{"ISO99"} = "-std=c99";
 $CFLAGS{"ISO11"} = "-std=c11";
 $CFLAGS{"POSIX"} = "-D_POSIX_C_SOURCE=199506L -ansi";
-$CFLAGS{"XPG3"} = "-ansi -D_XOPEN_SOURCE";
-$CFLAGS{"XPG4"} = "-ansi -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED";
+$CFLAGS{"XPG4"} = "-ansi -D_XOPEN_SOURCE";
+$CFLAGS{"XPG42"} = "-ansi -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED";
 $CFLAGS{"UNIX98"} = "-ansi -D_XOPEN_SOURCE=500";
 $CFLAGS{"XOPEN2K"} = "-std=c99 -D_XOPEN_SOURCE=600";
 $CFLAGS{"XOPEN2K8"} = "-std=c99 -D_XOPEN_SOURCE=700";

@@ -1,5 +1,5 @@
 /* Machine-dependent ELF dynamic relocation inline functions.  i386 version.
-   Copyright (C) 1995-2016 Free Software Foundation, Inc.
+   Copyright (C) 1995-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -329,7 +329,7 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	    {
 	      const char *strtab
 		= (const char *) D_PTR (map, l_info[DT_STRTAB]);
-	      _dl_fatal_printf ("\
+	      _dl_error_printf ("\
 %s: Relink `%s' with `%s' for IFUNC symbol `%s'\n",
 				RTLD_PROGNAME, map->l_name,
 				sym_map->l_name,

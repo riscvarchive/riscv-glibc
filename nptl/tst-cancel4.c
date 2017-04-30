@@ -1,4 +1,4 @@
-/* Copyright (C) 2002-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@redhat.com>, 2002.
 
@@ -19,6 +19,7 @@
 /* NOTE: this tests functionality beyond POSIX.  POSIX does not allow
    exit to be called more than once.  */
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,12 +30,15 @@
 #include <sys/msg.h>
 #include <unistd.h>
 #include <errno.h>
+#include <limits.h>
 #include <pthread.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <sys/mman.h>
 #include <sys/poll.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/uio.h>
 
 
 /* Since STREAMS are not supported in the standard Linux kernel and

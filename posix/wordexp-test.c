@@ -1,4 +1,4 @@
-/* Copyright (C) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,10 +22,11 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wordexp.h>
-#include <libc-internal.h>
+#include <libc-pointer-arith.h>
 
 #define IFS " \n\t"
 

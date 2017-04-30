@@ -1,5 +1,5 @@
 /* Bug 18589: sort-test.sh fails at random.
-   Copyright (C) 2015-2016 Free Software Foundation, Inc.
+   Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -79,7 +79,7 @@ test_da_DK (void)
     }
 }
 
-static int
+int
 do_test (void)
 {
   int err = 0;
@@ -88,5 +88,4 @@ do_test (void)
   return err;
 }
 
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/test-driver.c>

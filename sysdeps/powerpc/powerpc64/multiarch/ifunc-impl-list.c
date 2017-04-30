@@ -1,5 +1,5 @@
 /* Enumerate available IFUNC implementations of a function.  PowerPC64 version.
-   Copyright (C) 2013-2016 Free Software Foundation, Inc.
+   Copyright (C) 2013-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -110,6 +110,8 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 
   /* Support sysdeps/powerpc/powerpc64/multiarch/strncmp.c.  */
   IFUNC_IMPL (i, name, strncmp,
+	      IFUNC_IMPL_ADD (array, i, strncmp, hwcap2 & PPC_FEATURE2_ARCH_3_00,
+			      __strncmp_power9)
 	      IFUNC_IMPL_ADD (array, i, strncmp, hwcap2 & PPC_FEATURE2_ARCH_2_07,
 			      __strncmp_power8)
 	      IFUNC_IMPL_ADD (array, i, strncmp, hwcap & PPC_FEATURE_HAS_VSX,
@@ -122,6 +124,9 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
   /* Support sysdeps/powerpc/powerpc64/multiarch/strchr.c.  */
   IFUNC_IMPL (i, name, strchr,
 	      IFUNC_IMPL_ADD (array, i, strchr,
+			      hwcap2 & PPC_FEATURE2_ARCH_2_07,
+			      __strchr_power8)
+	      IFUNC_IMPL_ADD (array, i, strchr,
 			      hwcap & PPC_FEATURE_HAS_VSX,
 			      __strchr_power7)
 	      IFUNC_IMPL_ADD (array, i, strchr, 1,
@@ -129,6 +134,9 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 
   /* Support sysdeps/powerpc/powerpc64/multiarch/strchrnul.c.  */
   IFUNC_IMPL (i, name, strchrnul,
+	      IFUNC_IMPL_ADD (array, i, strchrnul,
+			      hwcap2 & PPC_FEATURE2_ARCH_2_07,
+			      __strchrnul_power8)
 	      IFUNC_IMPL_ADD (array, i, strchrnul,
 			      hwcap & PPC_FEATURE_HAS_VSX,
 			      __strchrnul_power7)
@@ -196,6 +204,9 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 
   /* Support sysdeps/powerpc/powerpc64/multiarch/strnlen.c.  */
   IFUNC_IMPL (i, name, strnlen,
+	      IFUNC_IMPL_ADD (array, i, strnlen,
+			      hwcap2 & PPC_FEATURE2_ARCH_2_07,
+			      __strnlen_power8)
 	      IFUNC_IMPL_ADD (array, i, strnlen, hwcap & PPC_FEATURE_HAS_VSX,
 			      __strnlen_power7)
 	      IFUNC_IMPL_ADD (array, i, strnlen, 1,
@@ -273,6 +284,9 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
   /* Support sysdeps/powerpc/powerpc64/multiarch/strrchr.c.  */
   IFUNC_IMPL (i, name, strrchr,
 	      IFUNC_IMPL_ADD (array, i, strrchr,
+			      hwcap2 & PPC_FEATURE2_ARCH_2_07,
+			      __strrchr_power8)
+	      IFUNC_IMPL_ADD (array, i, strrchr,
 			      hwcap & PPC_FEATURE_HAS_VSX,
 			      __strrchr_power7)
 	      IFUNC_IMPL_ADD (array, i, strrchr, 1,
@@ -280,6 +294,9 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 
   /* Support sysdeps/powerpc/powerpc64/multiarch/strncat.c.  */
   IFUNC_IMPL (i, name, strncat,
+	      IFUNC_IMPL_ADD (array, i, strncat,
+			      hwcap2 & PPC_FEATURE2_ARCH_2_07,
+			      __strncat_power8)
 	      IFUNC_IMPL_ADD (array, i, strncat,
 			      hwcap & PPC_FEATURE_HAS_VSX,
 			      __strncat_power7)

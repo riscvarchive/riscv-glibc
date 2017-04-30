@@ -1,4 +1,4 @@
-/* Copyright (C) 1996-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Extended from original form by Ulrich Drepper <drepper@cygnus.com>, 1996.
 
@@ -80,8 +80,10 @@
 #include <string.h>
 
 #include "nsswitch.h"
+#include <arpa/nameser.h>
 
-/* Get implementation for some internal functions.  */
+/* Get implementeation for some internal functions.  */
+#include <resolv/resolv-internal.h>
 #include <resolv/mapv4v6addr.h>
 #include <resolv/mapv4v6hostent.h>
 
@@ -104,13 +106,6 @@ typedef union querybuf
   HEADER hdr;
   u_char buf[MAXPACKET];
 } querybuf;
-
-/* These functions are defined in res_comp.c.  */
-#define NS_MAXCDNAME	255	/* maximum compressed domain name */
-extern int __ns_name_ntop (const u_char *, char *, size_t);
-extern int __ns_name_unpack (const u_char *, const u_char *,
-			     const u_char *, u_char *, size_t);
-
 
 static enum nss_status getanswer_r (const querybuf *answer, int anslen,
 				    const char *qname, int qtype,
@@ -232,7 +227,7 @@ _nss_dns_gethostbyname3_r (const char *name, int af, struct hostent *result,
       /* If we are looking for an IPv6 address and mapping is enabled
 	 by having the RES_USE_INET6 bit in _res.options set, we try
 	 another lookup.  */
-      if (af == AF_INET6 && (_res.options & RES_USE_INET6))
+      if (af == AF_INET6 && res_use_inet6 ())
 	n = __libc_res_nsearch (&_res, name, C_IN, T_A, host_buffer.buf->buf,
 				host_buffer.buf != orig_host_buffer
 				? MAXPACKET : 1024, &host_buffer.ptr,
@@ -277,7 +272,7 @@ _nss_dns_gethostbyname_r (const char *name, struct hostent *result,
 {
   enum nss_status status = NSS_STATUS_NOTFOUND;
 
-  if (_res.options & RES_USE_INET6)
+  if (res_use_inet6 ())
     status = _nss_dns_gethostbyname3_r (name, AF_INET6, result, buffer,
 					buflen, errnop, h_errnop, NULL, NULL);
   if (status == NSS_STATUS_NOTFOUND)
@@ -323,7 +318,7 @@ _nss_dns_gethostbyname4_r (const char *name, struct gaih_addrtuple **pat,
 
   int olderr = errno;
   enum nss_status status;
-  int n = __libc_res_nsearch (&_res, name, C_IN, T_UNSPEC,
+  int n = __libc_res_nsearch (&_res, name, C_IN, T_QUERY_A_AND_AAAA,
 			      host_buffer.buf->buf, 2048, &host_buffer.ptr,
 			      &ans2p, &nans2p, &resplen2, &ans2p_malloced);
   if (n >= 0)
@@ -503,17 +498,6 @@ _nss_dns_gethostbyaddr2_r (const void *addr, socklen_t len, int af,
   memcpy (host_data->host_addr, addr, len);
   host_data->h_addr_ptrs[0] = (char *) host_data->host_addr;
   host_data->h_addr_ptrs[1] = NULL;
-#if 0
-  /* XXX I think this is wrong.  Why should an IPv4 address be
-     converted to IPv6 if the user explicitly asked for IPv4?  */
-  if (af == AF_INET && (_res.options & RES_USE_INET6))
-    {
-      map_v4v6_address ((char *) host_data->host_addr,
-			(char *) host_data->host_addr);
-      result->h_addrtype = AF_INET6;
-      result->h_length = IN6ADDRSZ;
-    }
-#endif
   *h_errnop = NETDB_SUCCESS;
   return NSS_STATUS_SUCCESS;
 }
@@ -635,7 +619,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
   ancount = ntohs (hp->ancount);
   qdcount = ntohs (hp->qdcount);
   cp = answer->buf + HFIXEDSZ;
-  if (__builtin_expect (qdcount, 1) != 1)
+  if (__glibc_unlikely (qdcount != 1))
     {
       *h_errnop = NO_RECOVERY;
       return NSS_STATUS_UNAVAIL;
@@ -649,7 +633,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 			packtmp, sizeof packtmp);
   if (n != -1 && __ns_name_ntop (packtmp, bp, linebuflen) == -1)
     {
-      if (__builtin_expect (errno, 0) == EMSGSIZE)
+      if (__glibc_unlikely (errno == EMSGSIZE))
 	goto too_small;
 
       n = -1;
@@ -658,10 +642,16 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
   if (n > 0 && bp[0] == '.')
     bp[0] = '\0';
 
-  if (__builtin_expect (n < 0 || ((*name_ok) (bp) == 0 && (errno = EBADMSG)),
-			0))
+  if (__glibc_unlikely (n < 0))
     {
       *errnop = errno;
+      *h_errnop = NO_RECOVERY;
+      return NSS_STATUS_UNAVAIL;
+    }
+  if (__glibc_unlikely (name_ok (bp) == 0))
+    {
+      errno = EBADMSG;
+      *errnop = EBADMSG;
       *h_errnop = NO_RECOVERY;
       return NSS_STATUS_UNAVAIL;
     }
@@ -706,7 +696,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 			    packtmp, sizeof packtmp);
       if (n != -1 && __ns_name_ntop (packtmp, bp, linebuflen) == -1)
 	{
-	  if (__builtin_expect (errno, 0) == EMSGSIZE)
+	  if (__glibc_unlikely (errno == EMSGSIZE))
 	    goto too_small;
 
 	  n = -1;
@@ -766,7 +756,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 	  /* Store alias.  */
 	  *ap++ = bp;
 	  n = strlen (bp) + 1;		/* For the \0.  */
-	  if (__builtin_expect (n, 0) >= MAXHOSTNAMELEN)
+	  if (__glibc_unlikely (n >= MAXHOSTNAMELEN))
 	    {
 	      ++had_error;
 	      continue;
@@ -777,7 +767,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 	  n = strlen (tbuf) + 1;	/* For the \0.  */
 	  if (__glibc_unlikely (n > linebuflen))
 	    goto too_small;
-	  if (__builtin_expect (n, 0) >= MAXHOSTNAMELEN)
+	  if (__glibc_unlikely (n >= MAXHOSTNAMELEN))
 	    {
 	      ++had_error;
 	      continue;
@@ -805,7 +795,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 	  n = strlen (tbuf) + 1;   /* For the \0.  */
 	  if (__glibc_unlikely (n > linebuflen))
 	    goto too_small;
-	  if (__builtin_expect (n, 0) >= MAXHOSTNAMELEN)
+	  if (__glibc_unlikely (n >= MAXHOSTNAMELEN))
 	    {
 	      ++had_error;
 	      continue;
@@ -837,7 +827,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 				packtmp, sizeof packtmp);
 	  if (n != -1 && __ns_name_ntop (packtmp, bp, linebuflen) == -1)
 	    {
-	      if (__builtin_expect (errno, 0) == EMSGSIZE)
+	      if (__glibc_unlikely (errno == EMSGSIZE))
 		goto too_small;
 
 	      n = -1;
@@ -870,7 +860,7 @@ getanswer_r (const querybuf *answer, int anslen, const char *qname, int qtype,
 	  return NSS_STATUS_SUCCESS;
 	case T_A:
 	case T_AAAA:
-	  if (__builtin_expect (strcasecmp (result->h_name, bp), 0) != 0)
+	  if (__glibc_unlikely (strcasecmp (result->h_name, bp) != 0))
 	    {
 	      cp += n;
 	      continue;			/* XXX - had_error++ ? */
@@ -991,7 +981,7 @@ gaih_getanswer_slice (const querybuf *answer, int anslen, const char *qname,
      it later.  */
   if (n != -1 && __ns_name_ntop (packtmp, buffer, buflen) == -1)
     {
-      if (__builtin_expect (errno, 0) == EMSGSIZE)
+      if (__glibc_unlikely (errno == EMSGSIZE))
 	{
 	too_small:
 	  *errnop = ERANGE;
@@ -1002,10 +992,16 @@ gaih_getanswer_slice (const querybuf *answer, int anslen, const char *qname,
       n = -1;
     }
 
-  if (__builtin_expect (n < 0 || (res_hnok (buffer) == 0
-				  && (errno = EBADMSG)), 0))
+  if (__glibc_unlikely (n < 0))
     {
       *errnop = errno;
+      *h_errnop = NO_RECOVERY;
+      return NSS_STATUS_UNAVAIL;
+    }
+  if (__glibc_unlikely (res_hnok (buffer) == 0))
+    {
+      errno = EBADMSG;
+      *errnop = EBADMSG;
       *h_errnop = NO_RECOVERY;
       return NSS_STATUS_UNAVAIL;
     }
@@ -1030,7 +1026,7 @@ gaih_getanswer_slice (const querybuf *answer, int anslen, const char *qname,
       if (n != -1 &&
 	  (h_namelen = __ns_name_ntop (packtmp, buffer, buflen)) == -1)
 	{
-	  if (__builtin_expect (errno, 0) == EMSGSIZE)
+	  if (__glibc_unlikely (errno == EMSGSIZE))
 	    goto too_small;
 
 	  n = -1;
@@ -1144,8 +1140,7 @@ gaih_getanswer_slice (const querybuf *answer, int anslen, const char *qname,
 	  buffer += pad;
 	  buflen = buflen > pad ? buflen - pad : 0;
 
-	  if (__builtin_expect (buflen < sizeof (struct gaih_addrtuple),
-				0))
+	  if (__glibc_unlikely (buflen < sizeof (struct gaih_addrtuple)))
 	    goto too_small;
 
 	  *pat = (struct gaih_addrtuple *) buffer;

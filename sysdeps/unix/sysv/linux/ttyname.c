@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -27,6 +27,8 @@
 #include <stdlib.h>
 
 #include <_itoa.h>
+
+#include "ttyname.h"
 
 #if 0
 /* Is this used anywhere?  It is not exported.  */
@@ -170,12 +172,18 @@ ttyname (int fd)
 #ifdef _STATBUF_ST_RDEV
 	  && S_ISCHR (st1.st_mode)
 	  && st1.st_rdev == st.st_rdev
-#else
-	  && st1.st_ino == st.st_ino
-	  && st1.st_dev == st.st_dev
 #endif
-	  )
+	  && st1.st_ino == st.st_ino
+	  && st1.st_dev == st.st_dev)
 	return ttyname_buf;
+
+      /* If the link doesn't exist, then it points to a device in another
+	 namespace. */
+      if (is_pty (&st))
+	{
+	  __set_errno (ENODEV);
+	  return NULL;
+	}
     }
 
   if (__xstat64 (_STAT_VER, "/dev/pts", &st1) == 0 && S_ISDIR (st1.st_mode))

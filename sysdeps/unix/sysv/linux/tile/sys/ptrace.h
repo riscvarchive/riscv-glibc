@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2011-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
@@ -152,16 +152,18 @@ enum __ptrace_setoptions
   PTRACE_O_MASK		= 0x003000ff
 };
 
-/* Wait extended result codes for the above trace options.  */
 enum __ptrace_eventcodes
 {
+/* Wait extended result codes for the above trace options.  */
   PTRACE_EVENT_FORK	= 1,
   PTRACE_EVENT_VFORK	= 2,
   PTRACE_EVENT_CLONE	= 3,
   PTRACE_EVENT_EXEC	= 4,
   PTRACE_EVENT_VFORK_DONE = 5,
   PTRACE_EVENT_EXIT	= 6,
-  PTRACE_EVENT_SECCOMP  = 7
+  PTRACE_EVENT_SECCOMP  = 7,
+/* Extended result codes enabled by means other than options.  */
+  PTRACE_EVENT_STOP	= 128
 };
 
 /* Arguments for PTRACE_PEEKSIGINFO.  */

@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (c) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@vt.uni-paderborn.de>, 1997.
 
@@ -40,3 +40,4 @@ nis_mkdir (const_nis_name dir, const nis_server *server)
 
   return res;
 }
+libnsl_hidden_nolink_def (nis_mkdir, GLIBC_2_1)

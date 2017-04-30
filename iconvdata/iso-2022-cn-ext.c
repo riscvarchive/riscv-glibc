@@ -1,5 +1,5 @@
 /* Conversion module for ISO-2022-CN-EXT.
-   Copyright (C) 2000-2016 Free Software Foundation, Inc.
+   Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 2000.
 
@@ -27,7 +27,7 @@
 #include "cns11643.h"
 #include "cns11643l1.h"
 #include "cns11643l2.h"
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 #include <assert.h>
 

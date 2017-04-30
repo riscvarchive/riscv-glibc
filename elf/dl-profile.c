@@ -1,5 +1,5 @@
 /* Profiling of shared libraries.
-   Copyright (C) 1997-2016 Free Software Foundation, Inc.
+   Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
    Based on the BSD mcount implementation.
@@ -325,12 +325,7 @@ _dl_start_profile (void)
   *cp++ = '/';
   __stpcpy (__stpcpy (cp, GLRO(dl_profile)), ".profile");
 
-#ifdef O_NOFOLLOW
-# define EXTRA_FLAGS | O_NOFOLLOW
-#else
-# define EXTRA_FLAGS
-#endif
-  fd = __open (filename, O_RDWR | O_CREAT EXTRA_FLAGS, DEFFILEMODE);
+  fd = __open (filename, O_RDWR | O_CREAT | O_NOFOLLOW, DEFFILEMODE);
   if (fd == -1)
     {
       char buf[400];

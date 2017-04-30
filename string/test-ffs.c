@@ -1,4 +1,4 @@
-/* Copyright (C) 1994-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1994-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Joel Sherrill (jsherril@redstone-emh2.army.mil),
      On-Line Applications Research Corporation.
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static int
+int
 do_test (void)
 {
   int failures = 0;
@@ -62,5 +62,4 @@ do_test (void)
   return failures;
 }
 
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/test-driver.c>

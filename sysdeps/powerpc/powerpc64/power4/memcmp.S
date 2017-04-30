@@ -1,5 +1,5 @@
 /* Optimized memcmp implementation for PowerPC64.
-   Copyright (C) 2003-2016 Free Software Foundation, Inc.
+   Copyright (C) 2003-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,8 +22,12 @@
 		    const char *s2 [r4],
 		    size_t size [r5])  */
 
+#ifndef MEMCMP
+# define MEMCMP memcmp
+#endif
+
 	.machine power4
-EALIGN (memcmp, 4, 0)
+EALIGN (MEMCMP, 4, 0)
 	CALL_MCOUNT 3
 
 #define rRTN	r3
@@ -1360,6 +1364,6 @@ L(duzeroLength):
 	li	rRTN, 0
 	blr
 
-END (memcmp)
+END (MEMCMP)
 libc_hidden_builtin_def (memcmp)
 weak_alias (memcmp, bcmp)

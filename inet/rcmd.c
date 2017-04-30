@@ -149,7 +149,7 @@ rcmd_af (char **ahost, u_short rport, const char *locuser, const char *remuser,
 
 	if (res->ai_canonname){
 		free (ahostbuf);
-		ahostbuf = strdup (res->ai_canonname);
+		ahostbuf = __strdup (res->ai_canonname);
 		if (ahostbuf == NULL) {
 			__fxprintf(NULL, "%s",
 				   _("rcmd: Cannot allocate memory\n"));
@@ -383,6 +383,7 @@ rresvport_af (int *alport, sa_family_t family)
 		__set_errno (EAFNOSUPPORT);
 		return -1;
 	}
+	/* NB: No SOCK_CLOEXEC for backwards compatibility.  */
 	s = __socket(family, SOCK_STREAM, 0);
 	if (s < 0)
 		return -1;

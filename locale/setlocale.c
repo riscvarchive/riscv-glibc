@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -283,7 +283,7 @@ setlocale (int category, const char *locale)
       if (__glibc_unlikely (strchr (locale, ';') != NULL))
 	{
 	  /* This is a composite name.  Make a copy and split it up.  */
-	  locale_copy = strdup (locale);
+	  locale_copy = __strdup (locale);
 	  if (__glibc_unlikely (locale_copy == NULL))
 	    {
 	      __libc_rwlock_unlock (__libc_setlocale_lock);

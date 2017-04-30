@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -93,7 +93,7 @@ __sysconf (int name)
 #endif
 
     case _SC_TZNAME_MAX:
-      return MAX (__tzname_max (), _POSIX_TZNAME_MAX);
+      return -1;
 
     case _SC_JOB_CONTROL:
 #if CONF_IS_DEFINED_SET (_POSIX_JOB_CONTROL)

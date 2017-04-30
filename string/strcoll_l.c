@@ -1,4 +1,4 @@
-/* Copyright (C) 1995-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1995-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Ulrich Drepper <drepper@gnu.org>, 1995.
 
@@ -24,7 +24,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <sys/param.h>
-#include <libc-internal.h>
 
 #ifndef STRING_TYPE
 # define STRING_TYPE char

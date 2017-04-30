@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (c) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@vt.uni-paderborn.de>, 1997.
 
@@ -89,3 +89,4 @@ nis_removemember (const_nis_name member, const_nis_name group)
   else
     return NIS_FAIL;
 }
+libnsl_hidden_nolink_def (nis_removemember, GLIBC_2_1)

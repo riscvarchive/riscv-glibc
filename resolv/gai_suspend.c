@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2001-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@redhat.com>, 2001.
 
@@ -141,7 +141,7 @@ gai_suspend (const struct gaicb *const list[], int ent,
 	  /* An error occurred.  Possibly it's EINTR.  We have to translate
 	     the timeout error report of `pthread_cond_timedwait' to the
 	     form expected from `gai_suspend'.  */
-	  if (__builtin_expect (result, ETIMEDOUT) == ETIMEDOUT)
+	  if (__glibc_likely (result == ETIMEDOUT))
 	    result = EAI_AGAIN;
 	  else if (result == EINTR)
 	    result = EAI_INTR;

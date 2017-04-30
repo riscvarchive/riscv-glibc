@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 static int
 t1 (void)
@@ -93,6 +93,14 @@ F (void)
   int result = 0;
 
   qnanval = NAN;
+
+  /* The %f and %F arguments are in fact constants, but GCC is
+     prevented from seeing this (volatile is used) so it cannot tell
+     that the output is not truncated.  */
+  DIAG_PUSH_NEEDS_COMMENT;
+#if __GNUC_PREREQ (7, 0)
+  DIAG_IGNORE_NEEDS_COMMENT (7.0, "-Wformat-truncation");
+#endif
 
   snprintf (buf, sizeof buf, "%a %A %e %E %f %F %g %G",
 	    qnanval, qnanval, qnanval, qnanval,
@@ -259,6 +267,8 @@ F (void)
   result |= wcscmp (wbuf, L"-inf -INF -inf -INF -inf -INF -inf -INF") != 0;
   printf ("expected L\"-inf -INF -inf -INF -inf -INF -inf -INF\", got L\"%S\"\n",
 	  wbuf);
+
+  DIAG_POP_NEEDS_COMMENT;
 
   return result;
 }

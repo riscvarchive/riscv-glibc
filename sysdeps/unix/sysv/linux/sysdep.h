@@ -1,4 +1,4 @@
-/* Copyright (C) 2015-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -62,3 +62,7 @@
 #define LO_HI_LONG(val) \
  (long) (val), \
  (long) (((uint64_t) (val)) >> 32)
+
+/* Exports the __send symbol on send.c linux implementation (some ABI have
+   it missing due the usage of a old generic version without it).  */
+#define HAVE_INTERNAL_SEND_SYMBOL	1

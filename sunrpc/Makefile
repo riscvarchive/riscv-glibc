@@ -1,4 +1,4 @@
-# Copyright (C) 1994-2016 Free Software Foundation, Inc.
+# Copyright (C) 1994-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -48,11 +48,10 @@ include ../Makeconfig
 rpcsvc = bootparam_prot.x nlm_prot.x rstat.x \
 	 yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
 	 rusers.x spray.x nfs_prot.x rquota.x key_prot.x
-headers-in-tirpc = $(addprefix rpc/,auth.h auth_unix.h clnt.h pmap_clnt.h \
-				    pmap_prot.h pmap_rmt.h rpc.h rpc_msg.h \
-				    svc.h svc_auth.h types.h xdr.h auth_des.h \
-				    des_crypt.h)
-headers-not-in-tirpc = $(addprefix rpc/,key_prot.h rpc_des.h) \
+headers-sunrpc = $(addprefix rpc/,auth.h auth_unix.h clnt.h pmap_clnt.h \
+				  pmap_prot.h pmap_rmt.h rpc.h rpc_msg.h \
+				  svc.h svc_auth.h types.h xdr.h auth_des.h \
+				  des_crypt.h key_prot.h rpc_des.h) \
 		       $(rpcsvc:%=rpcsvc/%) rpcsvc/bootparam.h
 headers = rpc/netdb.h
 install-others = $(inst_sysconfdir)/rpc
@@ -61,7 +60,7 @@ generated += $(rpcsvc:%.x=rpcsvc/%.h) $(rpcsvc:%.x=x%.c) $(rpcsvc:%.x=x%.stmp) \
 generated-dirs += rpcsvc
 
 ifeq ($(link-obsolete-rpc),yes)
-headers += $(headers-in-tirpc) $(headers-not-in-tirpc)
+headers += $(headers-sunrpc)
 endif
 
 ifeq ($(build-shared),yes)
@@ -78,42 +77,47 @@ routines := auth_none authuxprot bindrsvprt clnt_raw clnt_simp \
 	    des_crypt des_impl des_soft key_prot openchild rtime svcauth_des \
 	    getrpcent getrpcbyname getrpcbynumber \
 	    getrpcent_r getrpcbyname_r getrpcbynumber_r \
-	    clnt_unix svc_unix create_xid $(need-export-routines)
+	    clnt_unix svc_unix create_xid $(need-export-routines) \
+	    rpc_gethostbyname
 ifneq ($(link-obsolete-rpc),yes)
 # We only add the RPC for compatibility to libc.so.
 shared-only-routines = $(routines)
 endif
 endif
 
-# We do not build rpcinfo anymore.  It is not needed for a bootstrap
-# and not wanted on complete systems.
-# others := rpcinfo
-# install-sbin := rpcinfo
+ifeq ($(link-obsolete-rpc),yes)
 install-bin := rpcgen
 rpcgen-objs = rpc_main.o rpc_hout.o rpc_cout.o rpc_parse.o \
 	      rpc_scan.o rpc_util.o rpc_svcout.o rpc_clntout.o \
 	      rpc_tblout.o rpc_sample.o
 extra-objs = $(rpcgen-objs) $(addprefix cross-,$(rpcgen-objs))
 others += rpcgen
+endif
 
-tests = tst-xdrmem tst-xdrmem2 test-rpcent
+tests = tst-xdrmem tst-xdrmem2 test-rpcent tst-udp-error tst-udp-timeout \
+  tst-udp-nonblocking
 xtests := tst-getmyaddr
 
 ifeq ($(have-thread-library),yes)
 xtests += thrsvc
+tests += tst-svc_register tst-udp-garbage
 endif
 
 ifeq ($(run-built-tests),yes)
+ifeq ($(link-obsolete-rpc),yes)
 rpcgen-tests := $(objpfx)bug20790.out
 tests-special += $(rpcgen-tests)
 endif
+endif
 
+ifeq ($(link-obsolete-rpc),yes)
 headers += $(rpcsvc:%.x=rpcsvc/%.h)
 extra-libs := librpcsvc
 extra-libs-others := librpcsvc # Make it in `others' pass, not `lib' pass.
 librpcsvc-routines = $(rpcsvc:%.x=x%)
 librpcsvc-inhibit-o = .os # Build no shared rpcsvc library.
 omit-deps = $(librpcsvc-routines)
+endif
 
 ifeq (yes,$(build-shared))
 rpc-compat-routines = $(addprefix compat-,$(need-export-routines))
@@ -158,6 +162,9 @@ BUILD_CPPFLAGS += $(sunrpc-CPPFLAGS)
 $(objpfx)tst-getmyaddr: $(common-objpfx)linkobj/libc.so
 $(objpfx)tst-xdrmem: $(common-objpfx)linkobj/libc.so
 $(objpfx)tst-xdrmem2: $(common-objpfx)linkobj/libc.so
+$(objpfx)tst-udp-error: $(common-objpfx)linkobj/libc.so
+$(objpfx)tst-svc_register: \
+  $(common-objpfx)linkobj/libc.so $(shared-thread-library)
 
 $(objpfx)rpcgen: $(addprefix $(objpfx),$(rpcgen-objs))
 
@@ -237,3 +244,8 @@ $(rpcgen-tests): $(objpfx)%.out: %.x $(objpfx)rpcgen
 	$(built-program-cmd) -c $< -o $@; \
 	$(evaluate-test)
 endif
+
+$(objpfx)tst-udp-timeout: $(common-objpfx)linkobj/libc.so
+$(objpfx)tst-udp-nonblocking: $(common-objpfx)linkobj/libc.so
+$(objpfx)tst-udp-garbage: \
+  $(common-objpfx)linkobj/libc.so $(shared-thread-library)

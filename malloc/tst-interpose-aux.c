@@ -1,5 +1,5 @@
 /* Minimal malloc implementation for interposition tests.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -112,11 +113,11 @@ check_for_allocations (void)
     {
       /* Make sure that malloc is called at least once from libc.  */
       void *volatile ptr = strdup ("ptr");
-      free (ptr);
       /* Compiler barrier.  The strdup function calls malloc, which
          updates allocation_index, but strdup is marked __THROW, so
          the compiler could optimize away the reload.  */
       __asm__ volatile ("" ::: "memory");
+      free (ptr);
       /* If the allocation count is still zero, it means we did not
          interpose malloc successfully.  */
       if (allocation_index == 0)

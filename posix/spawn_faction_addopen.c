@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@ posix_spawn_file_actions_addopen (posix_spawn_file_actions_t *file_actions,
   if (!__spawn_valid_fd (fd))
     return EBADF;
 
-  char *path_copy = strdup (path);
+  char *path_copy = __strdup (path);
   if (path_copy == NULL)
     return ENOMEM;
 

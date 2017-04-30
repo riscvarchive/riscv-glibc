@@ -1,5 +1,5 @@
 /* Common definitions for pread and pwrite.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -20,6 +20,7 @@
 #include <error.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 static void do_prepare (void);
 #define PREPARE(argc, argv)	do_prepare ()

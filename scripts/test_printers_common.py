@@ -1,6 +1,6 @@
 # Common functions and variables for testing the Python pretty printers.
 #
-# Copyright (C) 2016 Free Software Foundation, Inc.
+# Copyright (C) 2016-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 #
 # The GNU C Library is free software; you can redistribute it and/or
@@ -87,6 +87,7 @@ try:
 
     if gdb_python_error:
         print('gdb must have python support to test the pretty printers.')
+        print('gdb output: {!r}'.format(gdb_python_error))
         exit(UNSUPPORTED)
 
     # If everything's ok, spawn the gdb process we'll use for testing.

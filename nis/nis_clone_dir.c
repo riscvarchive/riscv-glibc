@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (c) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@vt.uni-paderborn.de>, 1997.
 
@@ -71,3 +71,4 @@ nis_clone_directory (const directory_obj *src, directory_obj *dest)
 
   return res;
 }
+libnsl_hidden_nolink_def(nis_clone_directory, GLIBC_2_1)

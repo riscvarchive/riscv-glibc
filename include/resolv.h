@@ -26,7 +26,6 @@ extern __thread struct __res_state *__resp attribute_tls_model_ie;
 extern int __res_vinit (res_state, int);
 extern int __res_maybe_init (res_state, int);
 extern void _sethtent (int);
-extern void _endhtent (void);
 extern struct hostent *_gethtent (void);
 extern struct hostent *_gethtbyname (const char *__name);
 extern struct hostent *_gethtbyname2 (const char *__name, int __af);
@@ -38,8 +37,6 @@ extern void res_pquery (const res_state __statp, const unsigned char *__msg,
 extern int res_ourserver_p (const res_state __statp,
 			    const struct sockaddr_in6 *__inp);
 extern void __res_iclose (res_state statp, bool free_addr);
-extern int __res_nopt(res_state statp, int n0, unsigned char *buf, int buflen,
-		      int anslen);
 libc_hidden_proto (__res_ninit)
 libc_hidden_proto (__res_maybe_init)
 libc_hidden_proto (__res_nclose)
@@ -92,7 +89,6 @@ libresolv_hidden_proto (__res_nameinquery)
 libresolv_hidden_proto (__res_queriesmatch)
 libresolv_hidden_proto (__res_nsend)
 libresolv_hidden_proto (__b64_ntop)
-libresolv_hidden_proto (__res_nopt)
 libresolv_hidden_proto (__dn_count_labels)
 libresolv_hidden_proto (__p_secstodate)
 

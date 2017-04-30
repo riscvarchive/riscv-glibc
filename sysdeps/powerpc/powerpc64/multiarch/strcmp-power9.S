@@ -1,5 +1,5 @@
 /* Optimized strcmp implementation for POWER9/PPC64.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,21 +18,7 @@
 
 #include <sysdep.h>
 
-#undef EALIGN
-#define EALIGN(name, alignt, words)				\
-  .section ".text";						\
-  ENTRY_2(__strcmp_power9)					\
-  .align ALIGNARG(alignt);					\
-  EALIGN_W_##words;						\
-  BODY_LABEL(__strcmp_power9):					\
-  cfi_startproc;						\
-  LOCALENTRY(__strcmp_power9)
-
-#undef END
-#define END(name)						\
-  cfi_endproc;							\
-  TRACEBACK(__strcmp_power9)					\
-  END_2(__strcmp_power9)
+#define STRCMP __strcmp_power9
 
 #undef libc_hidden_builtin_def
 #define libc_hidden_builtin_def(name)

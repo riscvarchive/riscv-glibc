@@ -1,4 +1,4 @@
-/* Copyright (C) 2005-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2005-2017 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -20,6 +20,7 @@
 #define _AARCH64_LDSODEFS_H 1
 
 #include <elf.h>
+#include <cpu-features.h>
 
 struct La_aarch64_regs;
 struct La_aarch64_retval;

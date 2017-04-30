@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@
 		   | POSIX_SPAWN_SETSIGMASK				      \
 		   | POSIX_SPAWN_SETSCHEDPARAM				      \
 		   | POSIX_SPAWN_SETSCHEDULER				      \
+		   | POSIX_SPAWN_SETSID					      \
 		   | POSIX_SPAWN_USEVFORK)
 
 /* Store flags in the attribute structure.  */

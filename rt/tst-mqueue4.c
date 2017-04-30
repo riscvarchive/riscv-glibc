@@ -1,5 +1,5 @@
 /* Test message queue passing.
-   Copyright (C) 2004-2016 Free Software Foundation, Inc.
+   Copyright (C) 2004-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 2004.
 
@@ -23,6 +23,7 @@
 #include <limits.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>

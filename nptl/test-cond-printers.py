@@ -1,6 +1,6 @@
 # Common tests for the ConditionVariablePrinter class.
 #
-# Copyright (C) 2016 Free Software Foundation, Inc.
+# Copyright (C) 2016-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 #
 # The GNU C Library is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ try:
 
     break_at(test_source, 'Test status (destroyed)')
     continue_cmd() # Go to test_status_destroyed
-    test_printer(var, to_string, {'Status': 'Destroyed'})
+    test_printer(var, to_string, {'Threads known to still execute a wait function': '0'})
 
     continue_cmd() # Exit
 

@@ -1,7 +1,7 @@
 /* bug 19432: iconv rejects redundant escape sequences in IBM903,
               IBM905, IBM907, and IBM909
 
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <limits.h>
 
 // The longest test input sequence.
 #define MAXINBYTES    8

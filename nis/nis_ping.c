@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (c) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Thorsten Kukuk <kukuk@suse.de>, 1997.
 
@@ -67,3 +67,4 @@ nis_ping (const_nis_name dirname, unsigned int utime,
 		   (caddr_t) NULL, 0, NULL);
   nis_freeresult (res);
 }
+libnsl_hidden_nolink_def (nis_ping, GLIBC_2_1)

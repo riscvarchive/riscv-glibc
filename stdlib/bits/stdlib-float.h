@@ -1,5 +1,5 @@
 /* Floating-point inline functions for stdlib.h.
-   Copyright (C) 2012-2016 Free Software Foundation, Inc.
+   Copyright (C) 2012-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -21,11 +21,9 @@
 #endif
 
 #ifdef __USE_EXTERN_INLINES
-__BEGIN_NAMESPACE_STD
 __extern_inline double
 __NTH (atof (const char *__nptr))
 {
   return strtod (__nptr, (char **) NULL);
 }
-__END_NAMESPACE_STD
 #endif /* Optimizing and Inlining.  */

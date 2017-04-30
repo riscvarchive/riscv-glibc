@@ -1,5 +1,5 @@
 /* Malloc implementation for multiple threads without lock contention.
-   Copyright (C) 1996-2016 Free Software Foundation, Inc.
+   Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Wolfram Gloger <wg@malloc.de>
    and Doug Lea <dl@cs.oswego.edu>, 2001.
@@ -84,7 +84,6 @@
     independent_calloc(size_t n_elements, size_t size, void* chunks[]);
     independent_comalloc(size_t n_elements, size_t sizes[], void* chunks[]);
     pvalloc(size_t n);
-    cfree(void* p);
     malloc_trim(size_t pad);
     malloc_usable_size(void* p);
     malloc_stats();
@@ -237,7 +236,7 @@
 #include <sys/param.h>
 
 /* For ALIGN_UP et. al.  */
-#include <libc-internal.h>
+#include <libc-pointer-arith.h>
 
 #include <malloc/malloc-internal.h>
 
@@ -1376,6 +1375,8 @@ typedef struct malloc_chunk *mbinptr;
 
 /* Take a chunk off a bin list */
 #define unlink(AV, P, BK, FD) {                                            \
+    if (__builtin_expect (chunksize(P) != prev_size (next_chunk(P)), 0))      \
+      malloc_printerr (check_action, "corrupted size vs. prev_size", P, AV);  \
     FD = P->fd;								      \
     BK = P->bk;								      \
     if (__builtin_expect (FD->bk != P || BK->fd != P, 0))		      \
@@ -4902,7 +4903,7 @@ __libc_mallopt (int param_number, int value)
 
     case M_ARENA_MAX:
       if (value > 0)
-	do_set_arena_test (value);
+	do_set_arena_max (value);
       break;
     }
   __libc_lock_unlock (av->mutex);
@@ -5288,7 +5289,6 @@ weak_alias (__malloc_info, malloc_info)
 
 
 strong_alias (__libc_calloc, __calloc) weak_alias (__libc_calloc, calloc)
-strong_alias (__libc_free, __cfree) weak_alias (__libc_free, cfree)
 strong_alias (__libc_free, __free) strong_alias (__libc_free, free)
 strong_alias (__libc_malloc, __malloc) strong_alias (__libc_malloc, malloc)
 strong_alias (__libc_memalign, __memalign)
@@ -5304,6 +5304,9 @@ weak_alias (__malloc_stats, malloc_stats)
 weak_alias (__malloc_usable_size, malloc_usable_size)
 weak_alias (__malloc_trim, malloc_trim)
 
+#if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_26)
+compat_symbol (libc, __libc_free, cfree, GLIBC_2_0);
+#endif
 
 /* ------------------------------------------------------------
    History:

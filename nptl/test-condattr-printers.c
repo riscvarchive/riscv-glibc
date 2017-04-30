@@ -1,7 +1,7 @@
 /* Helper program for testing the pthread_cond_t and pthread_condattr_t
    pretty printers.
 
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -66,6 +66,7 @@ condvar_reinit (pthread_cond_t *condvar, const pthread_condattr_t *attr)
 }
 
 /* Tests setting the clock ID attribute.  */
+__attribute__ ((noinline))
 static int
 test_setclock (pthread_cond_t *condvar, pthread_condattr_t *attr)
 {

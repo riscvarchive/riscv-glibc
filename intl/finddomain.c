@@ -1,5 +1,5 @@
 /* Handle list of needed message catalogs
-   Copyright (C) 1995-2016 Free Software Foundation, Inc.
+   Copyright (C) 1995-2017 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.org>, 1995.
 
    This program is free software: you can redistribute it and/or modify
@@ -124,18 +124,12 @@ _nl_find_domain (const char *dirname, char *locale,
   alias_value = _nl_expand_alias (locale);
   if (alias_value != NULL)
     {
-#if defined _LIBC || defined HAVE_STRDUP
-      locale = strdup (alias_value);
-      if (locale == NULL)
-	return NULL;
-#else
       size_t len = strlen (alias_value) + 1;
       locale = (char *) malloc (len);
       if (locale == NULL)
 	return NULL;
 
       memcpy (locale, alias_value, len);
-#endif
     }
 
   /* Now we determine the single parts of the locale name.  First
