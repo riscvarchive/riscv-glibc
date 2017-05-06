@@ -19,7 +19,7 @@
 #define	_NETINET_IN_H	1
 
 #include <features.h>
-#include <stdint.h>
+#include <bits/stdint-uintn.h>
 #include <sys/socket.h>
 #include <bits/types.h>
 
@@ -275,10 +275,10 @@ struct ip_mreq_source
     /* IP multicast address of group.  */
     struct in_addr imr_multiaddr;
 
-    /* IP address of source.  */
+    /* IP address of interface.  */
     struct in_addr imr_interface;
 
-    /* IP address of interface.  */
+    /* IP address of source.  */
     struct in_addr imr_sourceaddr;
   };
 #endif

@@ -1,6 +1,6 @@
-/* Copyright (C) 2011-2017 Free Software Foundation, Inc.
+/* Define intN_t types.
+   Copyright (C) 2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -13,16 +13,17 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library.  If not, see
+   License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <stddef.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/epoll.h>
+#ifndef _BITS_STDINT_INTN_H
+#define _BITS_STDINT_INTN_H	1
 
-int
-epoll_wait (int epfd, struct epoll_event *events, int maxevents, int timeout)
-{
-  return epoll_pwait (epfd, events, maxevents, timeout, NULL);
-}
+#include <bits/types.h>
+
+typedef __int8_t int8_t;
+typedef __int16_t int16_t;
+typedef __int32_t int32_t;
+typedef __int64_t int64_t;
+
+#endif /* bits/stdint-intn.h */

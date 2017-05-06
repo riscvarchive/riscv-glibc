@@ -1,3 +1,248 @@
+2017-05-04  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
+
+	* manual/llio.texi: Add preadv and pwritev documentation.
+
+2017-05-04  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #21455]
+	* bits/stdint-intn.h: New file.
+	* bits/stdint-uintn.h: Likewise.
+	* stdlib/Makefile (headers): Add bits/stdint-intn.h and
+	bits/stdint-uintn.h.
+	* inet/netinet/in.h: Include <bits/stdint-uintn.h> instead of
+	<stdint.h>.
+	* posix/sys/types.h: Include <bits/stdint-intn.h>.
+	(__int8_t_defined): Do not define here.
+	(int8_t): Likewise.
+	(int16_t): Likewise.
+	(int32_t): Likewise.
+	(int64_t): Likewise.
+	[__GNUC_PREREQ (2, 7)] (__intN_t): Likewise.
+	* resolv/netdb.h: Include <bits/stdint-uintn.h> instead of
+	<stdint.h>.
+	* include/netdb.h [_ISOMAC]: Do not include <stdint.h>.
+	* sysdeps/generic/stdint.h: Include <bits/stdint-intn.h> and
+	<bits/stdint-uintn.h>.
+	(int8_t): Do not define here.
+	(int16_t): Likewise.
+	(int32_t): Likewise.
+	(int64_t): Likewise.
+	(uint8_t): Likewise.
+	(uint16_t): Likewise.
+	(uint32_t): Likewise.
+	(uint64_t): Likewise.
+	* conform/Makefile (test-xfail-XPG42/arpa/inet.h/conform): Remove
+	variable.
+	(test-xfail-XPG42/netdb.h/conform): Likewise.
+	(test-xfail-XPG42/netinet/in.h/conform): Likewise.
+	(test-xfail-UNIX98/arpa/inet.h/conform): Likewise.
+	(test-xfail-UNIX98/netdb.h/conform): Likewise.
+	(test-xfail-UNIX98/netinet/in.h/conform): Likewise.
+
+2017-05-04  Paul E. Murphy  <murphyp@linux.vnet.ibm.com>
+
+	* sysdeps/generic/math_private.h (mathx_hidden_def): New macro.
+	* sysdeps/ieee754/ldbl-128/s_finitel.c: Replace hidden_def with
+	the above.
+	* sysdeps/ieee754/ldbl-128/s_isinfl.c: Likewise.
+	* sysdeps/ieee754/ldbl-128/s_isnanl.c: Likewise.
+
+2017-05-04  Joseph Myers  <joseph@codesourcery.com>
+
+	[BZ #21445]
+	* signal/signal.h [__USE_XOPEN2K8] (bsd_signal): Do not declare.
+
+	[BZ #21457]
+	* sysdeps/unix/sysv/linux/mips/sys/ucontext.h
+	[_MIPS_SIM != _ABIO32] (mcontext_t): Rename field reserved to
+	__glibc_reserved1.
+	* sysdeps/unix/sysv/linux/x86/bits/sigcontext.h
+	(struct _fpx_sw_bytes): Rename field padding to __glibc_reserved1.
+	(struct _fpxreg): Likewise.
+	[!__x86_64__] (struct _fpstate): Rename field reserved to
+	__glibc_reserved1.  Rename field padding to __glibc_reserved2.
+	[__x86_64__] (struct _fpstate): Rename field padding to
+	__glibc_reserved1.
+	(struct _xsave_hdr): Rename field reserved1 to __glibc_reserved1.
+	Rename field reserved2 to __glibc_reserved2.
+	* sysdeps/unix/sysv/linux/x86/sys/ucontext.h
+	[__x86_64__] (struct _libc_fpxreg): Rename field padding to
+	__glibc_reserved1.
+	[__x86_64__] (struct _libc_fpstate): Rename field padding to
+	__glibc_reserved1.
+
+2017-05-03  Rajalakshmi Srinivasaraghavan  <raji@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/powerpc64/multiarch/strncat.c: Correct hwcap
+	variable name.
+
+2017-05-03  H.J. Lu  <hongjiu.lu@intel.com>
+
+	[BZ #21391]
+	* sysdeps/i386/dl-machine.h (dl_platform_init) [IS_IN (rtld)]:
+	Only call init_cpu_features.
+	[!IS_IN (rtld)]: Only set GLRO(dl_platform) to NULL if needed.
+	* sysdeps/x86_64/dl-machine.h (dl_platform_init): Likewise.
+	* sysdeps/i386/dl-procinfo.h: Removed.
+	* sysdeps/unix/sysv/linux/i386/dl-procinfo.h: Don't include
+	<sysdeps/i386/dl-procinfo.h> nor <ldsodefs.h>.  Include
+	<sysdeps/x86/dl-procinfo.h>.
+	(_dl_procinfo): Replace _DL_HWCAP_COUNT with 32.
+	* sysdeps/unix/sysv/linux/x86_64/dl-procinfo.h [!IS_IN (ldconfig)]:
+	Include <sysdeps/x86/dl-procinfo.h> instead of
+	 <sysdeps/generic/dl-procinfo.h>.
+	* sysdeps/x86/cpu-features.c: Include <dl-hwcap.h>.
+	(init_cpu_features): Set dl_platform, dl_hwcap and dl_hwcap_mask.
+	* sysdeps/x86/cpu-features.h (bit_cpu_LZCNT): New.
+	(bit_cpu_MOVBE): Likewise.
+	(bit_cpu_BMI1): Likewise.
+	(bit_cpu_BMI2): Likewise.
+	(index_cpu_BMI1): Likewise.
+	(index_cpu_BMI2): Likewise.
+	(index_cpu_LZCNT): Likewise.
+	(index_cpu_MOVBE): Likewise.
+	(index_cpu_POPCNT): Likewise.
+	(reg_BMI1): Likewise.
+	(reg_BMI2): Likewise.
+	(reg_LZCNT): Likewise.
+	(reg_MOVBE): Likewise.
+	(reg_POPCNT): Likewise.
+	* sysdeps/x86/dl-hwcap.h: New file.
+	* sysdeps/x86/dl-procinfo.h: Likewise.
+	* sysdeps/x86/dl-procinfo.c (_dl_x86_hwcap_flags): New.
+	(_dl_x86_platforms): Likewise.
+
+2017-05-03  DJ Delorie  <dj@redhat.com>
+
+	[BZ #21411]
+	* malloc/malloc.c: Tweak realloc/MREMAP comment to be more accurate.
+
+2017-05-03  Phil Blundell  <pb@pbcl.net>
+
+	* inet/netinet/in.h (struct ip_mreq_source): Correct misplaced
+	comments.
+
+2017-05-03  Carlos O'Donell  <carlos@redhat.com>
+
+	[BZ #20116]
+	* nptl/pthread_create.c: Expand comments to describe
+	semaphore-like and mutex-like uses of PD->lock.
+
+2017-04-03  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
+
+	* sysdeps/unix/sysv/linux/epoll_wait.c: New file.
+	* sysdeps/unix/sysv/linux/generic/epoll_wait.c: Remove file.
+	* sysdeps/unix/sysv/linux/syscalls.list: Remove epoll_wait from
+	auto-generation list.
+	* sysdeps/unix/sysv/linux/Makefile (sysdep_routines): Add
+	epoll_wait.
+	* sysdeps/unix/sysv/linux/generic/Makefile (sysdep_routines):
+	Remove epoll_wait.
+
+	* sysdeps/unix/sysv/linux/alpha/Makefile (sysdep_routines): Add
+	osf_select.
+	* sysdeps/unix/sysv/linux/alpha/select.c: New file.
+	* sysdeps/unix/sysv/linux/alpha/syscalls.list: Remove select and
+	osf_select from auto-generation list.
+	* sysdeps/unix/sysv/linux/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/syscalls.list: Likewise.
+	* sysdeps/unix/sysv/linux/generic/select.c: Remove file.
+	* sysdeps/unix/sysv/linux/select.c: New file.
+
+	* sysdeps/unix/sysv/linux/generic/poll.c: Remove file.
+	* sysdeps/unix/sysv/linux/poll.c: New file.
+	* sysdeps/unix/sysv/linux/syscalls.list: Remove poll from
+	auto-generation list.
+
+2017-05-03  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/bits/hwcap.h (HWCAP_ASIMDRDM):
+	New macro.
+
+2017-05-02  Vladimir Mezentsev <vladimir.mezentsev@oracle.com>
+
+	[BZ #21179]
+	* sysdeps/sparc/sparc64/dl-machine.h: Handle R_SPARC_DISP64 and
+	R_SPARC_REGISTER relocations.
+
+2017-05-02  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
+
+	* include/unistd.h (__pread): Add libc_hidden_proto.
+	(__pread64): Likewise.
+	(__pwrite): Likewise.
+	* sysdeps/unix/sysv/linux/microblaze/localplt.data [libc.so]
+	(__pread64): Remove.
+	* sysdeps/unix/sysv/linux/pread.c (__pread64): Add libc_hidden_weak.
+	* sysdeps/unix/sysv/linux/pread64.c (__pread64): Likewise.
+	* sysdeps/unix/sysv/linux/pwrite.c (__pwrite): Likewise.
+
+2017-05-02  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
+
+	* sysdeps/powerpc/fpu/libm-test-ulps: Update.
+
+2017-04-26  Adhemerval Zanella  <adhemerval.zanella@linaro.org>
+
+	* nptl/tst-cancel4-common.c: Use libsupport.
+	* nptl/tst-cancel4-common.h: Likewise.
+	* nptl/tst-cancel4.c (tf_read): Likewise.
+	(tf_readv): Likewise.
+	(tf_write): Likewise.
+	(tf_writev): Likewise.
+	(tf_sleep): Likewise.
+	(tf_usleep): Likewise.
+	(tf_nanosleep): Likewise.
+	(tf_select): Likewise.
+	(tf_pselect): Likewise.
+	(tf_poll): Likewise.
+	(tf_ppoll): Likewise.
+	(tf_wait): Likewise.
+	(tf_waitpid): Likewise.
+	(tf_waitid): Likewise.
+	(tf_sigpause): Likewise.
+	(tf_sigsuspend): Likewise.
+	(tf_sigwait): Likewise.
+	(tf_sigwaitinfo): Likewise.
+	(tf_sigtimedwait): Likewise.
+	(tf_pause): Likewise.
+	(tf_accept): Likewise.
+	(tf_send): Likewise.
+	(tf_recv): Likewise.
+	(tf_recvfrom): Likewise.
+	(tf_recvmsg): Likewise.
+	(tf_open): Likewise.
+	(tf_close): Likewise.
+	(tf_pread): Likewise.
+	(tf_pwrite): Likewise.
+	(tf_preadv): Likewise.
+	(tf_pwritev): Likewise.
+	(tf_fsync): Likewise.
+	(tf_fdatasync): Likewise.
+	(tf_msync): Likewise.
+	(tf_sendto): Likewise.
+	(tf_sendmsg): Likewise.
+	(tf_creat): Likewise.
+	(tf_connect): Likewise.
+	(tf_tcdrain): Likewise.
+	(tf_msgrcv): Likewise.
+	(tf_msgsnd): Likewise.
+	* nptl/tst-cancel4_1.c (tf_sendmmsg): Likewise.
+	* nptl/tst-cancel4_2.c (tf_recvmmsg): Likewise.
+
+	* misc/tst-preadvwritev-common.c (do_prepare): Use libsupport
+	expected arguments.
+	(do_test): Adapt to use libsupport.
+
+2017-05-01  Joseph Myers  <joseph@codesourcery.com>
+
+	* sysdeps/gnu/netinet/tcp.h (TCP_FASTOPEN_CONNECT): New macro.
+
+	* sysdeps/unix/sysv/linux/bits/socket.h (PF_SMC): New macro.
+	(PF_MAX): Set to 44.
+	(AF_SMC): New macro.
+
+	* scripts/build-many-glibcs.py (Context.checkout): Default Linux
+	kernel version to 4.11.
+
 2017-04-28  Tulio Magno Quites Machado Filho  <tuliom@linux.vnet.ibm.com>
 
 	[BZ #21280]
