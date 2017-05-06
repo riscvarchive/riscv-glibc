@@ -23,7 +23,8 @@ ENTRY(_dl_runtime_resolve)
   slli a1, t1, 1
   mv a0, t0       # link map
   add a1, a1, t1  # reloc offset (== thrice the .got.plt offset)
-  jal _dl_fixup
+  la a2, _dl_fixup
+  jalr a2
   mv t1, a0
 
   # Restore arguments from stack.
