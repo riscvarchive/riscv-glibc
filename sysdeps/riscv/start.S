@@ -65,7 +65,10 @@ END(ENTRY_POINT)
    So we redundantly initialize it at the beginning of _start.  */
 
 .Lload_gp:
+.option push
+.option norelax
 	lla   gp, __global_pointer$
+.option pop
 	ret
 
 	.section .preinit_array,"aw"
