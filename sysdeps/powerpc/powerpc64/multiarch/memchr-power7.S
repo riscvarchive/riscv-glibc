@@ -1,5 +1,5 @@
 /* Optimized memchr implementation for PowerPC64/POWER7.
-   Copyright (C) 2013-2016 Free Software Foundation, Inc.
+   Copyright (C) 2013-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,20 +18,7 @@
 
 #include <sysdep.h>
 
-#undef ENTRY
-#define ENTRY(name)						\
-  .section ".text";						\
-  ENTRY_2(__memchr_power7)					\
-  .align ALIGNARG(2);						\
-  BODY_LABEL(__memchr_power7):					\
-  cfi_startproc;						\
-  LOCALENTRY(__memchr_power7)
-
-#undef END
-#define END(name)						\
-  cfi_endproc;							\
-  TRACEBACK(__memchr_power7)					\
-  END_2(__memchr_power7)
+#define MEMCHR __memchr_power7
 
 #undef libc_hidden_builtin_def
 #define libc_hidden_builtin_def(name)

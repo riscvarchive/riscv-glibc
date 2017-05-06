@@ -1,4 +1,4 @@
-  /* Copyright (C) 1996-2016 Free Software Foundation, Inc.
+  /* Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -25,7 +25,7 @@
 #include <features.h>
 
 #include <netinet/in.h>
-#include <stdint.h>
+#include <bits/stdint-uintn.h>
 #ifdef __USE_MISC
 /* This is necessary to make this include file properly replace the
    Sun version.  */

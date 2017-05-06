@@ -66,7 +66,7 @@
 
 #include <ctype.h>
 #include <netdb.h>
-#include <resolv.h>
+#include <resolv/resolv-internal.h>
 #include <stdio.h>
 #include <stdio_ext.h>
 #include <stdlib.h>
@@ -356,7 +356,7 @@ __res_vinit(res_state statp, int preinit) {
 	    statp->nsort = nsort;
 	    (void) fclose(fp);
 	}
-	if (__builtin_expect(statp->nscount == 0, 0)) {
+	if (__glibc_unlikely (statp->nscount == 0)) {
 	    statp->nsaddr.sin_addr = __inet_makeaddr(IN_LOOPBACKNET, 1);
 	    statp->nsaddr.sin_family = AF_INET;
 	    statp->nsaddr.sin_port = htons(NAMESERVER_PORT);
@@ -437,7 +437,7 @@ res_setoptions(res_state statp, const char *options, const char *source) {
 		    unsigned long int flag;
 		  } options[] = {
 #define STRnLEN(str) str, sizeof (str) - 1
-		    { STRnLEN ("inet6"), 0, RES_USE_INET6 },
+		    { STRnLEN ("inet6"), 0, DEPRECATED_RES_USE_INET6 },
 		    { STRnLEN ("rotate"), 0, RES_ROTATE },
 		    { STRnLEN ("edns0"), 0, RES_USE_EDNS0 },
 		    { STRnLEN ("single-request-reopen"), 0, RES_SNGLKUPREOP },

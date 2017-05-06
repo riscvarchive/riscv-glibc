@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2011-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ryan S. Arnold <rsa@us.ibm.com>, 2011.
 
@@ -17,8 +17,10 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <fcntl.h>
+#include <limits.h>
 #include <paths.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/uio.h>

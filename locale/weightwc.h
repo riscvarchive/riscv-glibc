@@ -1,4 +1,4 @@
-/* Copyright (C) 1996-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Ulrich Drepper, <drepper@cygnus.com>.
 
@@ -19,7 +19,7 @@
 #ifndef _WEIGHTWC_H_
 #define _WEIGHTWC_H_	1
 
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 /* Find index of weight.  */
 static inline int32_t __attribute__ ((always_inline))

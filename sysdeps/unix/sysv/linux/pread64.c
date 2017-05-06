@@ -1,4 +1,4 @@
-/* Copyright (C) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
@@ -30,6 +30,7 @@ __libc_pread64 (int fd, void *buf, size_t count, off64_t offset)
 }
 
 weak_alias (__libc_pread64, __pread64)
+libc_hidden_weak (__pread64)
 weak_alias (__libc_pread64, pread64)
 
 #ifdef __OFF_T_MATCHES_OFF64_T

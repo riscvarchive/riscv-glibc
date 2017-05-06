@@ -1,5 +1,5 @@
 /* Optimized memcpy implementation for CELL BE PowerPC.
-   Copyright (C) 2010-2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,6 +17,10 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <sysdep.h>
+
+#ifndef MEMCPY
+# define MEMCPY memcpy
+#endif
 
 #define PREFETCH_AHEAD 6	/* no cache lines SRC prefetching ahead  */
 #define ZERO_AHEAD 4		/* no cache lines DST zeroing ahead  */
@@ -39,7 +43,7 @@
 
 .align  7
 
-EALIGN (memcpy, 5, 0)
+EALIGN (MEMCPY, 5, 0)
 	CALL_MCOUNT 3
 
 	dcbt	0,r4		/* Prefetch ONE SRC cacheline  */
@@ -238,5 +242,5 @@ EALIGN (memcpy, 5, 0)
 	stb	r0,0(r6)
 1:	blr
 
-END_GEN_TB (memcpy,TB_TOCLESS)
+END_GEN_TB (MEMCPY,TB_TOCLESS)
 libc_hidden_builtin_def (memcpy)

@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -46,8 +46,6 @@ __BEGIN_DECLS
 #define LC_MEASUREMENT	  __LC_MEASUREMENT
 #define LC_IDENTIFICATION __LC_IDENTIFICATION
 
-
-__BEGIN_NAMESPACE_STD
 
 /* Structure giving information about numeric and monetary notation.  */
 struct lconv
@@ -125,8 +123,6 @@ extern char *setlocale (int __category, const char *__locale) __THROW;
 
 /* Return the numeric/monetary information for the current locale.  */
 extern struct lconv *localeconv (void) __THROW;
-
-__END_NAMESPACE_STD
 
 
 #ifdef	__USE_XOPEN2K8

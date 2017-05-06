@@ -1,5 +1,5 @@
 /* Definition for thread-local data handling.  nptl/x86_64 version.
-   Copyright (C) 2002-2016 Free Software Foundation, Inc.
+   Copyright (C) 2002-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@
 # include <stdint.h>
 # include <stdlib.h>
 # include <sysdep.h>
-# include <libc-internal.h>
+# include <libc-pointer-arith.h> /* For cast_to_integer.  */
 # include <kernel-features.h>
 # include <dl-dtv.h>
 
@@ -324,18 +324,6 @@ typedef struct
 	    else							      \
 	      /* Not necessary for other sizes in the moment.  */	      \
 	      abort (); })
-
-
-# define CALL_THREAD_FCT(descr) \
-  ({ void *__res;							      \
-     asm volatile ("movq %%fs:%P2, %%rdi\n\t"				      \
-		   "callq *%%fs:%P1"					      \
-		   : "=a" (__res)					      \
-		   : "i" (offsetof (struct pthread, start_routine)),	      \
-		     "i" (offsetof (struct pthread, arg))		      \
-		   : "di", "si", "cx", "dx", "r8", "r9", "r10", "r11",	      \
-		     "memory", "cc");					      \
-     __res; })
 
 
 /* Set the stack guard field in TCB head.  */

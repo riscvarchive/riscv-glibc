@@ -1,6 +1,6 @@
 /* Check recvmmsg cancellation.
 
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,6 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -38,25 +39,17 @@ tf_recvmmsg (void *arg)
 
   tempfd = socket (AF_UNIX, SOCK_DGRAM, 0);
   if (tempfd == -1)
-    {
-      printf ("%s: first socket call failed\n", __FUNCTION__);
-      exit (1);
-    }
+    FAIL_EXIT1 ("socket (AF_UNIX, SOCK_DGRAM, 0): %m");
 
   int tries = 0;
   do
     {
       if (++tries > 10)
-	{
-	  printf ("%s: too many unsuccessful bind calls\n", __FUNCTION__);
-	}
+	FAIL_EXIT1 ("too many unsuccessful bind calls");
 
       strcpy (sun.sun_path, "/tmp/tst-cancel4-socket-5-XXXXXX");
       if (mktemp (sun.sun_path) == NULL)
-	{
-	  printf ("%s: cannot generate temp file name\n", __FUNCTION__);
-	  exit (1);
-	}
+	FAIL_EXIT1 ("cannot generate temp file name");
 
       sun.sun_family = AF_UNIX;
     }
@@ -68,26 +61,17 @@ tf_recvmmsg (void *arg)
 
   tempfd2 = socket (AF_UNIX, SOCK_DGRAM, 0);
   if (tempfd2 == -1)
-    {
-      printf ("%s: second socket call failed\n", __FUNCTION__);
-      exit (1);
-    }
+    FAIL_EXIT1 ("socket (AF_UNIX, SOCK_DGRAM, 0): %m");
 
   int r = pthread_barrier_wait (&b2);
   if (r != 0 && r != PTHREAD_BARRIER_SERIAL_THREAD)
-    {
-      printf ("%s: barrier_wait failed\n", __FUNCTION__);
-      exit (1);
-    }
+    FAIL_EXIT1 ("pthread_barrier_wait");
 
   if (arg != NULL)
     {
       r = pthread_barrier_wait (&b2);
       if (r != 0 && r != PTHREAD_BARRIER_SERIAL_THREAD)
-	{
-	  printf ("%s: 2nd barrier_wait failed\n", __FUNCTION__);
-	  exit (1);
-	}
+	FAIL_EXIT1 ("pthread_barrier_wait");
     }
 
   pthread_cleanup_push (cl, NULL);
@@ -111,9 +95,7 @@ tf_recvmmsg (void *arg)
 
   pthread_cleanup_pop (0);
 
-  printf ("%s: recvmmsg returned\n", __FUNCTION__);
-
-  exit (1);
+  FAIL_EXIT1 ("recvmmsg returned");
 }
 
 struct cancel_tests tests[] =

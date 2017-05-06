@@ -1,4 +1,4 @@
-/* Copyright (C) 1998-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,7 +23,11 @@
 int
 __setgid (gid_t gid)
 {
+#ifdef __NR_setgid32
+  return INLINE_SETXID_SYSCALL (setgid32, 1, gid);
+#else
   return INLINE_SETXID_SYSCALL (setgid, 1, gid);
+#endif
 }
 #ifndef __setgid
 weak_alias (__setgid, setgid)

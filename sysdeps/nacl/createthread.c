@@ -1,5 +1,5 @@
 /* Low-level thread creation for NPTL.  NaCl version.
-   Copyright (C) 2015-2016 Free Software Foundation, Inc.
+   Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -32,15 +32,13 @@ static void start_thread (void) __attribute__ ((noreturn));
 
 static int
 create_thread (struct pthread *pd, const struct pthread_attr *attr,
-	       bool stopped_start, STACK_VARIABLES_PARMS, bool *thread_ran)
+	       bool *stopped_start, STACK_VARIABLES_PARMS, bool *thread_ran)
 {
   pd->tid = __nacl_get_tid (pd);
 
-  pd->stopped_start = stopped_start;
-  if (__glibc_unlikely (stopped_start))
-    /* We make sure the thread does not run far by forcing it to get a
-       lock.  We lock it here too so that the new thread cannot continue
-       until we tell it to.  */
+  pd->stopped_start = *stopped_start;
+  if (__glibc_unlikely (*stopped_start))
+    /* See CONCURRENCY NOTES in nptl/pthread_create.c.  */
     lll_lock (pd->lock, LLL_PRIVATE);
 
   TLS_DEFINE_INIT_TP (tp, pd);

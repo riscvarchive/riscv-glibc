@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@redhat.com>, 2000.
 
@@ -26,7 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 /* We expect four arguments:
    - source directory name

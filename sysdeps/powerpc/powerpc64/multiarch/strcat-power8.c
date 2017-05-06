@@ -1,4 +1,4 @@
-/* Copyright (C) 2015-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,8 +23,8 @@
 #define libc_hidden_def(name)
 
 extern typeof (strcpy) __strcpy_power8;
-extern typeof (strlen) __strlen_power7;
+extern typeof (strlen) __strlen_power8;
 
 #define strcpy __strcpy_power8
-#define strlen __strlen_power7
-#include <sysdeps/powerpc/strcat.c>
+#define strlen __strlen_power8
+#include <string/strcat.c>

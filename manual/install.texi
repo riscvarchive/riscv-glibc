@@ -164,6 +164,23 @@ time.  Consult the @file{timezone} subdirectory for more details.
 @item --enable-lock-elision=yes
 Enable lock elision for pthread mutexes by default.
 
+@item --enable-stack-protector
+@itemx --enable-stack-protector=strong
+@itemx --enable-stack-protector=all
+Compile the C library and all other parts of the glibc package
+(including the threading and math libraries, NSS modules, and
+transliteration modules) using the GCC @option{-fstack-protector},
+@option{-fstack-protector-strong} or @option{-fstack-protector-all}
+options to detect stack overruns.  Only the dynamic linker and a small
+number of routines called directly from assembler are excluded from this
+protection.
+
+@item --enable-bind-now
+Disable lazy binding for installed shared objects.  This provides
+additional security hardening because it enables full RELRO and a
+read-only global offset table (GOT), at the cost of slightly increased
+program load times.
+
 @pindex pt_chown
 @findex grantpt
 @item --enable-pt_chown
@@ -188,6 +205,33 @@ configure with @option{--disable-werror}.
 @item --disable-mathvec
 By default for x86_64, @theglibc{} is built with the vector math library.
 Use this option to disable the vector math library.
+
+@item --enable-tunables
+Tunables support allows additional library parameters to be customized at
+runtime.  This is an experimental feature and affects startup time and is thus
+disabled by default.  This option can take the following values:
+
+@table @code
+@item no
+This is the default if the option is not passed to configure. This disables
+tunables.
+
+@item yes
+This is the default if the option is passed to configure. This enables tunables
+and selects the default frontend (currently @samp{valstring}).
+
+@item valstring
+This enables tunables and selects the @samp{valstring} frontend for tunables.
+This frontend allows users to specify tunables as a colon-separated list in a
+single environment variable @env{GLIBC_TUNABLES}.
+@end table
+
+@item --enable-obsolete-nsl
+By default, libnsl is only built as shared library for backward
+compatibility and the NSS modules libnss_compat, libnss_nis and
+libnss_nisplus are not built at all.
+Use this option to enable libnsl with all depending NSS modules and
+header files.
 
 @item --build=@var{build-system}
 @itemx --host=@var{host-system}
@@ -429,7 +473,7 @@ GCC 4.7 or newer
 GCC 4.7 or higher is required.  In general it is recommended to use
 the newest version of the compiler that is known to work for building
 @theglibc{}, as newer compilers usually produce better code.  As of
-release time, GCC 5.3 is the newest compiler verified to work to build
+release time, GCC 6.3 is the newest compiler verified to work to build
 @theglibc{}.
 
 For multi-arch support it is recommended to use a GCC which has been built with
@@ -522,6 +566,8 @@ patches, although we try to avoid this.
 
 If you are installing @theglibc{} on @gnulinuxsystems{}, you need to have
 the header files from a 3.2 or newer kernel around for reference.
+(For the ia64 architecture, you need version 3.2.18 or newer because this
+is the first version with support for the @code{accept4} system call.)
 These headers must be installed using @samp{make headers_install}; the
 headers present in the kernel source directory are not suitable for
 direct use by @theglibc{}.  You do not need to use that kernel, just have

@@ -58,7 +58,9 @@ with-fp = @with_fp@
 enable-timezone-tools = @enable_timezone_tools@
 unwind-find-fde = @libc_cv_gcc_unwind_find_fde@
 have-fpie = @libc_cv_fpie@
+have-ssp = @libc_cv_ssp@
 stack-protector = @stack_protector@
+no-stack-protector = @no_stack_protector@
 have-selinux = @have_selinux@
 have-libaudit = @have_libaudit@
 have-libcap = @have_libcap@
@@ -69,6 +71,7 @@ have-hash-style = @libc_cv_hashstyle@
 use-default-link = @use_default_link@
 output-format = @libc_cv_output_format@
 have-cxx-thread_local = @libc_cv_cxx_thread_local@
+have-loop-to-function = @libc_cv_cc_loop_to_function@
 
 multi-arch = @multi_arch@
 
@@ -89,11 +92,13 @@ sysdeps-add-ons = @sysdeps_add_ons@
 cross-compiling = @cross_compiling@
 force-install = @force_install@
 link-obsolete-rpc = @link_obsolete_rpc@
+build-obsolete-nsl = @build_obsolete_nsl@
 build-nscd = @build_nscd@
 use-nscd = @use_nscd@
 build-hardcoded-path-in-tests= @hardcoded_path_in_tests@
 build-pt-chown = @build_pt_chown@
 enable-lock-elision = @enable_lock_elision@
+have-tunables = @have_tunables@
 
 # Build tools.
 CC = @CC@
@@ -126,6 +131,7 @@ MSGFMT = @MSGFMT@
 BASH = @BASH_SHELL@
 AWK = @AWK@
 PERL = @PERL@
+PYTHON = @PYTHON@
 
 # Additional libraries.
 LIBGD = @LIBGD@

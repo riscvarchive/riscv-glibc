@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -60,7 +60,7 @@ putenv (char *string)
       int use_malloc = !__libc_use_alloca (name_end - string + 1);
       if (__builtin_expect (use_malloc, 0))
 	{
-	  name = strndup (string, name_end - string);
+	  name = __strndup (string, name_end - string);
 	  if (name == NULL)
 	    return -1;
 	}

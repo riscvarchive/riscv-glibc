@@ -1,5 +1,5 @@
 /* FPU control word definitions.  ARM VFP version.
-   Copyright (C) 2004-2016 Free Software Foundation, Inc.
+   Copyright (C) 2004-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -53,12 +53,19 @@ extern fpu_control_t __fpu_control;
 typedef unsigned int fpu_control_t;
 
 /* Macros for accessing the hardware control word.  */
+#ifdef __SOFTFP__
 /* This is fmrx %0, fpscr.  */
-#define _FPU_GETCW(cw) \
+# define _FPU_GETCW(cw) \
   __asm__ __volatile__ ("mrc p10, 7, %0, cr1, cr0, 0" : "=r" (cw))
 /* This is fmxr fpscr, %0.  */
-#define _FPU_SETCW(cw) \
+# define _FPU_SETCW(cw) \
   __asm__ __volatile__ ("mcr p10, 7, %0, cr1, cr0, 0" : : "r" (cw))
+#else
+# define _FPU_GETCW(cw) \
+  __asm__ __volatile__ ("vmrs %0, fpscr" : "=r" (cw))
+# define _FPU_SETCW(cw) \
+  __asm__ __volatile__ ("vmsr fpscr, %0" : : "r" (cw))
+#endif
 
 /* Default control word set at startup.  */
 extern fpu_control_t __fpu_control;

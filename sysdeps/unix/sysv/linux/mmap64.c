@@ -1,4 +1,5 @@
-/* Copyright (C) 1999-2016 Free Software Foundation, Inc.
+/* mmap - map files or devices into memory.  Linux version.
+   Copyright (C) 1999-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 1999.
 
@@ -19,39 +20,41 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/mman.h>
-#include <string.h>
-
 #include <sysdep.h>
-#include <sys/syscall.h>
+#include <mmap_internal.h>
 
-/* This is always 12, even on architectures where PAGE_SHIFT != 12.  */
-#ifndef MMAP2_PAGE_SHIFT
-# define MMAP2_PAGE_SHIFT 12
-#endif
-#if MMAP2_PAGE_SHIFT == -1
-static int page_shift;
-#else
-#define page_shift MMAP2_PAGE_SHIFT
-#endif
+/* To avoid silent truncation of offset when using mmap2, do not accept
+   offset larger than 1 << (page_shift + off_t bits).  For archictures with
+   32 bits off_t and page size of 4096 it would be 1^44.  */
+#define MMAP_OFF_HIGH_MASK \
+  ((-(MMAP2_PAGE_UNIT << 1) << (8 * sizeof (off_t) - 1)))
 
+#define MMAP_OFF_MASK (MMAP_OFF_HIGH_MASK | MMAP_OFF_LOW_MASK)
+
+/* An architecture may override this.  */
+#ifndef MMAP_PREPARE
+# define MMAP_PREPARE(addr, len, prot, flags, fd, offset)
+#endif
 
 void *
 __mmap64 (void *addr, size_t len, int prot, int flags, int fd, off64_t offset)
 {
-#if MMAP2_PAGE_SHIFT == -1
-  if (page_shift == 0)
-    {
-      int page_size = __getpagesize ();
-      page_shift = __ffs (page_size) - 1;
-    }
-#endif
-  if (offset & ((1 << page_shift) - 1))
+  MMAP_CHECK_PAGE_UNIT ();
+
+  if (offset & MMAP_OFF_MASK)
     return (void *) INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
-  void *result;
-  result = (void *)
-    INLINE_SYSCALL (mmap2, 6, addr,
-		    len, prot, flags, fd,
-		    (off_t) (offset >> page_shift));
-  return result;
+
+  MMAP_PREPARE (addr, len, prot, flags, fd, offset);
+#ifdef __NR_mmap2
+  return (void *) MMAP_CALL (mmap2, addr, len, prot, flags, fd,
+			     (off_t) (offset / MMAP2_PAGE_UNIT));
+#else
+  return (void *) MMAP_CALL (mmap, addr, len, prot, flags, fd, offset);
+#endif
 }
 weak_alias (__mmap64, mmap64)
+
+#ifdef __OFF_T_MATCHES_OFF64_T
+weak_alias (__mmap64, mmap)
+weak_alias (__mmap64, __mmap)
+#endif

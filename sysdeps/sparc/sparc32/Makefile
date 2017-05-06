@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2016 Free Software Foundation, Inc.
+# Copyright (C) 1991-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -47,3 +47,9 @@ $(divrem:%=$(sysdep_dir)/sparc/sparc32/%.S): $(sysdep_dir)/sparc/sparc32/divrem.
 	mv -f $@-tmp $@
 
 sysdep-realclean := $(sysdep-realclean) $(divrem:%=sysdeps/sparc/sparc32/%.S)
+
+# libgcc __divdi3 and __moddi3 uses .udiv and since it is also exported by
+# libc.so linker will create PLTs for the symbol.  To avoid it we strong alias
+# the exported libc one to __wrap_.udiv and use linker option --wrap to make any
+# call to .udiv to call the wrapper symbol.
+libc.so-gnulib += -Wl,--wrap=.udiv

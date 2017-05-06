@@ -1,4 +1,4 @@
-/* Copyright (C) 1996-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Richard Henderson (rth@tamu.edu).
 
@@ -48,7 +48,6 @@ ENTRY (__clone)
 	   expects.  */
 	sub	%o1, 96, %o1
 	mov	%i3, %g3
-	mov	%i2, %g4
 
 	/* ptid */
 	mov	%i4,%o2

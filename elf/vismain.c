@@ -1,4 +1,4 @@
-/* Copyright (C) 2000-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -29,10 +29,9 @@
 /* Prototype for our test function.  */
 extern int do_test (void);
 
-#define TEST_FUNCTION do_test ()
 
 /* This defines the `main' function and some more.  */
-#include <test-skeleton.c>
+#include <support/test-driver.c>
 
 
 /* Prototypes for local functions.  */

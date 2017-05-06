@@ -73,7 +73,7 @@ rexec_af (char **ahost, int rport, const char *name, const char *pass,
 
 	if (res0->ai_canonname){
 		free (ahostbuf);
-		ahostbuf = strdup (res0->ai_canonname);
+		ahostbuf = __strdup (res0->ai_canonname);
 		if (ahostbuf == NULL) {
 			perror ("rexec: strdup");
 			return (-1);
@@ -86,6 +86,7 @@ rexec_af (char **ahost, int rport, const char *name, const char *pass,
 	}
 	ruserpass(res0->ai_canonname, &name, &pass);
 retry:
+	/* NB: No SOCK_CLOEXEC for backwards compatibility.  */
 	s = __socket(res0->ai_family, res0->ai_socktype, 0);
 	if (s < 0) {
 		perror("rexec: socket");

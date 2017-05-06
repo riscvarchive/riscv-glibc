@@ -1,6 +1,6 @@
 #!/bin/bash
 # Test for glob(3).
-# Copyright (C) 1997-2016 Free Software Foundation, Inc.
+# Copyright (C) 1997-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -47,7 +47,12 @@ testout=${common_objpfx}posix/globtest-out
 rm -rf $testdir $testout
 mkdir $testdir
 
-trap 'chmod 777 $testdir/noread; rm -fr $testdir $testout' 1 2 3 15
+cleanup() {
+    chmod 777 $testdir/noread
+    rm -fr $testdir $testout
+}
+
+trap cleanup 0 HUP INT QUIT TERM
 
 echo 1 > $testdir/file1
 echo 2 > $testdir/file2
@@ -811,8 +816,6 @@ if test $failed -ne 0; then
 fi
 
 if test $result -eq 0; then
-    chmod 777 $testdir/noread
-    rm -fr $testdir $testout
     echo "All OK." > $logfile
 fi
 

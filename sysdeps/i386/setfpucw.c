@@ -1,5 +1,5 @@
 /* Set the FPU control word for x86.
-   Copyright (C) 2003-2016 Free Software Foundation, Inc.
+   Copyright (C) 2003-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ __setfpucw (fpu_control_t set)
   __asm__ ("fldcw %0" : : "m" (*&cw));
 
   /* If the CPU supports SSE, we set the MXCSR as well.  */
-  if ((GLRO(dl_hwcap) & HWCAP_I386_XMM) != 0)
+  if (HAS_CPU_FEATURE (SSE))
     {
       unsigned int xnew_exc;
 

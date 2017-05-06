@@ -12,7 +12,6 @@ delete_module	EXTRA	delete_module	3	delete_module
 epoll_create	EXTRA	epoll_create	i:i	epoll_create
 epoll_create1	EXTRA	epoll_create1	i:i	epoll_create1
 epoll_ctl	EXTRA	epoll_ctl	i:iiip	epoll_ctl
-epoll_wait	EXTRA	epoll_wait	Ci:ipii	epoll_wait
 eventfd		EXTRA	eventfd2	i:ii	eventfd
 execve		-	execve		i:spp	__execve	execve
 fdatasync	-	fdatasync	Ci:i	fdatasync
@@ -50,7 +49,6 @@ pause		-	pause		Ci:	__libc_pause	pause
 pipe		-	pipe		i:f	__pipe		pipe
 pipe2		-	pipe2		i:fi	__pipe2		pipe2
 pivot_root	EXTRA	pivot_root	i:ss	pivot_root
-poll		-	poll		Ci:pii	__libc_poll	__poll poll
 prctl		EXTRA	prctl		i:iiiii	__prctl		prctl
 putpmsg		-	putpmsg		i:ippii	putpmsg
 query_module	EXTRA	query_module	i:sipip	__compat_query_module	query_module@GLIBC_2.0:GLIBC_2.23
@@ -64,7 +62,6 @@ sched_rr_gi	-	sched_rr_get_interval	i:ip	__sched_rr_get_interval	sched_rr_get_in
 sched_setp	-	sched_setparam	i:ip	__sched_setparam	sched_setparam
 sched_sets	-	sched_setscheduler	i:iip	__sched_setscheduler	sched_setscheduler
 sched_yield	-	sched_yield	i:	__sched_yield	sched_yield
-select		-	_newselect	Ci:iPPPP	__select	__libc_select select
 sendfile	-	sendfile	i:iipi	sendfile
 sendfile64	-	sendfile64	i:iipi	sendfile64
 setfsgid	EXTRA	setfsgid	i:i	setfsgid
@@ -89,7 +86,6 @@ fchownat	-	fchownat	i:isiii	fchownat
 linkat		-	linkat		i:isisi	linkat
 mkdirat		-	mkdirat		i:isi	mkdirat
 readlinkat	-	readlinkat	i:issi	readlinkat
-renameat	-	renameat	i:isis	renameat
 symlinkat	-	symlinkat	i:sis	symlinkat
 unlinkat	-	unlinkat	i:isi	unlinkat
 

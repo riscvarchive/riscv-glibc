@@ -1,5 +1,5 @@
 /* More debugging hooks for `malloc'.
-   Copyright (C) 1991-2016 Free Software Foundation, Inc.
+   Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
                  Written April 2, 1991 by John Gilmore of Cygnus Support.
                  Based on mcheck.c by Mike Haertel.
@@ -300,15 +300,6 @@ mtrace (void)
       mallstream = fopen (mallfile != NULL ? mallfile : "/dev/null", "wce");
       if (mallstream != NULL)
         {
-#ifndef __ASSUME_O_CLOEXEC
-          /* Make sure we close the file descriptor on exec.  */
-          int flags = __fcntl (fileno (mallstream), F_GETFD, 0);
-          if (flags >= 0)
-            {
-              flags |= FD_CLOEXEC;
-              __fcntl (fileno (mallstream), F_SETFD, flags);
-            }
-#endif
           /* Be sure it doesn't malloc its buffer!  */
           malloc_trace_buffer = mtb;
           setvbuf (mallstream, malloc_trace_buffer, _IOFBF, TRACE_BUFFER_SIZE);

@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2016 Free Software Foundation, Inc.
+# Copyright (C) 1991-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -24,7 +24,8 @@ include ../Makeconfig
 
 headers	:= string.h strings.h memory.h endian.h bits/endian.h \
 	   argz.h envz.h byteswap.h bits/byteswap.h bits/byteswap-16.h \
-	   bits/string.h bits/string2.h bits/string3.h
+	   bits/string.h bits/string2.h bits/string3.h \
+	   bits/strings_fortified.h bits/uintn-identity.h
 
 routines	:= strcat strchr strcmp strcoll strcpy strcspn		\
 		   strverscmp strdup strndup				\
@@ -41,21 +42,24 @@ routines	:= strcat strchr strcmp strcoll strcpy strcspn		\
 				     addsep replace)			\
 		   envz basename					\
 		   strcoll_l strxfrm_l string-inlines memrchr		\
-		   xpg-strerror strerror_l
+		   xpg-strerror strerror_l explicit_bzero
 
 strop-tests	:= memchr memcmp memcpy memmove mempcpy memset memccpy	\
 		   stpcpy stpncpy strcat strchr strcmp strcpy strcspn	\
 		   strlen strncmp strncpy strpbrk strrchr strspn memmem	\
 		   strstr strcasestr strnlen strcasecmp strncasecmp	\
-		   strncat rawmemchr strchrnul bcopy bzero memrchr
+		   strncat rawmemchr strchrnul bcopy bzero memrchr	\
+		   explicit_bzero
 tests		:= tester inl-tester noinl-tester testcopy test-ffs	\
 		   tst-strlen stratcliff tst-svc tst-inlcall		\
 		   bug-strncat1 bug-strspn1 bug-strpbrk1 tst-bswap	\
 		   tst-strtok tst-strxfrm bug-strcoll1 tst-strfry	\
 		   bug-strtok1 $(addprefix test-,$(strop-tests))	\
 		   bug-envz1 tst-strxfrm2 tst-endian tst-svc2		\
-		   tst-strtok_r bug-strcoll2 tst-cmp
+		   tst-strtok_r bug-strcoll2 tst-cmp tst-xbzero-opt	\
+		   test-endian-types
 
+# This test allocates a lot of memory and can run for a long time.
 xtests = tst-strcoll-overflow
 
 ifeq ($(run-built-tests),yes)
@@ -70,6 +74,19 @@ CFLAGS-tst-strlen.c = -fno-builtin
 CFLAGS-stratcliff.c = -fno-builtin
 CFLAGS-test-ffs.c = -fno-builtin
 CFLAGS-tst-inlcall.c = -fno-builtin
+CFLAGS-tst-xbzero-opt.c = -O3
+# BZ 21006: Resolve all functions but at least explicit_bzero at startup.
+# Otherwise the test fails on s390x as the memcpy in prepare_test_buffer is
+# done by loading r4 / r5 with the test_pattern and using store multiple
+# instruction to store r4 / r5 to buf.  If explicit_bzero would be resolved in
+# setup_explicit_clear, r4 / r5 would be stored to stack by _dl_runtime_resolve
+# and the call to memmem in count_test_patterns will find a hit of the
+# test_pattern on the stack.
+LDFLAGS-tst-xbzero-opt = -z now
+
+# Called during TLS initialization.
+CFLAGS-memcpy.c = $(no-stack-protector)
+CFLAGS-wordcopy.c = $(no-stack-protector)
 
 ifeq ($(run-built-tests),yes)
 $(objpfx)tst-svc-cmp.out: tst-svc.expect $(objpfx)tst-svc.out
@@ -78,7 +95,7 @@ $(objpfx)tst-svc-cmp.out: tst-svc.expect $(objpfx)tst-svc.out
 
 LOCALES := de_DE.UTF-8 en_US.ISO-8859-1 en_US.UTF-8 \
            tr_TR.ISO-8859-9 tr_TR.UTF-8 cs_CZ.UTF-8 \
-	   da_DK.ISO-8859-1
+	   da_DK.ISO-8859-1 en_GB.UTF-8
 include ../gen-locales.mk
 
 $(objpfx)test-strcasecmp.out: $(gen-locales)
@@ -87,5 +104,6 @@ $(objpfx)tst-strxfrm.out: $(gen-locales)
 $(objpfx)tst-strxfrm2.out: $(gen-locales)
 # bug-strcoll2 needs cs_CZ.UTF-8 and da_DK.ISO-8859-1.
 $(objpfx)bug-strcoll2.out: $(gen-locales)
+$(objpfx)tst-strcoll-overflow.out: $(gen-locales)
 
 endif

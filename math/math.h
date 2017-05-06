@@ -1,5 +1,5 @@
 /* Declarations for math functions.
-   Copyright (C) 1991-2016 Free Software Foundation, Inc.
+   Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -27,6 +27,9 @@
 #include <bits/libc-header-start.h>
 
 __BEGIN_DECLS
+
+/* Get definitions of __intmax_t and __uintmax_t.  */
+#include <bits/types.h>
 
 /* Get machine-dependent vector math functions declarations.  */
 #include <bits/math-vector.h>
@@ -138,10 +141,6 @@ typedef _Float128x double_t;
 # endif
 #endif
 
-/* Get information about long double.  */
-
-#include <bits/mathdef.h>
-
 /* Get the architecture specific values describing the floating-point
    evaluation.  The following symbols will get defined:
 
@@ -155,6 +154,28 @@ typedef _Float128x double_t;
 */
 
 #include <bits/fp-fast.h>
+
+#if __GLIBC_USE (IEC_60559_BFP_EXT)
+/* Rounding direction macros for fromfp functions.  */
+enum
+  {
+    FP_INT_UPWARD =
+# define FP_INT_UPWARD 0
+      FP_INT_UPWARD,
+    FP_INT_DOWNWARD =
+# define FP_INT_DOWNWARD 1
+      FP_INT_DOWNWARD,
+    FP_INT_TOWARDZERO =
+# define FP_INT_TOWARDZERO 2
+      FP_INT_TOWARDZERO,
+    FP_INT_TONEARESTFROMZERO =
+# define FP_INT_TONEARESTFROMZERO 3
+      FP_INT_TONEARESTFROMZERO,
+    FP_INT_TONEAREST =
+# define FP_INT_TONEAREST 4
+      FP_INT_TONEAREST,
+  };
+#endif
 
 /* The file <bits/mathcalls.h> contains the prototypes for all the
    actual math functions.  These macros are used for those prototypes,
@@ -187,12 +208,9 @@ typedef _Float128x double_t;
 #define _Mdouble_		double
 #define __MATH_PRECNAME(name,r)	__CONCAT(name,r)
 #define __MATH_DECLARING_DOUBLE  1
-#define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_STD
-#define _Mdouble_END_NAMESPACE   __END_NAMESPACE_STD
+#include <bits/mathcalls-helper-functions.h>
 #include <bits/mathcalls.h>
 #undef	_Mdouble_
-#undef _Mdouble_BEGIN_NAMESPACE
-#undef _Mdouble_END_NAMESPACE
 #undef	__MATH_PRECNAME
 #undef __MATH_DECLARING_DOUBLE
 
@@ -208,12 +226,9 @@ typedef _Float128x double_t;
 # define _Mdouble_		_Mfloat_
 # define __MATH_PRECNAME(name,r) name##f##r
 # define __MATH_DECLARING_DOUBLE  0
-# define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_C99
-# define _Mdouble_END_NAMESPACE   __END_NAMESPACE_C99
+# include <bits/mathcalls-helper-functions.h>
 # include <bits/mathcalls.h>
 # undef	_Mdouble_
-# undef _Mdouble_BEGIN_NAMESPACE
-# undef _Mdouble_END_NAMESPACE
 # undef	__MATH_PRECNAME
 # undef __MATH_DECLARING_DOUBLE
 
@@ -254,13 +269,10 @@ extern long double __REDIRECT_NTH (nexttowardl,
 #  define _Mdouble_		_Mlong_double_
 #  define __MATH_PRECNAME(name,r) name##l##r
 #  define __MATH_DECLARING_DOUBLE  0
-#  define _Mdouble_BEGIN_NAMESPACE __BEGIN_NAMESPACE_C99
-#  define _Mdouble_END_NAMESPACE   __END_NAMESPACE_C99
 #  define __MATH_DECLARE_LDOUBLE   1
+#  include <bits/mathcalls-helper-functions.h>
 #  include <bits/mathcalls.h>
 #  undef _Mdouble_
-#  undef _Mdouble_BEGIN_NAMESPACE
-#  undef _Mdouble_END_NAMESPACE
 #  undef __MATH_PRECNAME
 #  undef __MATH_DECLARING_DOUBLE
 
@@ -548,8 +560,48 @@ extern int matherr (struct exception *__exc);
 /* Define special entry points to use when the compiler got told to
    only expect finite results.  */
 #if defined __FINITE_MATH_ONLY__ && __FINITE_MATH_ONLY__ > 0
+
+/* Include bits/math-finite.h for double.  */
+# define _Mdouble_ double
+# define __MATH_DECLARING_DOUBLE 1
+# define __MATH_DECLARING_LDOUBLE 0
+# define _MSUF_
 # include <bits/math-finite.h>
-#endif
+# undef _Mdouble_
+# undef __MATH_DECLARING_DOUBLE
+# undef __MATH_DECLARING_LDOUBLE
+# undef _MSUF_
+
+/* When __USE_ISOC99 is defined, include math-finite for float and
+   long double, as well.  */
+# ifdef __USE_ISOC99
+
+/* Include bits/math-finite.h for float.  */
+#  define _Mdouble_ float
+#  define __MATH_DECLARING_DOUBLE 0
+#  define __MATH_DECLARING_LDOUBLE 0
+#  define _MSUF_ f
+#  include <bits/math-finite.h>
+#  undef _Mdouble_
+#  undef __MATH_DECLARING_DOUBLE
+#  undef __MATH_DECLARING_LDOUBLE
+#  undef _MSUF_
+
+/* Include bits/math-finite.h for long double.  */
+#  ifdef __MATH_DECLARE_LDOUBLE
+#   define _Mdouble_ long double
+#   define __MATH_DECLARING_DOUBLE 0
+#   define __MATH_DECLARING_LDOUBLE 1
+#   define _MSUF_ l
+#   include <bits/math-finite.h>
+#   undef _Mdouble_
+#   undef __MATH_DECLARING_DOUBLE
+#   undef __MATH_DECLARING_LDOUBLE
+#   undef _MSUF_
+#  endif
+
+# endif /* __USE_ISOC99.  */
+#endif /* __FINITE_MATH_ONLY__ > 0.  */
 
 #ifdef __USE_ISOC99
 /* If we've still got undefined comparison macros, provide defaults.  */

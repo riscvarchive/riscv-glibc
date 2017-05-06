@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2004-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 2004.
 
@@ -17,6 +17,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <errno.h>
+#include <limits.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -90,7 +91,7 @@ do_test (void)
   pthread_attr_t attr;
   int i, ret, sz;
   pthread_attr_init (&attr);
-  sz = __getpagesize ();
+  sz = sysconf (_SC_PAGESIZE);
   if (sz < PTHREAD_STACK_MIN)
 	  sz = PTHREAD_STACK_MIN;
   pthread_attr_setstacksize (&attr, sz);

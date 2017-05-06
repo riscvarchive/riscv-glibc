@@ -1,5 +1,5 @@
 /* Conversion loop frame work.
-   Copyright (C) 1998-2016 Free Software Foundation, Inc.
+   Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1998.
 
@@ -56,7 +56,7 @@
 #include <sys/param.h>		/* For MIN.  */
 #define __need_size_t
 #include <stddef.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 /* We have to provide support for machines which are not able to handled
    unaligned memory accesses.  Some of the character encodings have

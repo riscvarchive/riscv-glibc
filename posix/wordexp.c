@@ -1,5 +1,5 @@
 /* POSIX.2 wordexp implementation.
-   Copyright (C) 1997-2016 Free Software Foundation, Inc.
+   Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Tim Waugh <tim@cyberelk.demon.co.uk>.
 
@@ -833,15 +833,8 @@ exec_comm_child (char *comm, int *fildes, int showerr, int noexec)
       __close (fildes[1]);
     }
   else
-    {
-#ifdef O_CLOEXEC
-      /* Reset the close-on-exec flag (if necessary).  */
-# ifndef __ASSUME_PIPE2
-      if (__have_pipe2 > 0)
-# endif
-	__fcntl (fildes[1], F_SETFD, 0);
-#endif
-    }
+    /* Reset the close-on-exec flag (if necessary).  */
+    __fcntl (fildes[1], F_SETFD, 0);
 
   /* Redirect stderr to /dev/null if we have to.  */
   if (showerr == 0)
@@ -905,31 +898,8 @@ exec_comm (char *comm, char **word, size_t *word_length, size_t *max_length,
   if (!comm || !*comm)
     return 0;
 
-#ifdef O_CLOEXEC
-# ifndef __ASSUME_PIPE2
-  if (__have_pipe2 >= 0)
-# endif
-    {
-      int r = __pipe2 (fildes, O_CLOEXEC);
-# ifndef __ASSUME_PIPE2
-      if (__have_pipe2 == 0)
-	__have_pipe2 = r != -1 || errno != ENOSYS ? 1 : -1;
-
-      if (__have_pipe2 > 0)
-# endif
-	if (r < 0)
-	  /* Bad */
-	  return WRDE_NOSPACE;
-    }
-#endif
-#ifndef __ASSUME_PIPE2
-# ifdef O_CLOEXEC
-  if (__have_pipe2 < 0)
-# endif
-    if (__pipe (fildes) < 0)
-      /* Bad */
-      return WRDE_NOSPACE;
-#endif
+  if (__pipe2 (fildes, O_CLOEXEC) < 0)
+    return WRDE_NOSPACE;
 
  again:
   if ((pid = __fork ()) < 0)

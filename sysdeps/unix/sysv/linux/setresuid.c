@@ -1,4 +1,4 @@
-/* Copyright (C) 1998-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,7 +23,11 @@
 int
 __setresuid (uid_t ruid, uid_t euid, uid_t suid)
 {
+#ifdef __NR_setresuid32
+  return INLINE_SETXID_SYSCALL (setresuid32, 3, ruid, euid, suid);
+#else
   return INLINE_SETXID_SYSCALL (setresuid, 3, ruid, euid, suid);
+#endif
 }
 libc_hidden_def (__setresuid)
 #ifndef __setresuid

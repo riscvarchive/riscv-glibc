@@ -1,5 +1,5 @@
 /* Thread Priority Protect helpers.
-   Copyright (C) 2006-2016 Free Software Foundation, Inc.
+   Copyright (C) 2006-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 2006.
 
@@ -114,6 +114,7 @@ __pthread_tpp_change_priority (int previous_prio, int new_prio)
   if (priomax == newpriomax)
     return 0;
 
+  /* See CREATE THREAD NOTES in nptl/pthread_create.c.  */
   lll_lock (self->lock, LLL_PRIVATE);
 
   tpp->priomax = newpriomax;
@@ -165,6 +166,7 @@ __pthread_current_priority (void)
 
   int result = 0;
 
+  /* See CREATE THREAD NOTES in nptl/pthread_create.c.  */
   lll_lock (self->lock, LLL_PRIVATE);
 
   if ((self->flags & ATTR_FLAG_SCHED_SET) == 0)

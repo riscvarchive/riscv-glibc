@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2001-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ryan S. Arnold <rsa@us.ibm.com>
                   Sean Curry <spcurry@us.ibm.com>
@@ -26,8 +26,8 @@
 #include <malloc.h>
 #include <link.h>
 #include <elf.h>
-#include <sysdep.h>
 #include <fpu_control.h>
+#include <sys/auxv.h>
 
 static ucontext_t ctx[3];
 

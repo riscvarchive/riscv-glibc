@@ -1,5 +1,5 @@
 /* Test program for returning the canonical absolute name of a given file.
-   Copyright (C) 1996-2016 Free Software Foundation, Inc.
+   Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by David Mosberger <davidm@azstarnet.com>.
 
@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/param.h>
+#include <sys/stat.h>
 
 /* Prototype for our test function.  */
 extern int do_test (int argc, char *argv[]);

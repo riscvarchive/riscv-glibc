@@ -1,5 +1,5 @@
 /* Get frequency of the system processor.  sparc64 version.
-   Copyright (C) 2001-2016 Free Software Foundation, Inc.
+   Copyright (C) 2001-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <sys/ioctl.h>
-#include <libc-internal.h>
 #include <asm/openpromio.h>
 
 static hp_timing_t

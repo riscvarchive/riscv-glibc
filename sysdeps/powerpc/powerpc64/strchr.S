@@ -1,5 +1,5 @@
 /* Optimized strchr implementation for PowerPC64.
-   Copyright (C) 1997-2016 Free Software Foundation, Inc.
+   Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,7 +22,11 @@
 
 /* char * [r3] strchr (const char *s [r3] , int c [r4] )  */
 
-ENTRY (strchr)
+#ifndef STRCHR
+# define STRCHR strchr
+#endif
+
+ENTRY (STRCHR)
 	CALL_MCOUNT 2
 
 #define rTMP1	r0
@@ -145,7 +149,7 @@ L(foundit):
 #endif
 	add	rRTN, rSTR, rCLZB
 	blr
-END (strchr)
+END (STRCHR)
 
 weak_alias (strchr, index)
 libc_hidden_builtin_def (strchr)

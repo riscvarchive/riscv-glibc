@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -101,6 +101,7 @@
 #define IP_NODEFRAG     22
 #define IP_CHECKSUM     23
 #define IP_BIND_ADDRESS_NO_PORT 24
+#define IP_RECVFRAGSIZE 25
 
 /* IP_MTU_DISCOVER arguments.  */
 #define IP_PMTUDISC_DONT   0	/* Never send DF frames.  */
@@ -213,6 +214,20 @@ struct in_pktinfo
 /* Advanced API (RFC3542) (2).  */
 #define IPV6_RECVTCLASS		66
 #define IPV6_TCLASS		67
+
+#define IPV6_AUTOFLOWLABEL	70
+
+/* RFC5014.  */
+#define IPV6_ADDR_PREFERENCES	72
+
+/* RFC5082.  */
+#define IPV6_MINHOPCOUNT	73
+
+#define IPV6_ORIGDSTADDR	74
+#define IPV6_RECVORIGDSTADDR	IPV6_ORIGDSTADDR
+#define IPV6_TRANSPARENT	75
+#define IPV6_UNICAST_IF		76
+#define IPV6_RECVFRAGSIZE	77
 
 /* Obsolete synonyms for the above.  */
 #if !__USE_KERNEL_IPV6_DEFS

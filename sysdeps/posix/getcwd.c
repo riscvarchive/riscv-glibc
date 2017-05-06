@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -281,13 +281,7 @@ __getcwd (char *buf, size_t size)
   while (!(thisdev == rootdev && thisino == rootino))
     {
       if (__have_atfcts >= 0)
-	{
-	  int mode = O_RDONLY;
-#ifdef O_CLOEXEC
-	  mode |= O_CLOEXEC;
-#endif
-	  fd = openat64_not_cancel_3 (fd, "..", mode);
-	}
+	  fd = openat64_not_cancel_3 (fd, "..", O_RDONLY | O_CLOEXEC);
       else
 	fd = -1;
       if (fd >= 0)

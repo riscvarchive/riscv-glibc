@@ -1,4 +1,4 @@
-# Copyright (C) 1992-2016 Free Software Foundation, Inc.
+# Copyright (C) 1992-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -54,8 +54,6 @@ routines :=								\
 	posix_fallocate posix_fallocate64				\
 	sendfile sendfile64 \
 	utimensat futimens
-
-aux := have_o_cloexec
 
 # These routines will be omitted from the libc shared object.
 # Instead the static object files will be included in a special archive

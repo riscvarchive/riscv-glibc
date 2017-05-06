@@ -1,5 +1,5 @@
 /* s390 version of processor capability information handling macros.
-   Copyright (C) 2006-2016 Free Software Foundation, Inc.
+   Copyright (C) 2006-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Martin Schwidefsky <schwidefsky@de.ibm.com>, 2006.
 
@@ -64,13 +64,6 @@ __attribute__ ((unused))
 _dl_hwcap_string (int idx)
 {
   return GLRO(dl_s390_cap_flags)[idx];
-};
-
-static inline const char *
-__attribute__ ((unused))
-_dl_platform_string (int idx)
-{
-  return GLRO(dl_s390_platforms)[idx - _DL_FIRST_PLATFORM];
 };
 
 static inline int

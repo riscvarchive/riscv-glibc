@@ -1,5 +1,5 @@
 /* Read the dynamic section at DYN and fill in INFO with indices DT_*.
-   Copyright (C) 2012-2016 Free Software Foundation, Inc.
+   Copyright (C) 2012-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,8 +16,11 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
+/* This file is included multiple times and therefore lacks a header
+   file inclusion guard.  */
+
 #include <assert.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 #ifndef RESOLVE_MAP
 static

@@ -224,5 +224,9 @@ libm {
     setpayload; setpayloadf; setpayloadl;
     setpayloadsig; setpayloadsigf; setpayloadsigl;
     llogb; llogbf; llogbl;
+    fmaxmag; fmaxmagf; fmaxmagl; fminmag; fminmagf; fminmagl;
+    roundeven; roundevenf; roundevenl;
+    fromfp; fromfpf; fromfpl; ufromfp; ufromfpf; ufromfpl;
+    fromfpx; fromfpxf; fromfpxl; ufromfpx; ufromfpxf; ufromfpxl;
   }
 }

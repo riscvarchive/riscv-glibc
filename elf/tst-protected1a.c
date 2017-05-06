@@ -7,7 +7,7 @@
    4. Symbol, protected2, defined in main, is used in main.
    5. Symbol, protected3, defined in moda, is also used in main.
 
-   Copyright (C) 2015-2016 Free Software Foundation, Inc.
+   Copyright (C) 2015-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -40,10 +40,8 @@ extern int do_test (void);
 
 int protected2 = -1;
 
-#define TEST_FUNCTION do_test ()
-
 /* This defines the `main' function and some more.  */
-#include <test-skeleton.c>
+#include <support/test-driver.c>
 
 int
 do_test (void)

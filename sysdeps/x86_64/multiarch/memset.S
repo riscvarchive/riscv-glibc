@@ -1,6 +1,6 @@
 /* Multiple versions of memset
    All versions must be listed in ifunc-impl-list.c.
-   Copyright (C) 2014-2016 Free Software Foundation, Inc.
+   Copyright (C) 2014-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -41,6 +41,8 @@ ENTRY(memset)
 	jnz	L(AVX512F)
 	lea	__memset_avx2_unaligned(%rip), %RAX_LP
 L(AVX512F):
+	HAS_ARCH_FEATURE (Prefer_No_AVX512)
+	jnz	2f
 	HAS_ARCH_FEATURE (AVX512F_Usable)
 	jz	2f
 	lea	__memset_avx512_no_vzeroupper(%rip), %RAX_LP

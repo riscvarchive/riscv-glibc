@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -27,6 +27,8 @@
 #include <stdlib.h>
 
 #include <_itoa.h>
+
+#include "ttyname.h"
 
 static int getttyname_r (char *buf, size_t buflen,
 			 dev_t mydev, ino64_t myino, int save,
@@ -152,12 +154,19 @@ __ttyname_r (int fd, char *buf, size_t buflen)
 #ifdef _STATBUF_ST_RDEV
 	  && S_ISCHR (st1.st_mode)
 	  && st1.st_rdev == st.st_rdev
-#else
-	  && st1.st_ino == st.st_ino
-	  && st1.st_dev == st.st_dev
 #endif
-	  )
+	  && st1.st_ino == st.st_ino
+	  && st1.st_dev == st.st_dev)
 	return 0;
+
+      /* If the link doesn't exist, then it points to a device in another
+       * namespace.
+       */
+      if (is_pty (&st))
+	{
+	  __set_errno (ENODEV);
+	  return ENODEV;
+	}
     }
 
   /* Prepare the result buffer.  */

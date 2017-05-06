@@ -1,4 +1,4 @@
-/* Copyright (C) 1997-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
@@ -32,5 +32,6 @@ __libc_pwrite (int fd, const void *buf, size_t count, off_t offset)
 }
 
 strong_alias (__libc_pwrite, __pwrite)
+libc_hidden_weak (__pwrite)
 weak_alias (__libc_pwrite, pwrite)
 #endif

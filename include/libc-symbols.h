@@ -1,6 +1,6 @@
 /* Support macros for making weak and strong aliases for symbols,
    and for using symbol sets and linker warnings with GNU ld.
-   Copyright (C) 1995-2016 Free Software Foundation, Inc.
+   Copyright (C) 1995-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -336,6 +336,16 @@ for linking")
 
 #define attribute_relro __attribute__ ((section (".data.rel.ro")))
 
+
+/* Used to disable stack protection in sensitive places, like ifunc
+   resolvers and early static TLS init.  */
+#ifdef HAVE_CC_NO_STACK_PROTECTOR
+# define inhibit_stack_protector \
+    __attribute__ ((__optimize__ ("-fno-stack-protector")))
+#else
+# define inhibit_stack_protector
+#endif
+
 /* The following macros are used for PLT bypassing within libc.so
    (and if needed other libraries similarly).
    First of all, you need to have the function prototyped somewhere,
@@ -653,6 +663,12 @@ for linking")
 # define libnsl_hidden_proto(name, attrs...) hidden_proto (name, ##attrs)
 # define libnsl_hidden_tls_proto(name, attrs...) \
   hidden_tls_proto (name, ##attrs)
+# ifdef LINK_OBSOLETE_NSL
+   /* libnsl_hidden_nolink should only get used in libnsl code.  */
+#  define libnsl_hidden_nolink_def(name, version) libnsl_hidden_def (name)
+# else
+#  define libnsl_hidden_nolink_def(name, version) hidden_nolink (name, libnsl, version)
+# endif
 # define libnsl_hidden_def(name) hidden_def (name)
 # define libnsl_hidden_weak(name) hidden_weak (name)
 # define libnsl_hidden_ver(local, name) hidden_ver (local, name)
@@ -737,7 +753,7 @@ for linking")
 
 /* Helper / base  macros for indirect function symbols.  */
 #define __ifunc_resolver(type_name, name, expr, arg, init, classifier)	\
-  classifier void *name##_ifunc (arg)					\
+  classifier inhibit_stack_protector void *name##_ifunc (arg)					\
   {									\
     init ();								\
     __typeof (type_name) *res = expr;					\
@@ -875,6 +891,49 @@ for linking")
     __attribute__ ((__optimize__ ("-fno-tree-loop-distribute-patterns")))
 #else
 # define inhibit_loop_to_libcall
+#endif
+
+/* These macros facilitate sharing source files with gnulib.
+
+   They are here instead of sys/cdefs.h because they should not be
+   used in public header files.
+
+   Their definitions should be kept consistent with the definitions in
+   gnulib-common.m4, but it is not necessary to cater to old non-GCC
+   compilers, since they will only be used while building glibc itself.
+   (Note that _GNUC_PREREQ cannot be used in this file.)  */
+
+/* Define as a marker that can be attached to declarations that might not
+    be used.  This helps to reduce warnings, such as from
+    GCC -Wunused-parameter.  */
+#if __GNUC__ >= 3 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
+# define _GL_UNUSED __attribute__ ((__unused__))
+#else
+# define _GL_UNUSED
+#endif
+
+/* gcc supports the "unused" attribute on possibly unused labels, and
+   g++ has since version 4.5.  Note to support C++ as well as C,
+   _GL_UNUSED_LABEL should be used with a trailing ;  */
+#if !defined __cplusplus || __GNUC__ > 4 \
+    || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+# define _GL_UNUSED_LABEL _GL_UNUSED
+#else
+# define _GL_UNUSED_LABEL
+#endif
+
+/* The __pure__ attribute was added in gcc 2.96.  */
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 96)
+# define _GL_ATTRIBUTE_PURE __attribute__ ((__pure__))
+#else
+# define _GL_ATTRIBUTE_PURE /* empty */
+#endif
+
+/* The __const__ attribute was added in gcc 2.95.  */
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
+# define _GL_ATTRIBUTE_CONST __attribute__ ((__const__))
+#else
+# define _GL_ATTRIBUTE_CONST /* empty */
 #endif
 
 #endif /* libc-symbols.h */

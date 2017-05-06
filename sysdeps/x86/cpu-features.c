@@ -1,6 +1,6 @@
 /* Initialize CPU feature data.
    This file is part of the GNU C Library.
-   Copyright (C) 2008-2016 Free Software Foundation, Inc.
+   Copyright (C) 2008-2017 Free Software Foundation, Inc.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -18,11 +18,12 @@
 
 #include <cpuid.h>
 #include <cpu-features.h>
+#include <dl-hwcap.h>
 
 static void
 get_common_indeces (struct cpu_features *cpu_features,
 		    unsigned int *family, unsigned int *model,
-		    unsigned int *extended_model)
+		    unsigned int *extended_model, unsigned int *stepping)
 {
   if (family)
     {
@@ -34,6 +35,7 @@ get_common_indeces (struct cpu_features *cpu_features,
       *family = (eax >> 8) & 0x0f;
       *model = (eax >> 4) & 0x0f;
       *extended_model = (eax >> 12) & 0xf0;
+      *stepping = eax & 0x0f;
       if (*family == 0x0f)
 	{
 	  *family += (eax >> 20) & 0xff;
@@ -116,15 +118,15 @@ init_cpu_features (struct cpu_features *cpu_features)
   /* This spells out "GenuineIntel".  */
   if (ebx == 0x756e6547 && ecx == 0x6c65746e && edx == 0x49656e69)
     {
-      unsigned int extended_model;
+      unsigned int extended_model, stepping;
 
       kind = arch_kind_intel;
 
-      get_common_indeces (cpu_features, &family, &model, &extended_model);
+      get_common_indeces (cpu_features, &family, &model, &extended_model,
+			  &stepping);
 
       if (family == 0x06)
 	{
-	  ecx = cpu_features->cpuid[COMMON_CPUID_INDEX_1].ecx;
 	  model += extended_model;
 	  switch (model)
 	    {
@@ -137,8 +139,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 
 	    case 0x57:
 	      /* Knights Landing.  Enable Silvermont optimizations.  */
-	      cpu_features->feature[index_arch_Prefer_No_VZEROUPPER]
-		|= bit_arch_Prefer_No_VZEROUPPER;
 
 	    case 0x5c:
 	    case 0x5f:
@@ -174,7 +174,7 @@ init_cpu_features (struct cpu_features *cpu_features)
 	    default:
 	      /* Unknown family 0x06 processors.  Assuming this is one
 		 of Core i3/i5/i7 processors if AVX is available.  */
-	      if ((ecx & bit_cpu_AVX) == 0)
+	      if (!CPU_FEATURES_CPU_P (cpu_features, AVX))
 		break;
 
 	    case 0x1a:
@@ -201,6 +201,20 @@ init_cpu_features (struct cpu_features *cpu_features)
 		    | bit_arch_Fast_Unaligned_Copy
 		    | bit_arch_Prefer_PMINUB_for_stringop);
 	      break;
+
+	    case 0x3f:
+	      /* Xeon E7 v3 with stepping >= 4 has working TSX.  */
+	      if (stepping >= 4)
+		break;
+	    case 0x3c:
+	    case 0x45:
+	    case 0x46:
+	      /* Disable Intel TSX on Haswell processors (except Xeon E7 v3
+		 with stepping >= 4) to avoid TSX on kernels that weren't
+		 updated with the latest microcode package (which disables
+		 broken feature by default).  */
+	      cpu_features->cpuid[index_cpu_RTM].reg_RTM &= ~bit_cpu_RTM;
+	      break;
 	    }
 	}
 
@@ -209,6 +223,16 @@ init_cpu_features (struct cpu_features *cpu_features)
       if (CPU_FEATURES_ARCH_P (cpu_features, AVX2_Usable))
 	cpu_features->feature[index_arch_AVX_Fast_Unaligned_Load]
 	  |= bit_arch_AVX_Fast_Unaligned_Load;
+
+      /* Since AVX512ER is unique to Xeon Phi, set Prefer_No_VZEROUPPER
+         if AVX512ER is available.  Don't use AVX512 to avoid lower CPU
+	 frequency if AVX512ER isn't available.  */
+      if (CPU_FEATURES_CPU_P (cpu_features, AVX512ER))
+	cpu_features->feature[index_arch_Prefer_No_VZEROUPPER]
+	  |= bit_arch_Prefer_No_VZEROUPPER;
+      else
+	cpu_features->feature[index_arch_Prefer_No_AVX512]
+	  |= bit_arch_Prefer_No_AVX512;
 
       /* To avoid SSE transition penalty, use _dl_runtime_resolve_slow.
          If XGETBV suports ECX == 1, use _dl_runtime_resolve_opt.  */
@@ -227,11 +251,12 @@ init_cpu_features (struct cpu_features *cpu_features)
   /* This spells out "AuthenticAMD".  */
   else if (ebx == 0x68747541 && ecx == 0x444d4163 && edx == 0x69746e65)
     {
-      unsigned int extended_model;
+      unsigned int extended_model, stepping;
 
       kind = arch_kind_amd;
 
-      get_common_indeces (cpu_features, &family, &model, &extended_model);
+      get_common_indeces (cpu_features, &family, &model, &extended_model,
+			  &stepping);
 
       ecx = cpu_features->cpuid[COMMON_CPUID_INDEX_1].ecx;
 
@@ -268,7 +293,7 @@ init_cpu_features (struct cpu_features *cpu_features)
   else
     {
       kind = arch_kind_other;
-      get_common_indeces (cpu_features, NULL, NULL, NULL);
+      get_common_indeces (cpu_features, NULL, NULL, NULL, NULL);
     }
 
   /* Support i586 if CX8 is available.  */
@@ -286,4 +311,51 @@ no_cpuid:
   cpu_features->family = family;
   cpu_features->model = model;
   cpu_features->kind = kind;
+
+#if IS_IN (rtld)
+  /* Reuse dl_platform, dl_hwcap and dl_hwcap_mask for x86.  */
+  GLRO(dl_platform) = NULL;
+  GLRO(dl_hwcap) = 0;
+  GLRO(dl_hwcap_mask) = HWCAP_IMPORTANT;
+
+# ifdef __x86_64__
+  if (cpu_features->kind == arch_kind_intel)
+    {
+      if (CPU_FEATURES_ARCH_P (cpu_features, AVX512F_Usable)
+	  && CPU_FEATURES_CPU_P (cpu_features, AVX512CD))
+	{
+	  if (CPU_FEATURES_CPU_P (cpu_features, AVX512ER))
+	    {
+	      if (CPU_FEATURES_CPU_P (cpu_features, AVX512PF))
+		GLRO(dl_platform) = "xeon_phi";
+	    }
+	  else
+	    {
+	      if (CPU_FEATURES_CPU_P (cpu_features, AVX512BW)
+		  && CPU_FEATURES_CPU_P (cpu_features, AVX512DQ)
+		  && CPU_FEATURES_CPU_P (cpu_features, AVX512VL))
+		GLRO(dl_hwcap) |= HWCAP_X86_AVX512_1;
+	    }
+	}
+
+      if (GLRO(dl_platform) == NULL
+	  && CPU_FEATURES_ARCH_P (cpu_features, AVX2_Usable)
+	  && CPU_FEATURES_ARCH_P (cpu_features, FMA_Usable)
+	  && CPU_FEATURES_CPU_P (cpu_features, BMI1)
+	  && CPU_FEATURES_CPU_P (cpu_features, BMI2)
+	  && CPU_FEATURES_CPU_P (cpu_features, LZCNT)
+	  && CPU_FEATURES_CPU_P (cpu_features, MOVBE)
+	  && CPU_FEATURES_CPU_P (cpu_features, POPCNT))
+	GLRO(dl_platform) = "haswell";
+    }
+# else
+  if (CPU_FEATURES_CPU_P (cpu_features, SSE2))
+    GLRO(dl_hwcap) |= HWCAP_X86_SSE2;
+
+  if (CPU_FEATURES_ARCH_P (cpu_features, I686))
+    GLRO(dl_platform) = "i686";
+  else if (CPU_FEATURES_ARCH_P (cpu_features, I586))
+    GLRO(dl_platform) = "i586";
+# endif
+#endif
 }

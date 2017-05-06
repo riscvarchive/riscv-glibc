@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -27,7 +27,7 @@
 #include <string.h>
 #include <wchar.h>
 #include <wctype.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 #include <libc-lock.h>
 #include <locale/localeinfo.h>
 #include <scratch_buffer.h>

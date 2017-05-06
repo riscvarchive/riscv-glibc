@@ -1,4 +1,4 @@
-/* Copyright (C) 2002-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@redhat.com>, 2002.
 
@@ -40,8 +40,8 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 
-#include <libc-internal.h>
 #include <libc-mmap.h>
+#include <libc-pointer-arith.h>
 #include "../../crypt/md5.h"
 #include "../localeinfo.h"
 #include "../locarchive.h"

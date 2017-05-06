@@ -1,6 +1,6 @@
 /* Set flags signalling availability of kernel features based on given
    kernel version number.  SPARC version.
-   Copyright (C) 1999-2016 Free Software Foundation, Inc.
+   Copyright (C) 1999-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -34,6 +34,14 @@
 /* 32-bit SPARC kernels do not support
    futex_atomic_cmpxchg_inatomic.  */
 #if !defined __arch64__ && !defined __sparc_v9__
-# undef __ASSUME_REQUEUE_PI
 # undef __ASSUME_SET_ROBUST_LIST
 #endif
+
+#if !defined __arch64__
+# undef __ASSUME_ACCEPT_SYSCALL
+# undef __ASSUME_CONNECT_SYSCALL
+# undef __ASSUME_RECVFROM_SYSCALL
+#endif
+
+/* sparc only supports ipc syscall.  */
+#undef __ASSUME_DIRECT_SYSVIPC_SYSCALLS

@@ -1,5 +1,5 @@
 /* Verify that DSO is unloaded only if its TLS objects are destroyed.
-   Copyright (C) 2013-2016 Free Software Foundation, Inc.
+   Copyright (C) 2013-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -38,6 +38,7 @@
 #include <string.h>
 #include <errno.h>
 #include <link.h>
+#include <stdbool.h>
 
 #ifndef NO_DELETE
 # define LOADED_IS_GOOD false

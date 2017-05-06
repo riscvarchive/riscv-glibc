@@ -1,5 +1,5 @@
 /* Optimized memmove implementation for PowerPC64/POWER7.
-   Copyright (C) 2014-2016 Free Software Foundation, Inc.
+   Copyright (C) 2014-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -27,8 +27,11 @@
    If source and destiny overlaps, a optimized backwards memcpy is used
    instead.  */
 
+#ifndef MEMMOVE
+# define MEMMOVE memmove
+#endif
 	.machine power7
-EALIGN (memmove, 5, 0)
+EALIGN (MEMMOVE, 5, 0)
 	CALL_MCOUNT 3
 
 L(_memmove):
@@ -816,7 +819,7 @@ L(end_unaligned_loop_bwd):
 	stb	r8,-7(r11)
 	/* Return original DST pointer.  */
 	blr
-END_GEN_TB (memmove, TB_TOCLESS)
+END_GEN_TB (MEMMOVE, TB_TOCLESS)
 libc_hidden_builtin_def (memmove)
 
 

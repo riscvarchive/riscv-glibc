@@ -1,5 +1,5 @@
 /* Install given floating-point control modes.  i386 version.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ fesetmode (const femode_t *modep)
   else
     cw = modep->__control_word;
   _FPU_SETCW (cw);
-  if ((GLRO(dl_hwcap) & HWCAP_I386_XMM) != 0)
+  if (HAS_CPU_FEATURE (SSE))
     {
       unsigned int mxcsr;
       __asm__ ("stmxcsr %0" : "=m" (mxcsr));

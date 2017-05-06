@@ -1,5 +1,5 @@
 /* Disable floating-point exceptions.
-   Copyright (C) 1999-2016 Free Software Foundation, Inc.
+   Copyright (C) 1999-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Andreas Jaeger <aj@suse.de>, 1999.
 
@@ -38,7 +38,7 @@ fedisableexcept (int excepts)
   __asm__ ("fldcw %0" : : "m" (*&new_exc));
 
   /* If the CPU supports SSE we set the MXCSR as well.  */
-  if ((GLRO(dl_hwcap) & HWCAP_I386_XMM) != 0)
+  if (HAS_CPU_FEATURE (SSE))
     {
       unsigned int xnew_exc;
 

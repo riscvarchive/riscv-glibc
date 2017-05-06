@@ -1,5 +1,5 @@
 /* Test with many dynamic TLS variables.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@
 
 #include "tst-tls-manydynamic.h"
 
+#include <errno.h>
 #include <dlfcn.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -31,8 +32,8 @@
 #include <string.h>
 
 static int do_test (void);
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/xthread.h>
+#include <support/test-driver.c>
 
 void *handles[COUNT];
 set_value_func set_value_funcs[COUNT];

@@ -620,6 +620,10 @@ is not written to the current position of the file descriptor
 position @var{offset}.  The position of the file descriptor itself is
 not affected by the operation.  The value is the same as before the call.
 
+However, on Linux, if a file is opened with @code{O_APPEND},  @code{pwrite}
+appends data to the end of the file, regardless of the value of
+@code{offset}.
+
 When the source file is compiled with @code{_FILE_OFFSET_BITS == 64} the
 @code{pwrite} function is in fact @code{pwrite64} and the type
 @code{off_t} has 64 bits, which makes it possible to handle files up to
@@ -662,6 +666,104 @@ When the source file is compiled using @code{_FILE_OFFSET_BITS == 64} on a
 @code{pwrite} and so transparently replaces the 32 bit interface.
 @end deftypefun
 
+@comment sys/uio.h
+@comment BSD
+@deftypefun ssize_t preadv (int @var{fd}, const struct iovec *@var{iov}, int @var{iovcnt}, off_t @var{offset})
+@safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
+@c This is a syscall for Linux 3.2 for all architectures but microblaze
+@c (which was added on 3.15).  The sysdeps/posix fallback emulation
+@c is also MT-Safe since it calls pread, and it is now a syscall on all
+@c targets.
+
+This function is similar to the @code{readv} function, with the difference
+it adds an extra @var{offset} parameter of type @code{off_t} similar to
+@code{pread}.  The data is written to the file starting at position
+@var{offset}.  The position of the file descriptor itself is not affected
+by the operation.  The value is the same as before the call.
+
+When the source file is compiled with @code{_FILE_OFFSET_BITS == 64} the
+@code{preadv} function is in fact @code{preadv64} and the type
+@code{off_t} has 64 bits, which makes it possible to handle files up to
+@twoexp{63} bytes in length.
+
+The return value is a count of bytes (@emph{not} buffers) read, @math{0}
+indicating end-of-file, or @math{-1} indicating an error.  The possible
+errors are the same as in @code{readv} and @code{pread}.
+@end deftypefun
+
+@comment unistd.h
+@comment BSD
+@deftypefun ssize_t preadv64 (int @var{fd}, const struct iovec *@var{iov}, int @var{iovcnt}, off64_t @var{offset})
+@safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
+@c This is a syscall for Linux 3.2 for all architectures but microblaze
+@c (which was added on 3.15).  The sysdeps/posix fallback emulation
+@c is also MT-Safe since it calls pread64, and it is now a syscall on all
+@c targets.
+
+This function is similar to the @code{preadv} function with the difference
+is that the @var{offset} parameter is of type @code{off64_t} instead of
+@code{off_t}.  It makes it possible on 32 bit machines to address
+files larger than @twoexp{31} bytes and up to @twoexp{63} bytes.  The
+file descriptor @code{filedes} must be opened using @code{open64} since
+otherwise the large offsets possible with @code{off64_t} will lead to
+errors with a descriptor in small file mode.
+
+When the source file is compiled using @code{_FILE_OFFSET_BITS == 64} on a
+32 bit machine this function is actually available under the name
+@code{preadv} and so transparently replaces the 32 bit interface.
+@end deftypefun
+
+@comment sys/uio.h
+@comment BSD
+@deftypefun ssize_t pwritev (int @var{fd}, const struct iovec *@var{iov}, int @var{iovcnt}, off_t @var{offset})
+@safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
+@c This is a syscall for Linux 3.2 for all architectures but microblaze
+@c (which was added on 3.15).  The sysdeps/posix fallback emulation
+@c is also MT-Safe since it calls pwrite, and it is now a syscall on all
+@c targets.
+
+This function is similar to the @code{writev} function, with the difference
+it adds an extra @var{offset} parameter of type @code{off_t} similar to
+@code{pwrite}.  The data is written to the file starting at position
+@var{offset}.  The position of the file descriptor itself is not affected
+by the operation.  The value is the same as before the call.
+
+However, on Linux, if a file is opened with @code{O_APPEND},  @code{pwrite}
+appends data to the end of the file, regardless of the value of
+@code{offset}.
+
+When the source file is compiled with @code{_FILE_OFFSET_BITS == 64} the
+@code{pwritev} function is in fact @code{pwritev64} and the type
+@code{off_t} has 64 bits, which makes it possible to handle files up to
+@twoexp{63} bytes in length.
+
+The return value is a count of bytes (@emph{not} buffers) written, @math{0}
+indicating end-of-file, or @math{-1} indicating an error.  The possible
+errors are the same as in @code{writev} and @code{pwrite}.
+@end deftypefun
+
+@comment unistd.h
+@comment BSD
+@deftypefun ssize_t pwritev64 (int @var{fd}, const struct iovec *@var{iov}, int @var{iovcnt}, off64_t @var{offset})
+@safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
+@c This is a syscall for Linux 3.2 for all architectures but microblaze
+@c (which was added on 3.15).  The sysdeps/posix fallback emulation
+@c is also MT-Safe since it calls pwrite64, and it is now a syscall on all
+@c targets.
+
+This function is similar to the @code{pwritev} function with the difference
+is that the @var{offset} parameter is of type @code{off64_t} instead of
+@code{off_t}.  It makes it possible on 32 bit machines to address
+files larger than @twoexp{31} bytes and up to @twoexp{63} bytes.  The
+file descriptor @code{filedes} must be opened using @code{open64} since
+otherwise the large offsets possible with @code{off64_t} will lead to
+errors with a descriptor in small file mode.
+
+When the source file is compiled using @code{_FILE_OFFSET_BITS == 64} on a
+32 bit machine this function is actually available under the name
+@code{pwritev} and so transparently replaces the 32 bit interface.
+@end deftypefun
+
 
 @node File Position Primitive
 @section Setting the File Position of a Descriptor
@@ -690,7 +792,7 @@ interpreted, in the same way as for the @code{fseek} function, and it must
 be one of the symbolic constants @code{SEEK_SET}, @code{SEEK_CUR}, or
 @code{SEEK_END}.
 
-@table @code
+@vtable @code
 @item SEEK_SET
 Specifies that @var{offset} is a count of characters from the beginning
 of the file.
@@ -706,7 +808,7 @@ extent of the file; a positive count specifies a position past the
 current end.  If you set the position past the current end, and
 actually write data, you will extend the file with zeros up to that
 position.
-@end table
+@end vtable
 
 The return value from @code{lseek} is normally the resulting file
 position, measured in bytes from the beginning of the file.
@@ -858,7 +960,7 @@ These aliases for the @samp{SEEK_@dots{}} constants exist for the sake
 of compatibility with older BSD systems.  They are defined in two
 different header files: @file{fcntl.h} and @file{sys/file.h}.
 
-@table @code
+@vtable @code
 @item L_SET
 An alias for @code{SEEK_SET}.
 
@@ -867,7 +969,7 @@ An alias for @code{SEEK_CUR}.
 
 @item L_XTND
 An alias for @code{SEEK_END}.
-@end table
+@end vtable
 
 @node Descriptors and Streams
 @section Descriptors and Streams
@@ -938,11 +1040,10 @@ file descriptors belonging to the standard streams @code{stdin},
 @code{stdout}, and @code{stderr}; see @ref{Standard Streams}.
 @pindex unistd.h
 
+@vtable @code
 @comment unistd.h
 @comment POSIX.1
-@table @code
 @item STDIN_FILENO
-@vindex STDIN_FILENO
 This macro has value @code{0}, which is the file descriptor for
 standard input.
 @cindex standard input file descriptor
@@ -950,7 +1051,6 @@ standard input.
 @comment unistd.h
 @comment POSIX.1
 @item STDOUT_FILENO
-@vindex STDOUT_FILENO
 This macro has value @code{1}, which is the file descriptor for
 standard output.
 @cindex standard output file descriptor
@@ -958,10 +1058,9 @@ standard output.
 @comment unistd.h
 @comment POSIX.1
 @item STDERR_FILENO
-@vindex STDERR_FILENO
 This macro has value @code{2}, which is the file descriptor for
 standard error output.
-@end table
+@end vtable
 @cindex standard error file descriptor
 
 @node Stream/Descriptor Precautions
@@ -1492,7 +1591,7 @@ and extending @var{length} bytes.
 
 The valid BSD values for @var{advice} are:
 
-@table @code
+@vtable @code
 
 @item MADV_NORMAL
 The region should receive no further special treatment.
@@ -1515,11 +1614,11 @@ The region is no longer needed.  The kernel may free these pages,
 causing any changes to the pages to be lost, as well as swapped
 out pages to be discarded.
 
-@end table
+@end vtable
 
 The POSIX names are slightly different, but with the same meanings:
 
-@table @code
+@vtable @code
 
 @item POSIX_MADV_NORMAL
 This corresponds with BSD's @code{MADV_NORMAL}.
@@ -1536,7 +1635,7 @@ This corresponds with BSD's @code{MADV_WILLNEED}.
 @item POSIX_MADV_DONTNEED
 This corresponds with BSD's @code{MADV_DONTNEED}.
 
-@end table
+@end vtable
 
 @code{madvise} returns @math{0} for success and @math{-1} for
 error.  Errors include:
@@ -2906,7 +3005,7 @@ descriptions of the individual commands.
 
 Briefly, here is a list of what the various commands are.
 
-@table @code
+@vtable @code
 @item F_DUPFD
 Duplicate the file descriptor (return another file descriptor pointing
 to the same open file).  @xref{Duplicating Descriptors}.
@@ -2951,7 +3050,7 @@ Get process or process group ID to receive @code{SIGIO} signals.
 @item F_SETOWN
 Set process or process group ID to receive @code{SIGIO} signals.
 @xref{Interrupt Input}.
-@end table
+@end vtable
 
 This function is a cancellation point in multi-threaded programs.  This
 is a problem if the thread allocates some resources (like memory, file
@@ -3827,25 +3926,22 @@ you know if it notices one.
 The following macros are defined for use as values for the @code{l_type}
 member of the @code{flock} structure.  The values are integer constants.
 
-@table @code
+@vtable @code
 @comment fcntl.h
 @comment POSIX.1
-@vindex F_RDLCK
 @item F_RDLCK
 This macro is used to specify a read (or shared) lock.
 
 @comment fcntl.h
 @comment POSIX.1
-@vindex F_WRLCK
 @item F_WRLCK
 This macro is used to specify a write (or exclusive) lock.
 
 @comment fcntl.h
 @comment POSIX.1
-@vindex F_UNLCK
 @item F_UNLCK
 This macro is used to specify that the region is unlocked.
-@end table
+@end vtable
 
 As an example of a situation where file locking is useful, consider a
 program that can be run simultaneously by several different users, that

@@ -1,5 +1,5 @@
 /* Run time dynamic linker.
-   Copyright (C) 1995-2016 Free Software Foundation, Inc.
+   Copyright (C) 1995-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -2404,7 +2404,8 @@ process_envvars (enum mode *modep)
 
 	case 10:
 	  /* Mask for the important hardware capabilities.  */
-	  if (memcmp (envline, "HWCAP_MASK", 10) == 0)
+	  if (!__libc_enable_secure
+	      && memcmp (envline, "HWCAP_MASK", 10) == 0)
 	    GLRO(dl_hwcap_mask) = __strtoul_internal (&envline[11], NULL,
 						      0, 0);
 	  break;
@@ -2510,7 +2511,9 @@ process_envvars (enum mode *modep)
 
       if (__access ("/etc/suid-debug", F_OK) != 0)
 	{
+#if !HAVE_TUNABLES
 	  unsetenv ("MALLOC_CHECK_");
+#endif
 	  GLRO(dl_debug_mask) = 0;
 	}
 
@@ -2522,11 +2525,7 @@ process_envvars (enum mode *modep)
      messages to this file.  */
   else if (any_debug && debug_output != NULL)
     {
-#ifdef O_NOFOLLOW
       const int flags = O_WRONLY | O_APPEND | O_CREAT | O_NOFOLLOW;
-#else
-      const int flags = O_WRONLY | O_APPEND | O_CREAT;
-#endif
       size_t name_len = strlen (debug_output);
       char buf[name_len + 12];
       char *startp;

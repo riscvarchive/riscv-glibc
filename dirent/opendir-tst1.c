@@ -1,4 +1,4 @@
-/* Copyright (C) 1998-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1998.
 
@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 /* Name of the FIFO.  */
 char tmpname[] = "fifoXXXXXX";
@@ -58,7 +59,7 @@ real_test (void)
 
 
 static int
-do_test (int argc, char *argv[])
+do_test (void)
 {
   int retval;
 
@@ -89,8 +90,6 @@ do_cleanup (void)
 {
   remove (tmpname);
 }
-#define CLEANUP_HANDLER do_cleanup ()
+#define CLEANUP_HANDLER do_cleanup
 
-
-/* Include the test skeleton.  */
-#include <test-skeleton.c>
+#include <support/test-driver.c>

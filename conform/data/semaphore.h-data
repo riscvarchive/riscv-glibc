@@ -1,4 +1,4 @@
-#if !defined ISO && !defined ISO99 && !defined ISO11 && !defined XPG3 && !defined XPG4
+#if !defined ISO && !defined ISO99 && !defined ISO11 && !defined XPG4 && !defined XPG42
 type sem_t
 
 constant SEM_FAILED
@@ -20,7 +20,9 @@ allow-header fcntl.h
 # if !defined POSIX2008 && !defined XOPEN2K8
 allow-header sys/types.h
 # endif
-# if !defined POSIX && !defined UNIX98 && !defined XOPEN2K
+// Consider addition of this permission in POSIX.1:2008 as a bug fix,
+// so allow for POSIX.1:2001 as well since that includes sem_timedwait.
+# if !defined POSIX && !defined UNIX98
 allow-header time.h
 # endif
 

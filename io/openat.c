@@ -1,4 +1,4 @@
-/* Copyright (C) 2005-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2005-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <kernel-features.h>
-#include <libc-internal.h>
 
 /* Some mostly-generic code (e.g. sysdeps/posix/getcwd.c) uses this variable
    if __ASSUME_ATFCTS is not defined.  */

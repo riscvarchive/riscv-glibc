@@ -1,6 +1,6 @@
 /* Common definition for tst-cancel4_* tests.
 
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,6 +18,10 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <pthread.h>
+
+#include <support/check.h>
+#include <support/xthread.h>
+#include <support/xunistd.h>
 
 /* Pipe descriptors.  */
 static int fds[2];

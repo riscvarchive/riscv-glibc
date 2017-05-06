@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# Copyright (C) 1999-2016 Free Software Foundation, Inc.
+# Copyright (C) 1999-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 # Contributed by Andreas Jaeger <aj@suse.de>, 1999.
 
@@ -40,7 +40,7 @@ use strict;
 use vars qw ($input $output $auto_input);
 use vars qw (%results);
 use vars qw (%beautify @all_floats %all_floats_pfx);
-use vars qw ($output_dir $ulps_file $srcdir);
+use vars qw ($ulps_file);
 use vars qw (%auto_tests);
 
 # all_floats is sorted and contains all recognised float types
@@ -73,38 +73,41 @@ use vars qw (%auto_tests);
 
 # get Options
 # Options:
+# a: auto-libm-test-out input file
+# c: .inc input file
 # u: ulps-file
+# n: new ulps file
+# C: libm-test.c output file
+# H: libm-test-ulps.h output file
 # h: help
-# o: output-directory
-# n: generate new ulps file
-use vars qw($opt_u $opt_h $opt_o $opt_n);
-getopts('u:o:nh');
+use vars qw($opt_a $opt_c $opt_u $opt_n $opt_C $opt_H $opt_h);
+getopts('a:c:u:n:C:H:h');
 
 $ulps_file = 'libm-test-ulps';
-$output_dir = '';
-($srcdir = $0) =~ s{[^/]*$}{};
 
 if ($opt_h) {
   print "Usage: gen-libm-test.pl [OPTIONS]\n";
   print " -h         print this help, then exit\n";
-  print " -o DIR     directory where generated files will be placed\n";
-  print " -n         only generate sorted file NewUlps from libm-test-ulps\n";
+  print " -a FILE    input file with automatically generated tests\n";
+  print " -c FILE    input file .inc file with tests\n";
   print " -u FILE    input file with ulps\n";
+  print " -n FILE    generate sorted file FILE from libm-test-ulps\n";
+  print " -C FILE    generate output C file FILE from libm-test.inc\n";
+  print " -H FILE    generate output ulps header FILE from libm-test-ulps\n";
   exit 0;
 }
 
 $ulps_file = $opt_u if ($opt_u);
-$output_dir = $opt_o if ($opt_o);
 
-$input = "libm-test.inc";
-$auto_input = "${srcdir}auto-libm-test-out";
-$output = "${output_dir}libm-test.c";
+$input = $opt_c if ($opt_c);
+$auto_input = $opt_a if ($opt_a);
+$output = $opt_C if ($opt_C);
 
-&parse_ulps ($ulps_file);
-&parse_auto_input ($auto_input);
-&generate_testfile ($input, $output) unless ($opt_n);
-&output_ulps ("${output_dir}libm-test-ulps.h", $ulps_file) unless ($opt_n);
-&print_ulps_file ("${output_dir}NewUlps") if ($opt_n);
+&parse_ulps ($ulps_file) if ($opt_H || $opt_n);
+&parse_auto_input ($auto_input) if ($opt_C);
+&generate_testfile ($input, $output) if ($opt_C);
+&output_ulps ($opt_H, $ulps_file) if ($opt_H);
+&print_ulps_file ($opt_n) if ($opt_n);
 
 # Return a nicer representation
 sub beautify {
@@ -207,6 +210,7 @@ sub parse_args {
   my (@plus_oflow, @minus_oflow, @plus_uflow, @minus_uflow);
   my (@errno_plus_oflow, @errno_minus_oflow);
   my (@errno_plus_uflow, @errno_minus_uflow);
+  my (@xfail_rounding_ibm128_libgcc);
   my ($non_finite, $test_snan);
 
   ($descr_args, $descr_res) = split /_/,$descr, 2;
@@ -223,8 +227,8 @@ sub parse_args {
     if ($current_arg > 1) {
       $comma = ', ';
     }
-    # FLOAT, int, long int, long long int
-    if ($descr[$i] =~ /f|j|i|l|L/) {
+    # FLOAT, long double, int, unsigned int, long int, long long int
+    if ($descr[$i] =~ /f|j|i|u|l|L/) {
       $call_args .= $comma . &beautify ($args[$current_arg]);
       ++$current_arg;
       next;
@@ -252,7 +256,7 @@ sub parse_args {
   $num_res = 0;
   @descr = split //,$descr_res;
   foreach (@descr) {
-    if ($_ =~ /f|i|l|L/) {
+    if ($_ =~ /f|i|l|L|M|U/) {
       ++$num_res;
     } elsif ($_ eq 'c') {
       $num_res += 2;
@@ -272,7 +276,7 @@ sub parse_args {
   } elsif ($#args_res == $num_res) {
     # One set of results for all rounding modes, with flags.
     die ("wrong number of arguments")
-      unless ($args_res[$#args_res] =~ /EXCEPTION|ERRNO|IGNORE_ZERO_INF_SIGN|TEST_NAN_SIGN|NO_TEST_INLINE|XFAIL_TEST/);
+      unless ($args_res[$#args_res] =~ /EXCEPTION|ERRNO|IGNORE_ZERO_INF_SIGN|TEST_NAN_SIGN|NO_TEST_INLINE|XFAIL/);
     @start_rm = ( 0, 0, 0, 0 );
   } elsif ($#args_res == 4 * $num_res + 3) {
     # One set of results per rounding mode, with flags.
@@ -289,7 +293,7 @@ sub parse_args {
   @descr = split //,$descr_args;
   for ($i=0; $i <= $#descr; $i++) {
     # FLOAT, int, long int, long long int
-    if ($descr[$i] =~ /f|j|i|l|L/) {
+    if ($descr[$i] =~ /f|j|i|u|l|L/) {
       if ($descr[$i] eq "f") {
         $cline .= ", " . &apply_lit ($args[$current_arg]);
       } else {
@@ -320,6 +324,8 @@ sub parse_args {
   @errno_minus_oflow = qw(ERRNO_ERANGE ERRNO_ERANGE 0 0);
   @errno_plus_uflow = qw(ERRNO_ERANGE ERRNO_ERANGE ERRNO_ERANGE 0);
   @errno_minus_uflow = qw(0 ERRNO_ERANGE ERRNO_ERANGE ERRNO_ERANGE);
+  @xfail_rounding_ibm128_libgcc = qw(XFAIL_IBM128_LIBGCC 0
+				     XFAIL_IBM128_LIBGCC XFAIL_IBM128_LIBGCC);
   for ($rm = 0; $rm <= 3; $rm++) {
     $current_arg = $start_rm[$rm];
     $ignore_result_any = 0;
@@ -327,7 +333,7 @@ sub parse_args {
     $cline_res = "";
     @special = ();
     foreach (@descr) {
-      if ($_ =~ /b|f|j|i|l|L/ ) {
+      if ($_ =~ /b|f|j|i|l|L|M|U/ ) {
 	my ($result) = $args_res[$current_arg];
 	if ($result eq "IGNORE") {
 	  $ignore_result_any = 1;
@@ -401,6 +407,7 @@ sub parse_args {
     $cline_res =~ s/ERRNO_MINUS_OFLOW/$errno_minus_oflow[$rm]/g;
     $cline_res =~ s/ERRNO_PLUS_UFLOW/$errno_plus_uflow[$rm]/g;
     $cline_res =~ s/ERRNO_MINUS_UFLOW/$errno_minus_uflow[$rm]/g;
+    $cline_res =~ s/XFAIL_ROUNDING_IBM128_LIBGCC/$xfail_rounding_ibm128_libgcc[$rm]/g;
     $cline .= ", { $cline_res }";
   }
   print $file "    $cline },\n";

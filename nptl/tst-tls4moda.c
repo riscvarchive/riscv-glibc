@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2003-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Jakub Jelinek <jakub@redhat.com>, 2003.
 
@@ -16,11 +16,8 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <tls.h>
-
 
 static __thread unsigned char foo [32]
   __attribute__ ((tls_model ("initial-exec"), aligned (sizeof (void *))));

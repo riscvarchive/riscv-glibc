@@ -1,5 +1,5 @@
 /* Guts of POSIX spawn interface.  Generic POSIX.1 version.
-   Copyright (C) 2000-2016 Free Software Foundation, Inc.
+   Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -101,7 +101,8 @@ __spawni (pid_t *pid, const char *file,
 	 to POSIX.  */
       || ((flags & (POSIX_SPAWN_SETSIGMASK | POSIX_SPAWN_SETSIGDEF
 		    | POSIX_SPAWN_SETSCHEDPARAM | POSIX_SPAWN_SETSCHEDULER
-		    | POSIX_SPAWN_SETPGROUP | POSIX_SPAWN_RESETIDS)) == 0
+		    | POSIX_SPAWN_SETPGROUP | POSIX_SPAWN_RESETIDS
+		    | POSIX_SPAWN_SETSID)) == 0
 	  && file_actions == NULL))
     new_pid = __vfork ();
   else
@@ -158,6 +159,10 @@ __spawni (pid_t *pid, const char *file,
 	_exit (SPAWN_ERROR);
     }
 #endif
+
+  if ((flags & POSIX_SPAWN_SETSID) != 0
+      && __setsid () < 0)
+    _exit (SPAWN_ERROR);
 
   /* Set the process group ID.  */
   if ((flags & POSIX_SPAWN_SETPGROUP) != 0

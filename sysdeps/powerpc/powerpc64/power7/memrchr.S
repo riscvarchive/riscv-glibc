@@ -1,5 +1,5 @@
 /* Optimized memrchr implementation for PowerPC64/POWER7 using cmpb insn.
-   Copyright (C) 2010-2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2017 Free Software Foundation, Inc.
    Contributed by Luis Machado <luisgpm@br.ibm.com>.
    This file is part of the GNU C Library.
 
@@ -20,8 +20,12 @@
 #include <sysdep.h>
 
 /* int [r3] memrchr (char *s [r3], int byte [r4], int size [r5])  */
+
+#ifndef MEMRCHR
+# define MEMRCHR __memrchr
+#endif
 	.machine  power7
-ENTRY (__memrchr)
+ENTRY (MEMRCHR)
 	CALL_MCOUNT 3
 	add	r7,r3,r5      /* Calculate the last acceptable address.  */
 	neg	r0,r7
@@ -192,6 +196,6 @@ L(loop_small):
 	bne	L(loop_small)
 	blr
 
-END (__memrchr)
+END (MEMRCHR)
 weak_alias (__memrchr, memrchr)
 libc_hidden_builtin_def (memrchr)

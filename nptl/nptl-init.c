@@ -1,4 +1,4 @@
-/* Copyright (C) 2002-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@redhat.com>, 2002.
 
@@ -36,7 +36,7 @@
 #include <lowlevellock.h>
 #include <futex-internal.h>
 #include <kernel-features.h>
-#include <libc-internal.h>
+#include <libc-pointer-arith.h>
 #include <pthread-pids.h>
 
 #ifndef TLS_MULTIPLE_THREADS_IN_TCB
@@ -69,10 +69,6 @@ int __have_futex_clock_realtime;
 /* Version of the library, used in libthread_db to detect mismatches.  */
 static const char nptl_version[] __attribute_used__ = VERSION;
 
-
-#ifndef SHARED
-extern void __libc_setup_tls (size_t tcbsize, size_t tcbalign);
-#endif
 
 #ifdef SHARED
 static
@@ -288,18 +284,6 @@ static bool __nptl_initial_report_events __attribute_used__;
 void
 __pthread_initialize_minimal_internal (void)
 {
-#ifndef SHARED
-  /* Unlike in the dynamically linked case the dynamic linker has not
-     taken care of initializing the TLS data structures.  */
-  __libc_setup_tls (TLS_TCB_SIZE, TLS_TCB_ALIGN);
-
-  /* We must prevent gcc from being clever and move any of the
-     following code ahead of the __libc_setup_tls call.  This function
-     will initialize the thread register which is subsequently
-     used.  */
-  __asm __volatile ("");
-#endif
-
   /* Minimal initialization of the thread descriptor.  */
   struct pthread *pd = THREAD_SELF;
   __pthread_initialize_pids (pd);

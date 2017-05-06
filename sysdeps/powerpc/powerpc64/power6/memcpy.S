@@ -1,5 +1,5 @@
 /* Optimized memcpy implementation for PowerPC64.
-   Copyright (C) 2003-2016 Free Software Foundation, Inc.
+   Copyright (C) 2003-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -40,8 +40,11 @@
    the source but may take a risk and only require word alignment
    for the destination.  */
 
+#ifndef MEMCPY
+# define MEMCPY memcpy
+#endif
 	.machine	"power6"
-EALIGN (memcpy, 7, 0)
+EALIGN (MEMCPY, 7, 0)
 	CALL_MCOUNT 3
 
     cmpldi cr1,5,31
@@ -1492,5 +1495,5 @@ L(du_done):
     ld 31,-8(1)
     ld 3,-16(1)
     blr
-END_GEN_TB (memcpy,TB_TOCLESS)
+END_GEN_TB (MEMCPY,TB_TOCLESS)
 libc_hidden_builtin_def (memcpy)

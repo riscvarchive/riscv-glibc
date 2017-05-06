@@ -1,5 +1,5 @@
 /* This file is part of the GNU C Library.
-   Copyright (C) 2008-2016 Free Software Foundation, Inc.
+   Copyright (C) 2008-2017 Free Software Foundation, Inc.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -39,12 +39,14 @@
 #define bit_arch_Prefer_ERMS			(1 << 19)
 #define bit_arch_Use_dl_runtime_resolve_opt	(1 << 20)
 #define bit_arch_Use_dl_runtime_resolve_slow	(1 << 21)
+#define bit_arch_Prefer_No_AVX512		(1 << 22)
 
 /* CPUID Feature flags.  */
 
 /* COMMON_CPUID_INDEX_1.  */
 #define bit_cpu_CX8		(1 << 8)
 #define bit_cpu_CMOV		(1 << 15)
+#define bit_cpu_SSE		(1 << 25)
 #define bit_cpu_SSE2		(1 << 26)
 #define bit_cpu_SSSE3		(1 << 9)
 #define bit_cpu_SSE4_1		(1 << 19)
@@ -55,13 +57,23 @@
 #define bit_cpu_FMA		(1 << 12)
 #define bit_cpu_FMA4		(1 << 16)
 #define bit_cpu_HTT		(1 << 28)
+#define bit_cpu_LZCNT		(1 << 5)
+#define bit_cpu_MOVBE		(1 << 22)
+#define bit_cpu_POPCNT		(1 << 23)
 
 /* COMMON_CPUID_INDEX_7.  */
+#define bit_cpu_BMI1		(1 << 3)
+#define bit_cpu_BMI2		(1 << 8)
 #define bit_cpu_ERMS		(1 << 9)
 #define bit_cpu_RTM		(1 << 11)
 #define bit_cpu_AVX2		(1 << 5)
 #define bit_cpu_AVX512F		(1 << 16)
 #define bit_cpu_AVX512DQ	(1 << 17)
+#define bit_cpu_AVX512PF	(1 << 26)
+#define bit_cpu_AVX512ER	(1 << 27)
+#define bit_cpu_AVX512CD	(1 << 28)
+#define bit_cpu_AVX512BW	(1 << 30)
+#define bit_cpu_AVX512VL	(1u << 31)
 
 /* XCR0 Feature flags.  */
 #define bit_XMM_state		(1 << 1)
@@ -82,6 +94,7 @@
 
 # define index_cpu_CX8	COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_EDX_OFFSET
 # define index_cpu_CMOV	COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_EDX_OFFSET
+# define index_cpu_SSE	COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_EDX_OFFSET
 # define index_cpu_SSE2	COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_EDX_OFFSET
 # define index_cpu_SSSE3 COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_ECX_OFFSET
 # define index_cpu_SSE4_1 COMMON_CPUID_INDEX_1*CPUID_SIZE+CPUID_ECX_OFFSET
@@ -111,6 +124,7 @@
 # define index_arch_Prefer_ERMS		FEATURE_INDEX_1*FEATURE_SIZE
 # define index_arch_Use_dl_runtime_resolve_opt FEATURE_INDEX_1*FEATURE_SIZE
 # define index_arch_Use_dl_runtime_resolve_slow FEATURE_INDEX_1*FEATURE_SIZE
+# define index_arch_Prefer_No_AVX512	FEATURE_INDEX_1*FEATURE_SIZE
 
 
 # if defined (_LIBC) && !IS_IN (nonlib)
@@ -228,6 +242,7 @@ extern const struct cpu_features *__get_cpu_features (void)
 
 # define index_cpu_CX8		COMMON_CPUID_INDEX_1
 # define index_cpu_CMOV		COMMON_CPUID_INDEX_1
+# define index_cpu_SSE		COMMON_CPUID_INDEX_1
 # define index_cpu_SSE2		COMMON_CPUID_INDEX_1
 # define index_cpu_SSSE3	COMMON_CPUID_INDEX_1
 # define index_cpu_SSE4_1	COMMON_CPUID_INDEX_1
@@ -236,6 +251,11 @@ extern const struct cpu_features *__get_cpu_features (void)
 # define index_cpu_AVX2		COMMON_CPUID_INDEX_7
 # define index_cpu_AVX512F	COMMON_CPUID_INDEX_7
 # define index_cpu_AVX512DQ	COMMON_CPUID_INDEX_7
+# define index_cpu_AVX512PF	COMMON_CPUID_INDEX_7
+# define index_cpu_AVX512ER	COMMON_CPUID_INDEX_7
+# define index_cpu_AVX512CD	COMMON_CPUID_INDEX_7
+# define index_cpu_AVX512BW	COMMON_CPUID_INDEX_7
+# define index_cpu_AVX512VL	COMMON_CPUID_INDEX_7
 # define index_cpu_ERMS		COMMON_CPUID_INDEX_7
 # define index_cpu_RTM		COMMON_CPUID_INDEX_7
 # define index_cpu_FMA		COMMON_CPUID_INDEX_1
@@ -243,9 +263,15 @@ extern const struct cpu_features *__get_cpu_features (void)
 # define index_cpu_POPCOUNT	COMMON_CPUID_INDEX_1
 # define index_cpu_OSXSAVE	COMMON_CPUID_INDEX_1
 # define index_cpu_HTT		COMMON_CPUID_INDEX_1
+# define index_cpu_BMI1		COMMON_CPUID_INDEX_7
+# define index_cpu_BMI2		COMMON_CPUID_INDEX_7
+# define index_cpu_LZCNT	COMMON_CPUID_INDEX_1
+# define index_cpu_MOVBE	COMMON_CPUID_INDEX_1
+# define index_cpu_POPCNT	COMMON_CPUID_INDEX_1
 
 # define reg_CX8		edx
 # define reg_CMOV		edx
+# define reg_SSE		edx
 # define reg_SSE2		edx
 # define reg_SSSE3		ecx
 # define reg_SSE4_1		ecx
@@ -254,6 +280,11 @@ extern const struct cpu_features *__get_cpu_features (void)
 # define reg_AVX2		ebx
 # define reg_AVX512F		ebx
 # define reg_AVX512DQ		ebx
+# define reg_AVX512PF		ebx
+# define reg_AVX512ER		ebx
+# define reg_AVX512CD		ebx
+# define reg_AVX512BW		ebx
+# define reg_AVX512VL		ebx
 # define reg_ERMS		ebx
 # define reg_RTM		ebx
 # define reg_FMA		ecx
@@ -261,6 +292,11 @@ extern const struct cpu_features *__get_cpu_features (void)
 # define reg_POPCOUNT		ecx
 # define reg_OSXSAVE		ecx
 # define reg_HTT		edx
+# define reg_BMI1		ebx
+# define reg_BMI2		ebx
+# define reg_LZCNT		ecx
+# define reg_MOVBE		ecx
+# define reg_POPCNT		ecx
 
 # define index_arch_Fast_Rep_String	FEATURE_INDEX_1
 # define index_arch_Fast_Copy_Backward	FEATURE_INDEX_1
@@ -283,6 +319,7 @@ extern const struct cpu_features *__get_cpu_features (void)
 # define index_arch_Prefer_ERMS		FEATURE_INDEX_1
 # define index_arch_Use_dl_runtime_resolve_opt FEATURE_INDEX_1
 # define index_arch_Use_dl_runtime_resolve_slow FEATURE_INDEX_1
+# define index_arch_Prefer_No_AVX512	FEATURE_INDEX_1
 
 #endif	/* !__ASSEMBLER__ */
 

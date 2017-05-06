@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2011-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
@@ -217,6 +217,10 @@
 /* List of system calls which are supported as vsyscalls.  */
 #define HAVE_CLOCK_GETTIME_VSYSCALL	1
 #define HAVE_GETTIMEOFDAY_VSYSCALL	1
+
+/* Previously tile used the generic version without the libc_hidden_def
+   which lead in a non existent __send symbol in libc.so.  */
+#undef HAVE_INTERNAL_SEND_SYMBOL
 
 #endif /* __ASSEMBLER__  */
 

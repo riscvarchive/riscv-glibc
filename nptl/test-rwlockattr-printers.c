@@ -1,7 +1,7 @@
 /* Helper program for testing the pthread_rwlock_t and pthread_rwlockattr_t
    pretty printers.
 
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -74,6 +74,8 @@ test_setkind_np (pthread_rwlock_t *rwlock, pthread_rwlockattr_t *attr)
   int result = FAIL;
 
   if (SET_KIND (attr, PTHREAD_RWLOCK_PREFER_READER_NP) == 0 /* Set kind.  */
+      && rwlock_reinit (rwlock, attr) == PASS
+      && SET_KIND (attr, PTHREAD_RWLOCK_PREFER_WRITER_NP) == 0
       && rwlock_reinit (rwlock, attr) == PASS
       && SET_KIND (attr, PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP) == 0
       && rwlock_reinit (rwlock, attr) == PASS)

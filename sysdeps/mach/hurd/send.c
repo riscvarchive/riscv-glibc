@@ -1,4 +1,4 @@
-/* Copyright (C) 1994-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1994-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -32,6 +32,10 @@ __send (int fd, const void *buf, size_t n, int flags)
 					   flags, buf, n,
 					   NULL, MACH_MSG_TYPE_COPY_SEND, 0,
 					   NULL, 0, &wrote));
+
+  if (err == MIG_BAD_ID || err == EOPNOTSUPP)
+    /* The file did not grok the socket protocol.  */
+    err = ENOTSOCK;
 
   return err ? __hurd_sockfail (fd, flags, err) : wrote;
 }

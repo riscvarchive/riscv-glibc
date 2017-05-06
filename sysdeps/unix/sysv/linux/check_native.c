@@ -1,5 +1,5 @@
 /* Determine whether interfaces use native transport.  Linux version.
-   Copyright (C) 2007-2016 Free Software Foundation, Inc.
+   Copyright (C) 2007-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -41,7 +41,7 @@ void
 __check_native (uint32_t a1_index, int *a1_native,
 		uint32_t a2_index, int *a2_native)
 {
-  int fd = __socket (PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  int fd = __socket (PF_NETLINK, SOCK_RAW | SOCK_CLOEXEC, NETLINK_ROUTE);
 
   struct sockaddr_nl nladdr;
   memset (&nladdr, '\0', sizeof (nladdr));

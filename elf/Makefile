@@ -1,4 +1,4 @@
-# Copyright (C) 1995-2016 Free Software Foundation, Inc.
+# Copyright (C) 1995-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -35,6 +35,19 @@ dl-routines	= $(addprefix dl-,load lookup object reloc deps hwcaps \
 ifeq (yes,$(use-ldconfig))
 dl-routines += dl-cache
 endif
+
+ifneq (no,$(have-tunables))
+dl-routines += dl-tunables
+tunables-type = $(addprefix TUNABLES_FRONTEND_,$(have-tunables))
+CPPFLAGS-dl-tunables.c = -DTUNABLES_FRONTEND=$(tunables-type)
+
+# Make sure that the compiler does not insert any library calls in tunables
+# code paths.
+ifeq (yes,$(have-loop-to-function))
+CFLAGS-dl-tunables.c = -fno-tree-loop-distribute-patterns
+endif
+endif
+
 all-dl-routines = $(dl-routines) $(sysdep-dl-routines)
 # But they are absent from the shared libc, because that code is in ld.so.
 elide-routines.os = $(all-dl-routines) dl-support enbl-secure dl-origin \
@@ -50,6 +63,18 @@ all-rtld-routines = $(rtld-routines) $(sysdep-rtld-routines)
 CFLAGS-dl-runtime.c = -fexceptions -fasynchronous-unwind-tables
 CFLAGS-dl-lookup.c = -fexceptions -fasynchronous-unwind-tables
 CFLAGS-dl-iterate-phdr.c = $(uses-callbacks)
+
+# Compile rtld itself without stack protection.
+# Also compile all routines in the static library that are elided from
+# the shared libc because they are in libc.a in the same way.
+
+define elide-stack-protector
+$(if $(filter $(@F),$(patsubst %,%$(1),$(2))), $(no-stack-protector))
+endef
+
+CFLAGS-.o += $(call elide-stack-protector,.o,$(elide-routines.os))
+CFLAGS-.op += $(call elide-stack-protector,.op,$(elide-routines.os))
+CFLAGS-.os += $(call elide-stack-protector,.os,$(all-rtld-routines))
 
 ifeq ($(unwind-find-fde),yes)
 routines += unwind-dw2-fde-glibc
@@ -124,7 +149,7 @@ tests-static = tst-tls1-static tst-tls2-static tst-stackguard1-static \
 	       tst-leaks1-static tst-array1-static tst-array5-static \
 	       tst-ptrguard1-static tst-dl-iter-static \
 	       tst-tlsalign-static tst-tlsalign-extern-static \
-	       tst-linkall-static
+	       tst-linkall-static tst-env-setuid tst-env-setuid-tunables
 ifeq (yes,$(build-shared))
 tests-static += tst-tls9-static
 tst-tls9-static-ENV = \
@@ -152,7 +177,7 @@ tests += loadtest restest1 preloadtest loadfail multiload origtest resolvfail \
 	 tst-initorder tst-initorder2 tst-relsort1 tst-null-argv \
 	 tst-ptrguard1 tst-tlsalign tst-tlsalign-extern tst-nodelete-opened \
 	 tst-nodelete2 tst-audit11 tst-audit12 tst-dlsym-error tst-noload \
-	 tst-latepthread tst-tls-manydynamic
+	 tst-latepthread tst-tls-manydynamic tst-nodelete-dlclose
 #	 reldep9
 ifeq ($(build-hardcoded-path-in-tests),yes)
 tests += tst-dlopen-aout
@@ -231,7 +256,8 @@ modules-names = testobj1 testobj2 testobj3 testobj4 testobj5 testobj6 \
 		tst-tlsalign-lib tst-nodelete-opened-lib tst-nodelete2mod \
 		tst-audit11mod1 tst-audit11mod2 tst-auditmod11 \
 		tst-audit12mod1 tst-audit12mod2 tst-audit12mod3 tst-auditmod12 \
-		tst-latepthreadmod $(tst-tls-many-dynamic-modules)
+		tst-latepthreadmod $(tst-tls-many-dynamic-modules) \
+		tst-nodelete-dlclose-dso tst-nodelete-dlclose-plugin
 ifeq (yes,$(have-mtls-dialect-gnu2))
 tests += tst-gnu2-tls1
 modules-names += tst-gnu2-tls1mod
@@ -373,9 +399,22 @@ $(objpfx)dl-allobjs.os: $(all-rtld-routines:%=$(objpfx)%.os)
 # are compiled with special flags, and puts these modules into rtld-libc.a
 # for us.  Then we do the real link using rtld-libc.a instead of libc_pic.a.
 
+# If the compiler can do SSP, build the mapfile with dummy __stack_chk_fail
+# and __stack_chk_fail_local symbols defined, to prevent the real things
+# being dragged into rtld even though rtld is never built with stack-
+# protection.
+
+ifeq ($(have-ssp),yes)
+dummy-stack-chk-fail := -Wl,--defsym='__stack_chk_fail=0' \
+			-Wl,--defsym='__stack_chk_fail_local=0'
+else
+dummy-stack-chk-fail :=
+endif
+
 $(objpfx)librtld.map: $(objpfx)dl-allobjs.os $(common-objpfx)libc_pic.a
 	@-rm -f $@T
-	$(reloc-link) -o $@.o '-Wl,-(' $^ -lgcc '-Wl,-)' -Wl,-Map,$@T
+	$(reloc-link) -o $@.o $(dummy-stack-chk-fail) \
+		'-Wl,-(' $^ -lgcc '-Wl,-)' -Wl,-Map,$@T
 	rm -f $@.o
 	mv -f $@T $@
 
@@ -766,6 +805,9 @@ $(objpfx)filtmod1.so: $(objpfx)filtmod1.os $(objpfx)filtmod2.so
 		  $< -Wl,-F,$(objpfx)filtmod2.so
 $(objpfx)filter: $(objpfx)filtmod1.so
 
+# This does not link against libc.
+CFLAGS-filtmod1.c = $(no-stack-protector)
+
 $(objpfx)unload: $(libdl)
 $(objpfx)unload.out: $(objpfx)unloadmod.so
 
@@ -981,6 +1023,7 @@ $(objpfx)tst-array5-static-cmp.out: tst-array5-static.exp \
 CFLAGS-tst-pie1.c += $(pie-ccflag)
 CFLAGS-tst-pie2.c += $(pie-ccflag)
 
+$(objpfx)tst-piemod1.so: $(libsupport)
 $(objpfx)tst-pie1: $(objpfx)tst-piemod1.so
 
 ifeq (yes,$(build-shared))
@@ -1312,7 +1355,8 @@ $(objpfx)tst-prelink-cmp.out: tst-prelink.exp \
 	$(evaluate-test)
 
 $(objpfx)tst-ldconfig-X.out : tst-ldconfig-X.sh $(objpfx)ldconfig
-	$(SHELL) $< '$(common-objpfx)' '$(test-wrapper)' '$(test-wrapper-env)' > $@; \
+	$(SHELL) $< '$(common-objpfx)' '$(test-wrapper-env)' \
+		 '$(run-program-env)' > $@; \
 	$(evaluate-test)
 
 $(objpfx)tst-dlsym-error: $(libdl)
@@ -1344,3 +1388,17 @@ ifeq (no,$(nss-crypt))
 $(objpfx)tst-linkall-static: \
   $(common-objpfx)crypt/libcrypt.a
 endif
+
+# The application depends on the DSO, and the DSO loads the plugin.
+# The plugin also depends on the DSO. This creates the circular
+# dependency via dlopen that we're testing to make sure works.
+$(objpfx)tst-nodelete-dlclose-dso.so: $(libdl)
+$(objpfx)tst-nodelete-dlclose-plugin.so: $(objpfx)tst-nodelete-dlclose-dso.so
+$(objpfx)tst-nodelete-dlclose: $(objpfx)tst-nodelete-dlclose-dso.so
+$(objpfx)tst-nodelete-dlclose.out: $(objpfx)tst-nodelete-dlclose-dso.so \
+				   $(objpfx)tst-nodelete-dlclose-plugin.so
+
+tst-env-setuid-ENV = MALLOC_CHECK_=2 MALLOC_MMAP_THRESHOLD_=4096 \
+		     LD_HWCAP_MASK=0xffffffff
+tst-env-setuid-tunables-ENV = \
+	GLIBC_TUNABLES=glibc.malloc.check=2:glibc.malloc.mmap_threshold=4096

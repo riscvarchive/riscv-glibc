@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # Build many configurations of glibc.
-# Copyright (C) 2016 Free Software Foundation, Inc.
+# Copyright (C) 2016-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 #
 # The GNU C Library is free software; you can redistribute it and/or
@@ -49,6 +49,43 @@ import sys
 import time
 import urllib.request
 
+try:
+    os.cpu_count
+except:
+    import multiprocessing
+    os.cpu_count = lambda: multiprocessing.cpu_count()
+
+try:
+    re.fullmatch
+except:
+    re.fullmatch = lambda p,s,f=0: re.match(p+"\\Z",s,f)
+
+try:
+    subprocess.run
+except:
+    class _CompletedProcess:
+        def __init__(self, args, returncode, stdout=None, stderr=None):
+            self.args = args
+            self.returncode = returncode
+            self.stdout = stdout
+            self.stderr = stderr
+
+    def _run(*popenargs, input=None, timeout=None, check=False, **kwargs):
+        assert(timeout is None)
+        with subprocess.Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input)
+            except:
+                process.kill()
+                process.wait()
+                raise
+            returncode = process.poll()
+            if check and returncode:
+                raise subprocess.CalledProcessError(returncode, popenargs)
+        return _CompletedProcess(popenargs, returncode, stdout, stderr)
+
+    subprocess.run = _run
+
 
 class Context(object):
     """The global state associated with builds in a given directory."""
@@ -85,6 +122,7 @@ class Context(object):
         self.load_versions_json()
         self.load_build_state_json()
         self.status_log_list = []
+        self.email_warning = False
 
     def get_script_text(self):
         """Return the text of this script."""
@@ -93,6 +131,7 @@ class Context(object):
 
     def exec_self(self):
         """Re-execute this script with the same arguments."""
+        sys.stdout.flush()
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
     def get_build_triplet(self):
@@ -120,11 +159,6 @@ class Context(object):
 
     def add_all_configs(self):
         """Add all known glibc build configurations."""
-        # On architectures missing __builtin_trap support, these
-        # options may be needed as a workaround; see
-        # <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70216> for SH.
-        no_isolate = ('-fno-isolate-erroneous-paths-dereference'
-                      ' -fno-isolate-erroneous-paths-attribute')
         self.add_config(arch='aarch64',
                         os_name='linux-gnu')
         self.add_config(arch='aarch64_be',
@@ -267,7 +301,10 @@ class Context(object):
                         os_name='linux-gnu')
         self.add_config(arch='powerpc',
                         os_name='linux-gnu',
-                        gcc_cfg=['--disable-multilib', '--enable-secureplt'])
+                        gcc_cfg=['--disable-multilib', '--enable-secureplt'],
+                        extra_glibcs=[{'variant': 'power4',
+                                       'ccopts': '-mcpu=power4',
+                                       'cfg': ['--with-cpu=power4']}])
         self.add_config(arch='powerpc',
                         os_name='linux-gnu',
                         variant='soft',
@@ -295,31 +332,23 @@ class Context(object):
                         glibcs=[{},
                                 {'arch': 's390', 'ccopts': '-m31'}])
         self.add_config(arch='sh3',
-                        os_name='linux-gnu',
-                        glibcs=[{'ccopts': no_isolate}])
+                        os_name='linux-gnu')
         self.add_config(arch='sh3eb',
-                        os_name='linux-gnu',
-                        glibcs=[{'ccopts': no_isolate}])
+                        os_name='linux-gnu')
         self.add_config(arch='sh4',
-                        os_name='linux-gnu',
-                        glibcs=[{'ccopts': no_isolate}])
+                        os_name='linux-gnu')
         self.add_config(arch='sh4eb',
-                        os_name='linux-gnu',
-                        glibcs=[{'ccopts': no_isolate}])
+                        os_name='linux-gnu')
         self.add_config(arch='sh4',
                         os_name='linux-gnu',
                         variant='soft',
                         gcc_cfg=['--without-fp'],
-                        glibcs=[{'variant': 'soft',
-                                 'cfg': ['--without-fp'],
-                                 'ccopts': no_isolate}])
+                        glibcs=[{'variant': 'soft', 'cfg': ['--without-fp']}])
         self.add_config(arch='sh4eb',
                         os_name='linux-gnu',
                         variant='soft',
                         gcc_cfg=['--without-fp'],
-                        glibcs=[{'variant': 'soft',
-                                 'cfg': ['--without-fp'],
-                                 'ccopts': no_isolate}])
+                        glibcs=[{'variant': 'soft', 'cfg': ['--without-fp']}])
         self.add_config(arch='sparc64',
                         os_name='linux-gnu',
                         glibcs=[{},
@@ -653,11 +682,11 @@ class Context(object):
 
     def checkout(self, versions):
         """Check out the desired component versions."""
-        default_versions = {'binutils': 'vcs-2.27',
-                            'gcc': 'vcs-6',
+        default_versions = {'binutils': 'vcs-2.28',
+                            'gcc': 'vcs-7',
                             'glibc': 'vcs-mainline',
                             'gmp': '6.1.1',
-                            'linux': '4.8.6',
+                            'linux': '4.11',
                             'mpc': '1.0.3',
                             'mpfr': '3.1.5'}
         use_versions = {}
@@ -962,6 +991,15 @@ class Context(object):
 
     def bot_build_mail(self, action, build_time):
         """Send email with the results of a build."""
+        if not ('email-from' in self.bot_config and
+                'email-server' in self.bot_config and
+                'email-subject' in self.bot_config and
+                'email-to' in self.bot_config):
+            if not self.email_warning:
+                print("Email not configured, not sending.")
+                self.email_warning = True
+            return
+
         build_time = build_time.replace(microsecond=0)
         subject = (self.bot_config['email-subject'] %
                    {'action': action,
@@ -1132,7 +1170,17 @@ class Config(object):
             cfg_cmd.extend(extra_opts)
         cmdlist.add_command('configure', cfg_cmd)
         cmdlist.add_command('build', ['make'])
-        cmdlist.add_command('install', ['make', 'install'])
+        # Parallel "make install" for GCC has race conditions that can
+        # cause it to fail; see
+        # <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=42980>.  Such
+        # problems are not known for binutils, but doing the
+        # installation in parallel within a particular toolchain build
+        # (as opposed to installation of one toolchain from
+        # build-many-glibcs.py running in parallel to the installation
+        # of other toolchains being built) is not known to be
+        # significantly beneficial, so it is simplest just to disable
+        # parallel install for cross tools here.
+        cmdlist.add_command('install', ['make', '-j1', 'install'])
         cmdlist.cleanup_dir()
         cmdlist.pop_subdesc()
 

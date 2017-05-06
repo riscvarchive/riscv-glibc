@@ -1,5 +1,5 @@
 /* Definitions for double vector tests with vector length 2.
-   Copyright (C) 2014-2016 Free Software Foundation, Inc.
+   Copyright (C) 2014-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -20,12 +20,7 @@
 #include "test-math-no-inline.h"
 #include "test-math-vector.h"
 
-#define TEST_MSG "testing double vector math (without inline functions)\n"
-
-#define EXCEPTION_TESTS_double 0
 #define ROUNDING_TESTS_double(MODE) ((MODE) == FE_TONEAREST)
 
 #define VEC_SUFF _vlen2
 #define VEC_LEN 2
-
-#define FUNC_TEST(function) function ## _VEC_SUFF

@@ -1,4 +1,4 @@
-# Copyright (C) 1991-2016 Free Software Foundation, Inc.
+# Copyright (C) 1991-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -31,6 +31,8 @@ routines := accept bind connect getpeername getsockname getsockopt	\
 	    setsockopt shutdown socket socketpair isfdtype opensock	\
 	    sockatmark accept4 recvmmsg sendmmsg
 
-aux	 := have_sock_cloexec sa_len
+tests := tst-accept4
+
+aux	 := sa_len
 
 include ../Rules

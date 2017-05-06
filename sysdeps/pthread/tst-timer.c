@@ -1,5 +1,5 @@
 /* Tests for POSIX timer implementation.
-   Copyright (C) 2000-2016 Free Software Foundation, Inc.
+   Copyright (C) 2000-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Kaz Kylheku <kaz@ashi.footprints.net>.
 
@@ -23,6 +23,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 
 static void

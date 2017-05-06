@@ -1,4 +1,4 @@
-/* Copyright (C) 1998-2016 Free Software Foundation, Inc.
+/* Copyright (C) 1998-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,7 +23,11 @@
 int
 __setresgid (gid_t rgid, gid_t egid, gid_t sgid)
 {
+#ifdef __NR_setresgid32
+  return INLINE_SETXID_SYSCALL (setresgid32, 3, rgid, egid, sgid);
+#else
   return INLINE_SETXID_SYSCALL (setresgid, 3, rgid, egid, sgid);
+#endif
 }
 libc_hidden_def (__setresgid)
 #ifndef __setresgid

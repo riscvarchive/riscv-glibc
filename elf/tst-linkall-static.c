@@ -1,5 +1,5 @@
 /* Test static linking against multiple libraries, to find symbol conflicts.
-   Copyright (C) 2016 Free Software Foundation, Inc.
+   Copyright (C) 2016-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -42,6 +42,11 @@ void *references[] =
     &getaddrinfo_a,             /* libanl */
   };
 
-/* This is a link-time test.  There is nothing to run here.  */
-#define TEST_FUNCTION 0
-#include "../test-skeleton.c"
+static int
+do_test (void)
+{
+  /* This is a link-time test.  There is nothing to run here.  */
+  return 0;
+}
+
+#include <support/test-driver.c>

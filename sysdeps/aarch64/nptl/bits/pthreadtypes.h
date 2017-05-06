@@ -1,4 +1,4 @@
-/* Copyright (C) 2002-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2002-2017 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -106,17 +106,30 @@ typedef union
 {
   struct
   {
-    int __lock;
-    unsigned int __futex;
-    __extension__ unsigned long long int __total_seq;
-    __extension__ unsigned long long int __wakeup_seq;
-    __extension__ unsigned long long int __woken_seq;
-    void *__mutex;
-    unsigned int __nwaiters;
-    unsigned int __broadcast_seq;
+    __extension__ union
+    {
+      __extension__ unsigned long long int __wseq;
+      struct {
+	unsigned int __low;
+	unsigned int __high;
+      } __wseq32;
+    };
+    __extension__ union
+    {
+      __extension__ unsigned long long int __g1_start;
+      struct {
+	unsigned int __low;
+	unsigned int __high;
+      } __g1_start32;
+    };
+    unsigned int __g_refs[2];
+    unsigned int __g_size[2];
+    unsigned int __g1_orig_size;
+    unsigned int __wrefs;
+    unsigned int __g_signals[2];
   } __data;
   char __size[__SIZEOF_PTHREAD_COND_T];
-  long int __align;
+  __extension__ long long int __align;
 } pthread_cond_t;
 
 typedef union
@@ -141,13 +154,13 @@ typedef union
 {
   struct
   {
-    int __lock;
-    unsigned int __nr_readers;
-    unsigned int __readers_wakeup;
-    unsigned int __writer_wakeup;
-    unsigned int __nr_readers_queued;
-    unsigned int __nr_writers_queued;
-    int __writer;
+    unsigned int __readers;
+    unsigned int __writers;
+    unsigned int __wrphase_futex;
+    unsigned int __writers_futex;
+    unsigned int __pad3;
+    unsigned int __pad4;
+    int __cur_writer;
     int __shared;
     unsigned long int __pad1;
     unsigned long int __pad2;

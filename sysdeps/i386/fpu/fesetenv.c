@@ -1,5 +1,5 @@
 /* Install given floating-point environment.
-   Copyright (C) 1997-2016 Free Software Foundation, Inc.
+   Copyright (C) 1997-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
 
@@ -79,7 +79,7 @@ __fesetenv (const fenv_t *envp)
 
   __asm__ ("fldenv %0" : : "m" (temp));
 
-  if ((GLRO(dl_hwcap) & HWCAP_I386_XMM) != 0)
+  if (HAS_CPU_FEATURE (SSE))
     {
       unsigned int mxcsr;
       __asm__ ("stmxcsr %0" : "=m" (mxcsr));

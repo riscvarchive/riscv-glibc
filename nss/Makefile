@@ -1,4 +1,4 @@
-# Copyright (C) 1996-2016 Free Software Foundation, Inc.
+# Copyright (C) 1996-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -54,6 +54,12 @@ tests			= test-netdb tst-nss-test1 test-digits-dots \
 			  $(tests-static)
 xtests			= bug-erange
 
+# If we have a thread library then we can test cancellation against
+# some routines like getpwuid_r.
+ifeq (yes,$(have-thread-library))
+tests += tst-cancel-getpwuid_r
+endif
+
 # Specify rules for the nss_* modules.  We have some services.
 services		:= files db
 
@@ -68,7 +74,7 @@ vpath %.c $(subdir-dirs) ../locale/programs ../intl
 
 
 libnss_files-routines	:= $(addprefix files-,$(databases)) \
-			   files-initgroups files-have_o_cloexec files-init
+			   files-initgroups files-init
 
 libnss_db-dbs		:= $(addprefix db-,\
 				       $(filter-out hosts network key alias,\
@@ -125,3 +131,7 @@ $(objpfx)/libnss_test1.so$(libnss_test1.so-version): $(objpfx)/libnss_test1.so
 	$(make-link)
 endif
 $(objpfx)tst-nss-test1.out: $(objpfx)/libnss_test1.so$(libnss_test1.so-version)
+
+ifeq (yes,$(have-thread-library))
+$(objpfx)tst-cancel-getpwuid_r: $(shared-thread-library)
+endif

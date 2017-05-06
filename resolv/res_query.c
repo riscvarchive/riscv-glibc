@@ -74,9 +74,11 @@
 #include <errno.h>
 #include <netdb.h>
 #include <resolv.h>
+#include <resolv/resolv-internal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <resolv/resolv-internal.h>
 
 /* Options.  Leave them on. */
 /* #undef DEBUG */
@@ -120,9 +122,8 @@ __libc_res_nquery(res_state statp,
 	HEADER *hp = (HEADER *) answer;
 	HEADER *hp2;
 	int n, use_malloc = 0;
-	u_int oflags = statp->_flags;
 
-	size_t bufsize = (type == T_UNSPEC ? 2 : 1) * QUERYSIZE;
+	size_t bufsize = (type == T_QUERY_A_AND_AAAA ? 2 : 1) * QUERYSIZE;
 	u_char *buf = alloca (bufsize);
 	u_char *query1 = buf;
 	int nquery1 = -1;
@@ -137,16 +138,18 @@ __libc_res_nquery(res_state statp,
 		printf(";; res_query(%s, %d, %d)\n", name, class, type);
 #endif
 
-	if (type == T_UNSPEC)
+	if (type == T_QUERY_A_AND_AAAA)
 	  {
 	    n = res_nmkquery(statp, QUERY, name, class, T_A, NULL, 0, NULL,
 			     query1, bufsize);
 	    if (n > 0)
 	      {
-		if ((oflags & RES_F_EDNS0ERR) == 0
-		    && (statp->options & (RES_USE_EDNS0|RES_USE_DNSSEC)) != 0)
+		if ((statp->options & (RES_USE_EDNS0|RES_USE_DNSSEC)) != 0)
 		  {
-		    n = __res_nopt(statp, n, query1, bufsize, anslen / 2);
+		    /* Use RESOLV_EDNS_BUFFER_SIZE because the receive
+		       buffer can be reallocated.  */
+		    n = __res_nopt (statp, n, query1, bufsize,
+				    RESOLV_EDNS_BUFFER_SIZE);
 		    if (n < 0)
 		      goto unspec_nomem;
 		  }
@@ -165,10 +168,11 @@ __libc_res_nquery(res_state statp,
 		n = res_nmkquery(statp, QUERY, name, class, T_AAAA, NULL, 0,
 				 NULL, query2, bufsize - nused);
 		if (n > 0
-		    && (oflags & RES_F_EDNS0ERR) == 0
 		    && (statp->options & (RES_USE_EDNS0|RES_USE_DNSSEC)) != 0)
-		  n = __res_nopt(statp, n, query2, bufsize - nused - n,
-				 anslen / 2);
+		  /* Use RESOLV_EDNS_BUFFER_SIZE because the receive
+		     buffer can be reallocated.  */
+		  n = __res_nopt (statp, n, query2, bufsize,
+				  RESOLV_EDNS_BUFFER_SIZE);
 		nquery2 = n;
 	      }
 
@@ -180,17 +184,25 @@ __libc_res_nquery(res_state statp,
 			     query1, bufsize);
 
 	    if (n > 0
-		&& (oflags & RES_F_EDNS0ERR) == 0
 		&& (statp->options & (RES_USE_EDNS0|RES_USE_DNSSEC)) != 0)
-	      n = __res_nopt(statp, n, query1, bufsize, anslen);
+	      {
+		/* Use RESOLV_EDNS_BUFFER_SIZE if the receive buffer
+		   can be reallocated.  */
+		size_t advertise;
+		if (answerp == NULL)
+		  advertise = anslen;
+		else
+		  advertise = RESOLV_EDNS_BUFFER_SIZE;
+		n = __res_nopt (statp, n, query1, bufsize, advertise);
+	      }
 
 	    nquery1 = n;
 	  }
 
-	if (__builtin_expect (n <= 0, 0) && !use_malloc) {
+	if (__glibc_unlikely (n <= 0) && !use_malloc) {
 		/* Retry just in case res_nmkquery failed because of too
 		   short buffer.  Shouldn't happen.  */
-		bufsize = (type == T_UNSPEC ? 2 : 1) * MAXPACKET;
+		bufsize = (type == T_QUERY_A_AND_AAAA ? 2 : 1) * MAXPACKET;
 		buf = malloc (bufsize);
 		if (buf != NULL) {
 			query1 = buf;
@@ -199,16 +211,6 @@ __libc_res_nquery(res_state statp,
 		}
 	}
 	if (__glibc_unlikely (n <= 0))       {
-		/* If the query choked with EDNS0, retry without EDNS0.  */
-		if ((statp->options & (RES_USE_EDNS0|RES_USE_DNSSEC)) != 0
-		    && ((oflags ^ statp->_flags) & RES_F_EDNS0ERR) != 0) {
-			statp->_flags |= RES_F_EDNS0ERR;
-#ifdef DEBUG
-			if (statp->options & RES_DEBUG)
-				printf(";; res_nquery: retry without EDNS0\n");
-#endif
-			goto again;
-		}
 #ifdef DEBUG
 		if (statp->options & RES_DEBUG)
 			printf(";; res_query: mkquery failed\n");

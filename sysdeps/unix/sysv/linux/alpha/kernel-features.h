@@ -1,6 +1,6 @@
 /* Set flags signalling availability of kernel features based on given
    kernel version number.
-   Copyright (C) 2010-2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -28,5 +28,11 @@
 /* There never has been support for fstat64.  */
 #undef __ASSUME_STATFS64
 #define __ASSUME_STATFS64 0
+
+/* Alpha defines SysV ipc shmat syscall with a different name.  */
+#define __NR_shmat __NR_osf_shmat
+
+#define __ASSUME_RECV_SYSCALL	1
+#define __ASSUME_SEND_SYSCALL	1
 
 #endif /* _KERNEL_FEATURES_H */

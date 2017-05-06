@@ -29,7 +29,7 @@ However, with a pretty printer gdb will output something like this:
 (gdb) print mutex
 $1 = pthread_mutex_t = {
   Type = Normal,
-  Status = Unlocked,
+  Status = Not acquired,
   Robust = No,
   Shared = No,
   Protocol = Priority protect,
@@ -126,11 +126,12 @@ You can use the existing unit tests as examples.
 
 4. Add the names of the pretty printer tests to the 'tests-printers' variable
 in your submodule's Makefile (without extensions).  In addition, for each test
-program you must define a corresponding CFLAGS-* variable and set it to
-$(CFLAGS-printers-tests) to ensure they're compiled correctly.  For example,
-test-foo-printer.c requires the following:
+program you must define a corresponding CFLAGS-* and CPPFLAGS-* variable and
+set it to $(CFLAGS-printers-tests) to ensure they're compiled correctly.  For
+example, test-foo-printer.c requires the following:
 
 CFLAGS-test-foo-printer.c := $(CFLAGS-printers-tests)
+CPPFLAGS-test-foo-printer.c := $(CFLAGS-printers-tests)
 
 Finally, if your programs need to be linked with a specific library, you can add
 its name to the 'tests-printers-libs' variable in your submodule's Makefile.
@@ -143,6 +144,11 @@ Known issues
 any changes to the target code must also update the corresponding printers.
 On the plus side, the printer code itself may serve as a kind of documentation
 for the target code.
+
+* There's no guarantee that the information the pretty printers provide is
+complete, i.e. some details might be left off.  For example, the pthread_mutex_t
+printers won't report whether a thread is spin-waiting in an attempt to acquire
+the mutex.
 
 * Older versions of the gdb Python API have a bug where
 gdb.RegexpCollectionPrettyPrinter would not be able to get a value's real type

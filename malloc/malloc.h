@@ -1,5 +1,5 @@
 /* Prototypes and definition for malloc implementation.
-   Copyright (C) 1996-2016 Free Software Foundation, Inc.
+   Copyright (C) 1996-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -51,9 +51,6 @@ __THROW __attribute_warn_unused_result__;
 
 /* Free a block allocated by `malloc', `realloc' or `calloc'.  */
 extern void free (void *__ptr) __THROW;
-
-/* Free a block allocated by `calloc'. */
-extern void cfree (void *__ptr) __THROW;
 
 /* Allocate SIZE bytes allocated to ALIGNMENT bytes.  */
 extern void *memalign (size_t __alignment, size_t __size)

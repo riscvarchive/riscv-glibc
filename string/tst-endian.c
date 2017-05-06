@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <libc-internal.h>
+#include <libc-diag.h>
 
 #if __GNUC_PREREQ (6, 0)
 /* GCC 6.0 warns on big endian systems about:
@@ -18,7 +18,7 @@
 # define DIAG_IGNORE_NEEDS_COMMENT_TAUTOLOGICAL_COMPARE()
 #endif
 
-static int
+int
 do_test (void)
 {
   int result = 0;
@@ -131,5 +131,4 @@ do_test (void)
   return result;
 }
 
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/test-driver.c>

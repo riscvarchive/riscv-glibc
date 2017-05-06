@@ -1,6 +1,6 @@
 # Pretty printers for the NPTL lock types.
 #
-# Copyright (C) 2016 Free Software Foundation, Inc.
+# Copyright (C) 2016-2017 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 #
 # The GNU C Library is free software; you can redistribute it and/or
@@ -101,9 +101,9 @@ class MutexPrinter(object):
     def read_status(self):
         """Read the mutex's status.
 
-        For architectures which support lock elision, this method reads
-        whether the mutex appears as locked in memory (i.e. it may show it as
-        unlocked even after calling pthread_mutex_lock).
+        Architectures that support lock elision might not record the mutex owner
+        ID in the __owner field.  In that case, the owner will be reported as
+        "Unknown".
         """
 
         if self.kind == PTHREAD_MUTEX_DESTROYED:
@@ -124,13 +124,14 @@ class MutexPrinter(object):
         """
 
         if self.lock == PTHREAD_MUTEX_UNLOCKED:
-            self.values.append(('Status', 'Unlocked'))
+            self.values.append(('Status', 'Not acquired'))
         else:
             if self.lock & FUTEX_WAITERS:
-                self.values.append(('Status', 'Locked, possibly with waiters'))
+                self.values.append(('Status',
+                                    'Acquired, possibly with waiters'))
             else:
                 self.values.append(('Status',
-                                    'Locked, possibly with no waiters'))
+                                    'Acquired, possibly with no waiters'))
 
             if self.lock & FUTEX_OWNER_DIED:
                 self.values.append(('Owner ID', '%d (dead)' % self.owner))
@@ -147,7 +148,7 @@ class MutexPrinter(object):
     def read_status_no_robust(self):
         """Read the status of a non-robust mutex.
 
-        Read info on whether the mutex is locked, if it may have waiters
+        Read info on whether the mutex is acquired, if it may have waiters
         and its owner (if any).
         """
 
@@ -157,7 +158,7 @@ class MutexPrinter(object):
             lock_value &= ~(PTHREAD_MUTEX_PRIO_CEILING_MASK)
 
         if lock_value == PTHREAD_MUTEX_UNLOCKED:
-            self.values.append(('Status', 'Unlocked'))
+            self.values.append(('Status', 'Not acquired'))
         else:
             if self.kind & PTHREAD_MUTEX_PRIO_INHERIT_NP:
                 waiters = self.lock & FUTEX_WAITERS
@@ -168,12 +169,18 @@ class MutexPrinter(object):
                 owner = self.owner
 
             if waiters:
-                self.values.append(('Status', 'Locked, possibly with waiters'))
+                self.values.append(('Status',
+                                    'Acquired, possibly with waiters'))
             else:
                 self.values.append(('Status',
-                                    'Locked, possibly with no waiters'))
+                                    'Acquired, possibly with no waiters'))
 
-            self.values.append(('Owner ID', owner))
+            if self.owner != 0:
+                self.values.append(('Owner ID', owner))
+            else:
+                # Owner isn't recorded, probably because lock elision
+                # is enabled.
+                self.values.append(('Owner ID', 'Unknown'))
 
     def read_attributes(self):
         """Read the mutex's attributes."""
@@ -208,14 +215,14 @@ class MutexPrinter(object):
     def read_misc_info(self):
         """Read miscellaneous info on the mutex.
 
-        For now this reads the number of times a recursive mutex was locked
+        For now this reads the number of times a recursive mutex was acquired
         by the same thread.
         """
 
         mutex_type = self.kind & PTHREAD_MUTEX_KIND_MASK
 
         if mutex_type == PTHREAD_MUTEX_RECURSIVE and self.count > 1:
-            self.values.append(('Times locked recursively', self.count))
+            self.values.append(('Times acquired by the owner', self.count))
 
 class MutexAttributesPrinter(object):
     """Pretty printer for pthread_mutexattr_t.
@@ -293,16 +300,6 @@ class MutexAttributesPrinter(object):
         elif protocol == PTHREAD_PRIO_PROTECT:
             self.values.append(('Protocol', 'Priority protect'))
 
-CLOCK_IDS = {
-    CLOCK_REALTIME: 'CLOCK_REALTIME',
-    CLOCK_MONOTONIC: 'CLOCK_MONOTONIC',
-    CLOCK_PROCESS_CPUTIME_ID: 'CLOCK_PROCESS_CPUTIME_ID',
-    CLOCK_THREAD_CPUTIME_ID: 'CLOCK_THREAD_CPUTIME_ID',
-    CLOCK_MONOTONIC_RAW: 'CLOCK_MONOTONIC_RAW',
-    CLOCK_REALTIME_COARSE: 'CLOCK_REALTIME_COARSE',
-    CLOCK_MONOTONIC_COARSE: 'CLOCK_MONOTONIC_COARSE'
-}
-
 class ConditionVariablePrinter(object):
     """Pretty printer for pthread_cond_t."""
 
@@ -313,24 +310,8 @@ class ConditionVariablePrinter(object):
             cond: A gdb.value representing a pthread_cond_t.
         """
 
-        # Since PTHREAD_COND_SHARED is an integer, we need to cast it to void *
-        # to be able to compare it to the condvar's __data.__mutex member.
-        #
-        # While it looks like self.shared_value should be a class variable,
-        # that would result in it having an incorrect size if we're loading
-        # these printers through .gdbinit for a 64-bit objfile in AMD64.
-        # This is because gdb initially assumes the pointer size to be 4 bytes,
-        # and only sets it to 8 after loading the 64-bit objfiles.  Since
-        # .gdbinit runs before any objfiles are loaded, this would effectively
-        # make self.shared_value have a size of 4, thus breaking later
-        # comparisons with pointers whose types are looked up at runtime.
-        void_ptr_type = gdb.lookup_type('void').pointer()
-        self.shared_value = gdb.Value(PTHREAD_COND_SHARED).cast(void_ptr_type)
-
         data = cond['__data']
-        self.total_seq = data['__total_seq']
-        self.mutex = data['__mutex']
-        self.nwaiters = data['__nwaiters']
+        self.wrefs = data['__wrefs']
         self.values = []
 
         self.read_values()
@@ -360,7 +341,6 @@ class ConditionVariablePrinter(object):
 
         self.read_status()
         self.read_attributes()
-        self.read_mutex_info()
 
     def read_status(self):
         """Read the status of the condvar.
@@ -369,40 +349,21 @@ class ConditionVariablePrinter(object):
         are waiting for it.
         """
 
-        if self.total_seq == PTHREAD_COND_DESTROYED:
-            self.values.append(('Status', 'Destroyed'))
-
-        self.values.append(('Threads waiting for this condvar',
-                            self.nwaiters >> COND_NWAITERS_SHIFT))
+        self.values.append(('Threads known to still execute a wait function',
+                            self.wrefs >> PTHREAD_COND_WREFS_SHIFT))
 
     def read_attributes(self):
         """Read the condvar's attributes."""
 
-        clock_id = self.nwaiters & ((1 << COND_NWAITERS_SHIFT) - 1)
+        if (self.wrefs & PTHREAD_COND_CLOCK_MONOTONIC_MASK) != 0:
+            self.values.append(('Clock ID', 'CLOCK_MONOTONIC'))
+        else:
+            self.values.append(('Clock ID', 'CLOCK_REALTIME'))
 
-        # clock_id must be casted to int because it's a gdb.Value
-        self.values.append(('Clock ID', CLOCK_IDS[int(clock_id)]))
-
-        shared = (self.mutex == self.shared_value)
-
-        if shared:
+        if (self.wrefs & PTHREAD_COND_SHARED_MASK) != 0:
             self.values.append(('Shared', 'Yes'))
         else:
             self.values.append(('Shared', 'No'))
-
-    def read_mutex_info(self):
-        """Read the data of the mutex this condvar is bound to.
-
-        A pthread_cond_t's __data.__mutex member is a void * which
-        must be casted to pthread_mutex_t *.  For shared condvars, this
-        member isn't recorded and has a special value instead.
-        """
-
-        if self.mutex and self.mutex != self.shared_value:
-            mutex_type = gdb.lookup_type('pthread_mutex_t')
-            mutex = self.mutex.cast(mutex_type.pointer()).dereference()
-
-            self.values.append(('Mutex', mutex))
 
 class ConditionVariableAttributesPrinter(object):
     """Pretty printer for pthread_condattr_t.
@@ -453,10 +414,12 @@ class ConditionVariableAttributesPrinter(object):
         created in self.children.
         """
 
-        clock_id = self.condattr & ((1 << COND_NWAITERS_SHIFT) - 1)
+        clock_id = (self.condattr >> 1) & ((1 << COND_CLOCK_BITS) - 1)
 
-        # clock_id must be casted to int because it's a gdb.Value
-        self.values.append(('Clock ID', CLOCK_IDS[int(clock_id)]))
+        if clock_id != 0:
+            self.values.append(('Clock ID', 'CLOCK_MONOTONIC'))
+        else:
+            self.values.append(('Clock ID', 'CLOCK_REALTIME'))
 
         if self.condattr & 1:
             self.values.append(('Shared', 'Yes'))
@@ -474,12 +437,10 @@ class RWLockPrinter(object):
         """
 
         data = rwlock['__data']
-        self.readers = data['__nr_readers']
-        self.queued_readers = data['__nr_readers_queued']
-        self.queued_writers = data['__nr_writers_queued']
-        self.writer_id = data['__writer']
+        self.readers = data['__readers']
+        self.cur_writer = data['__cur_writer']
         self.shared = data['__shared']
-        self.prefers_writers = data['__flags']
+        self.flags = data['__flags']
         self.values = []
         self.read_values()
 
@@ -512,20 +473,19 @@ class RWLockPrinter(object):
     def read_status(self):
         """Read the status of the rwlock."""
 
-        # Right now pthread_rwlock_destroy doesn't do anything, so there's no
-        # way to check if an rwlock is destroyed.
-
-        if self.writer_id:
-            self.values.append(('Status', 'Locked (Write)'))
-            self.values.append(('Writer ID', self.writer_id))
-        elif self.readers:
-            self.values.append(('Status', 'Locked (Read)'))
-            self.values.append(('Readers', self.readers))
+        if self.readers & PTHREAD_RWLOCK_WRPHASE:
+            if self.readers & PTHREAD_RWLOCK_WRLOCKED:
+                self.values.append(('Status', 'Acquired (Write)'))
+                self.values.append(('Writer ID', self.cur_writer))
+            else:
+                self.values.append(('Status', 'Not acquired'))
         else:
-            self.values.append(('Status', 'Unlocked'))
-
-        self.values.append(('Queued readers', self.queued_readers))
-        self.values.append(('Queued writers', self.queued_writers))
+            r = self.readers >> PTHREAD_RWLOCK_READER_SHIFT
+            if r > 0:
+                self.values.append(('Status', 'Acquired (Read)'))
+                self.values.append(('Readers', r))
+            else:
+                self.values.append(('Status', 'Not acquired'))
 
     def read_attributes(self):
         """Read the attributes of the rwlock."""
@@ -535,10 +495,12 @@ class RWLockPrinter(object):
         else:
             self.values.append(('Shared', 'No'))
 
-        if self.prefers_writers:
+        if self.flags == PTHREAD_RWLOCK_PREFER_READER_NP:
+            self.values.append(('Prefers', 'Readers'))
+        elif self.flags == PTHREAD_RWLOCK_PREFER_WRITER_NP:
             self.values.append(('Prefers', 'Writers'))
         else:
-            self.values.append(('Prefers', 'Readers'))
+            self.values.append(('Prefers', 'Writers no recursive readers'))
 
 class RWLockAttributesPrinter(object):
     """Pretty printer for pthread_rwlockattr_t.
@@ -599,13 +561,12 @@ class RWLockAttributesPrinter(object):
             # PTHREAD_PROCESS_PRIVATE
             self.values.append(('Shared', 'No'))
 
-        if (rwlock_type == PTHREAD_RWLOCK_PREFER_READER_NP or
-            rwlock_type == PTHREAD_RWLOCK_PREFER_WRITER_NP):
-            # This is a known bug.  Using PTHREAD_RWLOCK_PREFER_WRITER_NP will
-            # still make the rwlock prefer readers.
+        if rwlock_type == PTHREAD_RWLOCK_PREFER_READER_NP:
             self.values.append(('Prefers', 'Readers'))
-        elif rwlock_type == PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP:
+        elif rwlock_type == PTHREAD_RWLOCK_PREFER_WRITER_NP:
             self.values.append(('Prefers', 'Writers'))
+        else:
+            self.values.append(('Prefers', 'Writers no recursive readers'))
 
 def register(objfile):
     """Register the pretty printers within the given objfile."""

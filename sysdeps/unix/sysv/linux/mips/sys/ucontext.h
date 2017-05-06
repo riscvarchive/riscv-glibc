@@ -1,4 +1,4 @@
-/* Copyright (C) 1997-2016 Free Software Foundation, Inc.  This file is part of the GNU C Library.
+/* Copyright (C) 1997-2017 Free Software Foundation, Inc.  This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -98,7 +98,7 @@ typedef struct
     unsigned int fpc_csr;
     unsigned int used_math;
     unsigned int dsp;
-    unsigned int reserved;
+    unsigned int __glibc_reserved1;
   } mcontext_t;
 #endif
 

@@ -1,5 +1,5 @@
 /* System-specific socket constants and types.  Linux version.
-   Copyright (C) 1991-2016 Free Software Foundation, Inc.
+   Copyright (C) 1991-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -84,7 +84,8 @@ typedef __socklen_t socklen_t;
 #define PF_VSOCK	40	/* vSockets.  */
 #define PF_KCM		41	/* Kernel Connection Multiplexor.  */
 #define PF_QIPCRTR	42	/* Qualcomm IPC Router.  */
-#define PF_MAX		43	/* For now..  */
+#define PF_SMC		43	/* SMC sockets.  */
+#define PF_MAX		44	/* For now..  */
 
 /* Address families.  */
 #define AF_UNSPEC	PF_UNSPEC
@@ -133,6 +134,7 @@ typedef __socklen_t socklen_t;
 #define AF_VSOCK	PF_VSOCK
 #define AF_KCM		PF_KCM
 #define AF_QIPCRTR	PF_QIPCRTR
+#define AF_SMC		PF_SMC
 #define AF_MAX		PF_MAX
 
 /* Socket level values.  Others are defined in the appropriate headers.
@@ -365,6 +367,21 @@ struct ucred
 #  define __SYS_SOCKET_H_undef_SIOCSPGRP
 # endif
 #endif
+#ifndef IOCSIZE_MASK
+# define __SYS_SOCKET_H_undef_IOCSIZE_MASK
+#endif
+#ifndef IOCSIZE_SHIFT
+# define __SYS_SOCKET_H_undef_IOCSIZE_SHIFT
+#endif
+#ifndef IOC_IN
+# define __SYS_SOCKET_H_undef_IOC_IN
+#endif
+#ifndef IOC_INOUT
+# define __SYS_SOCKET_H_undef_IOC_INOUT
+#endif
+#ifndef IOC_OUT
+# define __SYS_SOCKET_H_undef_IOC_OUT
+#endif
 
 /* Get socket manipulation related informations from kernel headers.  */
 #include <asm/socket.h>
@@ -398,6 +415,26 @@ struct ucred
 #  undef __SYS_SOCKET_H_undef_SIOCSPGRP
 #  undef SIOCSPGRP
 # endif
+#endif
+#ifdef __SYS_SOCKET_H_undef_IOCSIZE_MASK
+# undef __SYS_SOCKET_H_undef_IOCSIZE_MASK
+# undef IOCSIZE_MASK
+#endif
+#ifdef __SYS_SOCKET_H_undef_IOCSIZE_SHIFT
+# undef __SYS_SOCKET_H_undef_IOCSIZE_SHIFT
+# undef IOCSIZE_SHIFT
+#endif
+#ifdef __SYS_SOCKET_H_undef_IOC_IN
+# undef __SYS_SOCKET_H_undef_IOC_IN
+# undef IOC_IN
+#endif
+#ifdef __SYS_SOCKET_H_undef_IOC_INOUT
+# undef __SYS_SOCKET_H_undef_IOC_INOUT
+# undef IOC_INOUT
+#endif
+#ifdef __SYS_SOCKET_H_undef_IOC_OUT
+# undef __SYS_SOCKET_H_undef_IOC_OUT
+# undef IOC_OUT
 #endif
 
 /* Structure used to manipulate the SO_LINGER option.  */

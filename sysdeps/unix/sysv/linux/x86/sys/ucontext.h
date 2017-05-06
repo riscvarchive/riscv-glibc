@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2016 Free Software Foundation, Inc.
+/* Copyright (C) 2001-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -95,7 +95,7 @@ struct _libc_fpxreg
 {
   unsigned short int significand[4];
   unsigned short int exponent;
-  unsigned short int padding[3];
+  unsigned short int __glibc_reserved1[3];
 };
 
 struct _libc_xmmreg
@@ -116,7 +116,7 @@ struct _libc_fpstate
   __uint32_t		mxcr_mask;
   struct _libc_fpxreg	_st[8];
   struct _libc_xmmreg	_xmm[16];
-  __uint32_t		padding[24];
+  __uint32_t		__glibc_reserved1[24];
 };
 
 /* Structure to describe FPU registers.  */

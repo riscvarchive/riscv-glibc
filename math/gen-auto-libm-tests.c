@@ -1,5 +1,5 @@
 /* Generate expected output for libm tests with MPFR and MPC.
-   Copyright (C) 2013-2016 Free Software Foundation, Inc.
+   Copyright (C) 2013-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 
    (use of current MPC and MPFR versions recommended) and run it as:
 
-   gen-auto-libm-tests auto-libm-test-in auto-libm-test-out
+   gen-auto-libm-tests auto-libm-test-in <func> auto-libm-test-out-<func>
 
    The input file auto-libm-test-in contains three kinds of lines:
 
@@ -98,7 +98,7 @@
    accompanied by a comment referring to an open bug in glibc
    Bugzilla.
 
-   The output file auto-libm-test-out contains the test lines from
+   The output file auto-libm-test-out-<func> contains the test lines from
    auto-libm-test-in, and, after the line for a given test, some
    number of output test lines.  An output test line is of the form "=
    function rounding-mode format input1 input2 ... : output1 output2
@@ -1907,6 +1907,7 @@ output_for_one_input_case (FILE *fp, const char *filename, test_function *tf,
 		error (EXIT_FAILURE, errno, "write to '%s'", filename);
 	      /* Print outputs.  */
 	      bool must_erange = false;
+	      bool some_underflow_zero = false;
 	      for (size_t i = 0; i < tf->num_ret; i++)
 		{
 		  generic_value g;
@@ -1924,6 +1925,10 @@ output_for_one_input_case (FILE *fp, const char *filename, test_function *tf,
 			  && (all_exc_before[i][m]
 			      & (1U << exc_underflow)) != 0)
 			must_erange = true;
+		      if (mpfr_zero_p (all_res[i][rm_towardzero])
+			  && (all_exc_before[i][m]
+			      & (1U << exc_underflow)) != 0)
+			some_underflow_zero = true;
 		      mpfr_init2 (g.value.f, fp_formats[f].mant_dig);
 		      assert_exact (mpfr_set (g.value.f, all_res[i][m],
 					      MPFR_RNDN));
@@ -1971,6 +1976,16 @@ output_for_one_input_case (FILE *fp, const char *filename, test_function *tf,
 		  default:
 		    break;
 		  }
+	      /* For the ibm128 format, expect incorrect overflowing
+		 results in rounding modes other than to nearest;
+		 likewise incorrect results where the result may
+		 underflow to 0.  */
+	      if (f == fp_ldbl_128ibm
+		  && m != rm_tonearest
+		  && (some_underflow_zero
+		      || (merged_exc_before[m] & (1U << exc_overflow)) != 0))
+		if (fputs (" xfail:ibm128-libgcc", fp) < 0)
+		  error (EXIT_FAILURE, errno, "write to '%s'", filename);
 	      /* Print exception flags and compute errno
 		 expectations where not already computed.  */
 	      bool may_edom = false;
@@ -2143,10 +2158,10 @@ output_for_one_input_case (FILE *fp, const char *filename, test_function *tf,
     generic_value_free (&generic_outputs[i]);
 }
 
-/* Generate test output data to FILENAME.  */
+/* Generate test output data for FUNCTION to FILENAME.  */
 
 static void
-generate_output (const char *filename)
+generate_output (const char *function, const char *filename)
 {
   FILE *fp = fopen (filename, "w");
   if (fp == NULL)
@@ -2154,6 +2169,8 @@ generate_output (const char *filename)
   for (size_t i = 0; i < ARRAY_SIZE (test_functions); i++)
     {
       test_function *tf = &test_functions[i];
+      if (strcmp (tf->name, function) != 0)
+	continue;
       for (size_t j = 0; j < tf->num_tests; j++)
 	{
 	  input_test *it = &tf->tests[j];
@@ -2170,12 +2187,14 @@ generate_output (const char *filename)
 int
 main (int argc, char **argv)
 {
-  if (argc != 3)
-    error (EXIT_FAILURE, 0, "usage: gen-auto-libm-tests <input> <output>");
+  if (argc != 4)
+    error (EXIT_FAILURE, 0,
+	   "usage: gen-auto-libm-tests <input> <func> <output>");
   const char *input_filename = argv[1];
-  const char *output_filename = argv[2];
+  const char *function = argv[2];
+  const char *output_filename = argv[3];
   init_fp_formats ();
   read_input (input_filename);
-  generate_output (output_filename);
+  generate_output (function, output_filename);
   exit (EXIT_SUCCESS);
 }
