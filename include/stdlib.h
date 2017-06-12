@@ -9,8 +9,6 @@
 #if !defined _ISOMAC
 # include <sys/stat.h>
 
-__BEGIN_DECLS
-
 extern __typeof (strtol_l) __strtol_l;
 extern __typeof (strtoul_l) __strtoul_l;
 extern __typeof (strtoll_l) __strtoll_l;
@@ -111,6 +109,10 @@ extern int __posix_memalign (void **memptr, size_t alignment, size_t size);
 
 extern void *__libc_memalign (size_t alignment, size_t size)
      __attribute_malloc__;
+
+extern void *__libc_reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+     __THROW __attribute_warn_unused_result__;
+libc_hidden_proto (__libc_reallocarray)
 
 extern int __libc_system (const char *line);
 
@@ -260,8 +262,6 @@ libc_hidden_proto (__abort_msg)
 extern __typeof (unsetenv) unsetenv attribute_hidden;
 extern __typeof (__strtoul_internal) __strtoul_internal attribute_hidden;
 # endif
-
-__END_DECLS
 
 #endif
 

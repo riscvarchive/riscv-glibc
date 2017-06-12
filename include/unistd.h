@@ -2,7 +2,6 @@
 # include <posix/unistd.h>
 
 # ifndef _ISOMAC
-__BEGIN_DECLS
 
 libc_hidden_proto (_exit, __noreturn__)
 rtld_hidden_proto (_exit, __noreturn__)
@@ -53,8 +52,10 @@ extern ssize_t __libc_pwrite64 (int __fd, const void *__buf, size_t __n,
 				__off64_t __offset) attribute_hidden;
 extern ssize_t __libc_read (int __fd, void *__buf, size_t __n);
 libc_hidden_proto (__libc_read)
+libc_hidden_proto (read)
 extern ssize_t __libc_write (int __fd, const void *__buf, size_t __n);
 libc_hidden_proto (__libc_write)
+libc_hidden_proto (write)
 extern int __pipe (int __pipedes[2]);
 libc_hidden_proto (__pipe)
 extern int __pipe2 (int __pipedes[2], int __flags);
@@ -188,7 +189,5 @@ extern int __getlogin_r_loginuid (char *name, size_t namesize)
 extern __typeof (__access) __access_noerrno attribute_hidden;
 #  endif
 
-__END_DECLS
 # endif
-
 #endif

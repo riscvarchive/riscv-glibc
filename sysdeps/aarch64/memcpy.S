@@ -59,7 +59,14 @@
    Overlapping large forward memmoves use a loop that copies backwards.
 */
 
-ENTRY_ALIGN (memmove, 6)
+#ifndef MEMMOVE
+# define MEMMOVE memmove
+#endif
+#ifndef MEMCPY
+# define MEMCPY memcpy
+#endif
+
+ENTRY_ALIGN (MEMMOVE, 6)
 
 	DELOUSE (0)
 	DELOUSE (1)
@@ -71,9 +78,9 @@ ENTRY_ALIGN (memmove, 6)
 	b.lo	L(move_long)
 
 	/* Common case falls through into memcpy.  */
-END (memmove)
-libc_hidden_builtin_def (memmove)
-ENTRY (memcpy)
+END (MEMMOVE)
+libc_hidden_builtin_def (MEMMOVE)
+ENTRY (MEMCPY)
 
 	DELOUSE (0)
 	DELOUSE (1)
@@ -169,8 +176,8 @@ L(copy_long):
 	ldp	C_l, C_h, [src, 48]
 	ldp	D_l, D_h, [src, 64]!
 	subs	count, count, 128 + 16	/* Test and readjust count.  */
-	b.ls	2f
-1:
+	b.ls	L(last64)
+L(loop64):
 	stp	A_l, A_h, [dst, 16]
 	ldp	A_l, A_h, [src, 16]
 	stp	B_l, B_h, [dst, 32]
@@ -180,12 +187,12 @@ L(copy_long):
 	stp	D_l, D_h, [dst, 64]!
 	ldp	D_l, D_h, [src, 64]!
 	subs	count, count, 64
-	b.hi	1b
+	b.hi	L(loop64)
 
 	/* Write the last full set of 64 bytes.  The remainder is at most 64
 	   bytes, so it is safe to always copy 64 bytes from the end even if
 	   there is just 1 byte left.  */
-2:
+L(last64):
 	ldp	E_l, E_h, [srcend, -64]
 	stp	A_l, A_h, [dst, 16]
 	ldp	A_l, A_h, [srcend, -48]
@@ -256,5 +263,5 @@ L(move_long):
 	stp	C_l, C_h, [dstin]
 3:	ret
 
-END (memcpy)
-libc_hidden_builtin_def (memcpy)
+END (MEMCPY)
+libc_hidden_builtin_def (MEMCPY)

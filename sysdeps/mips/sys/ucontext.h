@@ -21,12 +21,10 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 #include <sgidefs.h>
 
@@ -39,87 +37,98 @@ typedef __uint64_t greg_t;
 #endif
 
 /* Number of general registers.  */
-#define NGREG	36
+#define __NGREG	36
+#ifdef __USE_MISC
+# define NGREG	__NGREG
+#endif
 
 /* Container for all general registers.  */
-typedef greg_t gregset_t[NGREG];
+typedef greg_t gregset_t[__NGREG];
 
+#ifdef __USE_MISC
 /* Number of each register is the `gregset_t' array.  */
 enum
 {
   CTX_R0 = 0,
-#define CTX_R0	CTX_R0
+# define CTX_R0	CTX_R0
   CTX_AT = 1,
-#define CTX_AT	CTX_AT
+# define CTX_AT	CTX_AT
   CTX_V0 = 2,
-#define CTX_V0	CTX_V0
+# define CTX_V0	CTX_V0
   CTX_V1 = 3,
-#define CTX_V1	CTX_V1
+# define CTX_V1	CTX_V1
   CTX_A0 = 4,
-#define CTX_A0	CTX_A0
+# define CTX_A0	CTX_A0
   CTX_A1 = 5,
-#define CTX_A1	CTX_A1
+# define CTX_A1	CTX_A1
   CTX_A2 = 6,
-#define CTX_A2	CTX_A2
+# define CTX_A2	CTX_A2
   CTX_A3 = 7,
-#define CTX_A3	CTX_A3
+# define CTX_A3	CTX_A3
   CTX_T0 = 8,
-#define CTX_T0	CTX_T0
+# define CTX_T0	CTX_T0
   CTX_T1 = 9,
-#define CTX_T1	CTX_T1
+# define CTX_T1	CTX_T1
   CTX_T2 = 10,
-#define CTX_T2	CTX_T2
+# define CTX_T2	CTX_T2
   CTX_T3 = 11,
-#define CTX_T3	CTX_T3
+# define CTX_T3	CTX_T3
   CTX_T4 = 12,
-#define CTX_T4	CTX_T4
+# define CTX_T4	CTX_T4
   CTX_T5 = 13,
-#define CTX_T5	CTX_T5
+# define CTX_T5	CTX_T5
   CTX_T6 = 14,
-#define CTX_T6	CTX_T6
+# define CTX_T6	CTX_T6
   CTX_T7 = 15,
-#define CTX_T7	CTX_T7
+# define CTX_T7	CTX_T7
   CTX_S0 = 16,
-#define CTX_S0	CTX_S0
+# define CTX_S0	CTX_S0
   CTX_S1 = 17,
-#define CTX_S1	CTX_S1
+# define CTX_S1	CTX_S1
   CTX_S2 = 18,
-#define CTX_S2	CTX_S2
+# define CTX_S2	CTX_S2
   CTX_S3 = 19,
-#define CTX_S3	CTX_S3
+# define CTX_S3	CTX_S3
   CTX_S4 = 20,
-#define CTX_S4	CTX_S4
+# define CTX_S4	CTX_S4
   CTX_S5 = 21,
-#define CTX_S5	CTX_S5
+# define CTX_S5	CTX_S5
   CTX_S6 = 22,
-#define CTX_S6	CTX_S6
+# define CTX_S6	CTX_S6
   CTX_S7 = 23,
-#define CTX_S7	CTX_S7
+# define CTX_S7	CTX_S7
   CTX_T8 = 24,
-#define CTX_T8	CTX_T8
+# define CTX_T8	CTX_T8
   CTX_T9 = 25,
-#define CTX_T9	CTX_T9
+# define CTX_T9	CTX_T9
   CTX_K0 = 26,
-#define CTX_K0	CTX_K0
+# define CTX_K0	CTX_K0
   CTX_K1 = 27,
-#define CTX_K1	CTX_K1
+# define CTX_K1	CTX_K1
   CTX_GP = 28,
-#define CTX_GP	CTX_GP
+# define CTX_GP	CTX_GP
   CTX_SP = 29,
-#define CTX_SP	CTX_SP
+# define CTX_SP	CTX_SP
   CTX_S8 = 30,
-#define CTX_S8	CTX_S8
+# define CTX_S8	CTX_S8
   CTX_RA = 31,
-#define CTX_RA	CTX_RA
+# define CTX_RA	CTX_RA
   CTX_MDLO = 32,
-#define CTX_MDLO	CTX_MDLO
+# define CTX_MDLO	CTX_MDLO
   CTX_MDHI = 33,
-#define CTX_MDHI	CTX_MDHI
+# define CTX_MDHI	CTX_MDHI
   CTX_CAUSE = 34,
-#define CTX_CAUSE	CTX_CAUSE
+# define CTX_CAUSE	CTX_CAUSE
   CTX_EPC = 35,
-#define CTX_EPC	CTX_EPC
+# define CTX_EPC	CTX_EPC
 };
+#endif
+
+#ifdef __USE_MISC
+# define __ctx(fld) fld
+#else
+# define __ctx(fld) __ ## fld
+#endif
 
 /* Structure to describe FPU registers.  */
 typedef struct fpregset
@@ -127,25 +136,27 @@ typedef struct fpregset
   union
   {
 #if _MIPS_SIM == _ABIO32
-    double fp_dregs[16];
-    float fp_fregs[32];
-    unsigned int fp_regs[32];
+    double __ctx(fp_dregs)[16];
+    float __ctx(fp_fregs)[32];
+    unsigned int __ctx(fp_regs)[32];
 #else
-    double fp_dregs[32];
-    /* float fp_fregs[32]; */
-    __uint64_t fp_regs[32];
+    double __ctx(fp_dregs)[32];
+    /* float __ctx(fp_fregs)[32]; */
+    __uint64_t __ctx(fp_regs)[32];
 #endif
-  } fp_r;
-  unsigned int fp_csr;
-  unsigned int fp_pad;
+  } __ctx(fp_r);
+  unsigned int __ctx(fp_csr);
+  unsigned int __ctx(fp_pad);
 } fpregset_t;
 
 /* Context to describe whole processor state.  */
 typedef struct
 {
-  gregset_t gpregs;
-  fpregset_t fpregs;
+  gregset_t __ctx(gpregs);
+  fpregset_t __ctx(fpregs);
 } mcontext_t;
+
+#undef __ctx
 
 /* Userlevel context.  */
 typedef struct ucontext
@@ -156,7 +167,7 @@ typedef struct ucontext
   __uint64_t uc_flags;
 #endif
   struct ucontext *uc_link;
-  __sigset_t uc_sigmask;
+  sigset_t uc_sigmask;
   stack_t uc_stack;
   mcontext_t uc_mcontext;
   int uc_filler[48];

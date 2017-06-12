@@ -20,39 +20,20 @@
  */
 
 #ifndef	_SIGNAL_H
-
-#if !defined __need_sig_atomic_t && !defined __need_sigset_t
-# define _SIGNAL_H
-#endif
+#define _SIGNAL_H
 
 #include <features.h>
 
 __BEGIN_DECLS
 
-#include <bits/sigset.h>		/* __sigset_t, __sig_atomic_t.  */
-
-/* An integral type that can be modified atomically, without the
-   possibility of a signal arriving in the middle of the operation.  */
-#if defined __need_sig_atomic_t || defined _SIGNAL_H
-# ifndef __sig_atomic_t_defined
-#  define __sig_atomic_t_defined
-typedef __sig_atomic_t sig_atomic_t;
-# endif
-# undef __need_sig_atomic_t
-#endif
-
-#if defined __need_sigset_t || (defined _SIGNAL_H && defined __USE_POSIX)
-# ifndef __sigset_t_defined
-#  define __sigset_t_defined
-typedef __sigset_t sigset_t;
-# endif
-# undef __need_sigset_t
-#endif
-
-#ifdef _SIGNAL_H
-
 #include <bits/types.h>
 #include <bits/signum.h>
+
+#include <bits/types/sig_atomic_t.h>
+
+#if defined __USE_POSIX
+#include <bits/types/sigset_t.h>
+#endif
 
 #if defined __USE_XOPEN || defined __USE_XOPEN2K
 # ifndef __pid_t_defined
@@ -73,8 +54,13 @@ typedef __uid_t uid_t;
 #endif
 
 #if defined __USE_POSIX199309 || defined __USE_XOPEN_EXTENDED
-/* Get the `siginfo_t' type plus the needed symbols.  */
-# include <bits/siginfo.h>
+# include <bits/types/siginfo_t.h>
+# include <bits/siginfo-consts.h>
+#endif
+
+#ifdef __USE_POSIX199309
+# include <bits/types/sigevent_t.h>
+# include <bits/sigevent-consts.h>
 #endif
 
 
@@ -108,7 +94,7 @@ extern __sighandler_t __REDIRECT_NTH (signal,
 # endif
 #endif
 
-#if defined __USE_XOPEN && !defined __USE_XOPEN2K8
+#if defined __USE_XOPEN_EXTENDED && !defined __USE_XOPEN2K8
 /* The X/Open definition of `signal' conflicts with the BSD version.
    So they defined another function `bsd_signal'.  */
 extern __sighandler_t bsd_signal (int __sig, __sighandler_t __handler)
@@ -156,7 +142,7 @@ extern void psiginfo (const siginfo_t *__pinfo, const char *__s);
    This function is a cancellation point and therefore not marked with
    __THROW.  */
 
-#ifdef __USE_XOPEN
+#ifdef __USE_XOPEN_EXTENDED
 # ifdef __GNUC__
 extern int sigpause (int __sig) __asm__ ("__xpg_sigpause");
 # else
@@ -174,7 +160,7 @@ extern int __sigpause (int __sig_or_mask, int __is_sig);
    simply do not work in many situations.  Use `sigprocmask' instead.  */
 
 /* Compute mask for signal SIG.  */
-# define sigmask(sig)	__sigmask(sig)
+# define sigmask(sig) ((int)(1u << ((sig) - 1)))
 
 /* Block signals in MASK, returning the old mask.  */
 extern int sigblock (int __mask) __THROW __attribute_deprecated__;
@@ -254,12 +240,14 @@ extern int sigaction (int __sig, const struct sigaction *__restrict __act,
 extern int sigpending (sigset_t *__set) __THROW __nonnull ((1));
 
 
+# ifdef __USE_POSIX199506
 /* Select any of pending signals from SET or wait for any to arrive.
 
    This function is a cancellation point and therefore not marked with
    __THROW.  */
 extern int sigwait (const sigset_t *__restrict __set, int *__restrict __sig)
      __nonnull ((1, 2));
+# endif /* Use POSIX 1995.  */
 
 # ifdef __USE_POSIX199309
 /* Select any of pending signals from SET and place information in INFO.
@@ -314,23 +302,33 @@ extern int sigreturn (struct sigcontext *__scp) __THROW;
 extern int siginterrupt (int __sig, int __interrupt) __THROW;
 
 # include <bits/sigstack.h>
+# include <bits/types/stack_t.h>
+# include <bits/ss_flags.h>
 # if defined __USE_XOPEN || defined __USE_XOPEN2K8
 /* This will define `ucontext_t' and `mcontext_t'.  */
 #  include <sys/ucontext.h>
 # endif
 
+/* Alternate signal handler stack interface.
+   This interface should always be preferred over `sigstack'.  */
+extern int sigaltstack (const stack_t *__restrict __ss,
+			stack_t *__restrict __oss) __THROW;
+
+#endif /* Use POSIX.1-2008 or X/Open Unix.  */
+
+#if ((defined __USE_XOPEN_EXTENDED && !defined __USE_XOPEN2K8)	\
+     || defined __USE_MISC)
+# include <bits/types/struct_sigstack.h>
+#endif
+
+#if ((defined __USE_XOPEN_EXTENDED && !defined __USE_XOPEN2K)	\
+     || defined __USE_MISC)
 /* Run signals handlers on the stack specified by SS (if not NULL).
    If OSS is not NULL, it is filled in with the old signal stack status.
    This interface is obsolete and on many platform not implemented.  */
 extern int sigstack (struct sigstack *__ss, struct sigstack *__oss)
      __THROW __attribute_deprecated__;
-
-/* Alternate signal handler stack interface.
-   This interface should always be preferred over `sigstack'.  */
-extern int sigaltstack (const struct sigaltstack *__restrict __ss,
-			struct sigaltstack *__restrict __oss) __THROW;
-
-#endif /* Use POSIX.1-2008 or X/Open Unix.  */
+#endif
 
 #ifdef __USE_XOPEN_EXTENDED
 /* Simplified interface for signal management.  */
@@ -362,8 +360,6 @@ extern __sighandler_t sigset (int __sig, __sighandler_t __disp) __THROW;
 extern int __libc_current_sigrtmin (void) __THROW;
 /* Return number of available real-time signal with lowest priority.  */
 extern int __libc_current_sigrtmax (void) __THROW;
-
-#endif /* signal.h  */
 
 __END_DECLS
 

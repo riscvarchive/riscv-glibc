@@ -20,15 +20,6 @@
 /* SPARC uses socketcall.  */
 #define __ASSUME_SOCKETCALL		1
 
-/* The accept4 syscall was added for SPARC in 2.6.28.  */
-#define __ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL	1
-
-/* The recvmmsg syscall was added for SPARC in 2.6.33.  */
-#define __ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL	1
-
-/* The sendmmsg syscall was added for SPARC in 3.0.  */
-#define __ASSUME_SENDMMSG_SYSCALL_WITH_SOCKETCALL	1
-
 #include_next <kernel-features.h>
 
 /* 32-bit SPARC kernels do not support
@@ -41,6 +32,10 @@
 # undef __ASSUME_ACCEPT_SYSCALL
 # undef __ASSUME_CONNECT_SYSCALL
 # undef __ASSUME_RECVFROM_SYSCALL
+#else
+/* sparc64 defines __NR_pause,  however it is not supported (ENOSYS).
+   Undefine so pause.c can use a correct alternative.  */
+# undef __NR_pause
 #endif
 
 /* sparc only supports ipc syscall.  */

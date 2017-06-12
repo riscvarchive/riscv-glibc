@@ -1,8 +1,6 @@
 #ifndef _WCHAR_H
-#include <wcsmbs/wchar.h>
-
+# include <wcsmbs/wchar.h>
 # ifndef _ISOMAC
-# ifdef _WCHAR_H
 
 extern __typeof (wcscasecmp_l) __wcscasecmp_l;
 extern __typeof (wcsncasecmp_l) __wcsncasecmp_l;
@@ -157,6 +155,9 @@ extern wchar_t *__wmemmove (wchar_t *__s1, const wchar_t *__s2,
 extern wchar_t *__wcschrnul (const wchar_t *__s, wchar_t __wc)
      __attribute_pure__;
 
+extern wchar_t *__wmemset_chk (wchar_t *__s, wchar_t __c, size_t __n,
+			       size_t __ns) __THROW;
+
 extern int __vfwscanf (__FILE *__restrict __s,
 		       const wchar_t *__restrict __format,
 		       __gnuc_va_list __arg)
@@ -172,7 +173,6 @@ extern int __vfwprintf (__FILE *__restrict __s,
 			const wchar_t *__restrict __format,
 			__gnuc_va_list __arg)
      /* __attribute__ ((__format__ (__wprintf__, 2, 0))) */;
-#ifndef __cplusplus
 extern int __vfwprintf_chk (FILE *__restrict __s, int __flag,
 			    const wchar_t *__restrict __format,
 			    __gnuc_va_list __arg)
@@ -184,7 +184,6 @@ extern int __vswprintf_chk (wchar_t *__restrict __s, size_t __n,
      /* __attribute__ ((__format__ (__wprintf__, 5, 0))) */;
 libc_hidden_proto (__vfwprintf_chk)
 libc_hidden_proto (__vswprintf_chk)
-#endif
 
 extern int __isoc99_fwscanf (__FILE *__restrict __stream,
 			     const wchar_t *__restrict __format, ...);
@@ -218,10 +217,4 @@ extern size_t __mbsrtowcs_l (wchar_t *dst, const char **src, size_t len,
 #  define __mbsinit(state) ((state)->__count == 0)
 
 # endif
-# endif
 #endif
-
-/* Undefine all __need_* constants in case we are included to get those
-   constants but the whole file was already read.  */
-#undef __need_mbstate_t
-#undef __need_wint_t

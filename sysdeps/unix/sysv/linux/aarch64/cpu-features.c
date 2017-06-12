@@ -18,18 +18,20 @@
 
 #include <cpu-features.h>
 #include <sys/auxv.h>
+#include <elf/dl-hwcaps.h>
 
 static inline void
 init_cpu_features (struct cpu_features *cpu_features)
 {
-  if (GLRO(dl_hwcap) & HWCAP_CPUID)
+  uint64_t hwcap_mask = GET_HWCAP_MASK();
+  uint64_t hwcap = GLRO (dl_hwcap) & hwcap_mask;
+
+  if (hwcap & HWCAP_CPUID)
     {
       register uint64_t id = 0;
       asm volatile ("mrs %0, midr_el1" : "=r"(id));
       cpu_features->midr_el1 = id;
     }
   else
-    {
-      cpu_features->midr_el1 = 0;
-    }
+    cpu_features->midr_el1 = 0;
 }

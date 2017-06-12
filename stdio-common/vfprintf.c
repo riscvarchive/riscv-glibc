@@ -45,6 +45,10 @@
 #define va_list	_IO_va_list
 #undef BUFSIZ
 #define BUFSIZ		_IO_BUFSIZ
+/* In some cases we need extra space for all the output which is not
+   counted in the width of the string. We assume 32 characters is
+   enough.  */
+#define EXTSIZ		32
 #define ARGCHECK(S, Format) \
   do									      \
     {									      \
@@ -766,7 +770,8 @@ static const uint8_t jump_table[] =
 					.pad = pad,			      \
 					.extra = 0,			      \
 					.i18n = use_outdigits,		      \
-					.wide = sizeof (CHAR_T) != 1 };	      \
+					.wide = sizeof (CHAR_T) != 1,	      \
+					.is_binary128 = 0};		      \
 									      \
 	    if (is_long_double)						      \
 	      the_arg.pa_long_double = va_arg (ap, long double);	      \
@@ -784,6 +789,8 @@ static const uint8_t jump_table[] =
 		fspec->data_arg_type = PA_DOUBLE;			      \
 		fspec->info.is_long_double = 0;				      \
 	      }								      \
+	    /* Not supported by *printf functions.  */			      \
+	    fspec->info.is_binary128 = 0;				      \
 									      \
 	    function_done = __printf_fp (s, &fspec->info, &ptr);	      \
 	  }								      \
@@ -823,7 +830,8 @@ static const uint8_t jump_table[] =
 					.group = group,			      \
 					.pad = pad,			      \
 					.extra = 0,			      \
-					.wide = sizeof (CHAR_T) != 1 };	      \
+					.wide = sizeof (CHAR_T) != 1,	      \
+					.is_binary128 = 0};		      \
 									      \
 	    if (is_long_double)						      \
 	      the_arg.pa_long_double = va_arg (ap, long double);	      \
@@ -838,6 +846,8 @@ static const uint8_t jump_table[] =
 	    ptr = (const void *) &args_value[fspec->data_arg];		      \
 	    if (__ldbl_is_dbl)						      \
 	      fspec->info.is_long_double = 0;				      \
+	    /* Not supported by *printf functions.  */			      \
+	    fspec->info.is_binary128 = 0;				      \
 									      \
 	    function_done = __printf_fphex (s, &fspec->info, &ptr);	      \
 	  }								      \
@@ -1456,20 +1466,19 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	    left = 1;
 	  }
 
-	if (__glibc_unlikely (width >= INT_MAX / sizeof (CHAR_T) - 32))
+	if (__glibc_unlikely (width >= INT_MAX / sizeof (CHAR_T) - EXTSIZ))
 	  {
 	    __set_errno (EOVERFLOW);
 	    done = -1;
 	    goto all_done;
 	  }
 
-	if (width >= WORK_BUFFER_SIZE - 32)
+	if (width >= WORK_BUFFER_SIZE - EXTSIZ)
 	  {
-	    /* We have to use a special buffer.  The "32" is just a safe
-	       bet for all the output which is not counted in the width.  */
-	    size_t needed = ((size_t) width + 32) * sizeof (CHAR_T);
+	    /* We have to use a special buffer.  */
+	    size_t needed = ((size_t) width + EXTSIZ) * sizeof (CHAR_T);
 	    if (__libc_use_alloca (needed))
-	      workend = (CHAR_T *) alloca (needed) + width + 32;
+	      workend = (CHAR_T *) alloca (needed) + width + EXTSIZ;
 	    else
 	      {
 		workstart = (CHAR_T *) malloc (needed);
@@ -1478,7 +1487,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 		    done = -1;
 		    goto all_done;
 		  }
-		workend = workstart + width + 32;
+		workend = workstart + width + EXTSIZ;
 	      }
 	  }
       }
@@ -1489,20 +1498,19 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       width = read_int (&f);
 
       if (__glibc_unlikely (width == -1
-			    || width >= INT_MAX / sizeof (CHAR_T) - 32))
+			    || width >= INT_MAX / sizeof (CHAR_T) - EXTSIZ))
 	{
 	  __set_errno (EOVERFLOW);
 	  done = -1;
 	  goto all_done;
 	}
 
-      if (width >= WORK_BUFFER_SIZE - 32)
+      if (width >= WORK_BUFFER_SIZE - EXTSIZ)
 	{
-	  /* We have to use a special buffer.  The "32" is just a safe
-	     bet for all the output which is not counted in the width.  */
-	  size_t needed = ((size_t) width + 32) * sizeof (CHAR_T);
+	  /* We have to use a special buffer.  */
+	  size_t needed = ((size_t) width + EXTSIZ) * sizeof (CHAR_T);
 	  if (__libc_use_alloca (needed))
-	    workend = (CHAR_T *) alloca (needed) + width + 32;
+	    workend = (CHAR_T *) alloca (needed) + width + EXTSIZ;
 	  else
 	    {
 	      workstart = (CHAR_T *) malloc (needed);
@@ -1511,7 +1519,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 		  done = -1;
 		  goto all_done;
 		}
-	      workend = workstart + width + 32;
+	      workend = workstart + width + EXTSIZ;
 	    }
 	}
       if (*f == L_('$'))
@@ -1562,23 +1570,23 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	}
       else
 	prec = 0;
-      if (prec > width && prec > WORK_BUFFER_SIZE - 32)
+      if (prec > width && prec > WORK_BUFFER_SIZE - EXTSIZ)
 	{
 	  /* Deallocate any previously allocated buffer because it is
 	     too small.  */
 	  if (__glibc_unlikely (workstart != NULL))
 	    free (workstart);
 	  workstart = NULL;
-	  if (__glibc_unlikely (prec >= INT_MAX / sizeof (CHAR_T) - 32))
+	  if (__glibc_unlikely (prec >= INT_MAX / sizeof (CHAR_T) - EXTSIZ))
 	    {
 	      __set_errno (EOVERFLOW);
 	      done = -1;
 	      goto all_done;
 	    }
-	  size_t needed = ((size_t) prec + 32) * sizeof (CHAR_T);
+	  size_t needed = ((size_t) prec + EXTSIZ) * sizeof (CHAR_T);
 
 	  if (__libc_use_alloca (needed))
-	    workend = (CHAR_T *) alloca (needed) + prec + 32;
+	    workend = (CHAR_T *) alloca (needed) + prec + EXTSIZ;
 	  else
 	    {
 	      workstart = (CHAR_T *) malloc (needed);
@@ -1587,7 +1595,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 		  done = -1;
 		  goto all_done;
 		}
-	      workend = workstart + prec + 32;
+	      workend = workstart + prec + EXTSIZ;
 	    }
 	}
       JUMP (*f, step2_jumps);
@@ -1964,23 +1972,23 @@ printf_positional (_IO_FILE *s, const CHAR_T *format, int readonly_format,
 	}
 
       /* Maybe the buffer is too small.  */
-      if (MAX (prec, width) + 32 > WORK_BUFFER_SIZE)
+      if (MAX (prec, width) + EXTSIZ > WORK_BUFFER_SIZE)
 	{
-	  if (__libc_use_alloca ((MAX (prec, width) + 32)
+	  if (__libc_use_alloca ((MAX (prec, width) + EXTSIZ)
 				 * sizeof (CHAR_T)))
-	    workend = ((CHAR_T *) alloca ((MAX (prec, width) + 32)
+	    workend = ((CHAR_T *) alloca ((MAX (prec, width) + EXTSIZ)
 					  * sizeof (CHAR_T))
-		       + (MAX (prec, width) + 32));
+		       + (MAX (prec, width) + EXTSIZ));
 	  else
 	    {
-	      workstart = (CHAR_T *) malloc ((MAX (prec, width) + 32)
+	      workstart = (CHAR_T *) malloc ((MAX (prec, width) + EXTSIZ)
 					     * sizeof (CHAR_T));
 	      if (workstart == NULL)
 		{
 		  done = -1;
 		  goto all_done;
 		}
-	      workend = workstart + (MAX (prec, width) + 32);
+	      workend = workstart + (MAX (prec, width) + EXTSIZ);
 	    }
 	}
 

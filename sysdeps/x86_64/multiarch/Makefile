@@ -6,12 +6,19 @@ ifeq ($(subdir),string)
 
 sysdep_routines += strncat-c stpncpy-c strncpy-c strcmp-ssse3 \
 		   strcmp-sse2-unaligned strncmp-ssse3 \
+		   memchr-sse2 rawmemchr-sse2 memchr-avx2 rawmemchr-avx2 \
+		   memrchr-sse2 memrchr-avx2 \
+		   memcmp-avx2-movbe \
 		   memcmp-sse4 memcpy-ssse3 \
 		   memmove-ssse3 \
 		   memcpy-ssse3-back \
 		   memmove-ssse3-back \
 		   memmove-avx512-no-vzeroupper strcasecmp_l-ssse3 \
+		   strchr-sse2 strchrnul-sse2 strchr-avx2 strchrnul-avx2 \
+		   strrchr-sse2 strrchr-avx2 \
+		   strlen-sse2 strnlen-sse2 strlen-avx2 strnlen-avx2 \
 		   strncase_l-ssse3 strcat-ssse3 strncat-ssse3\
+		   strcpy-sse2 stpcpy-sse2 \
 		   strcpy-ssse3 strncpy-ssse3 stpcpy-ssse3 stpncpy-ssse3 \
 		   strcpy-sse2-unaligned strncpy-sse2-unaligned \
 		   stpcpy-sse2-unaligned stpncpy-sse2-unaligned \
@@ -30,5 +37,16 @@ CFLAGS-strspn-c.c += -msse4
 endif
 
 ifeq ($(subdir),wcsmbs)
-sysdep_routines += wmemcmp-sse4 wmemcmp-ssse3 wmemcmp-c wcscpy-ssse3 wcscpy-c
+sysdep_routines += wmemcmp-sse4 wmemcmp-ssse3 wmemcmp-c \
+		   wmemcmp-avx2-movbe \
+		   wmemchr-sse2 wmemchr-avx2 \
+		   wcscpy-ssse3 wcscpy-c \
+		   wcschr-sse2 wcschr-avx2 \
+		   wcsrchr-sse2 wcsrchr-avx2 \
+		   wcsnlen-sse4_1 wcsnlen-c \
+		   wcslen-sse2 wcslen-avx2 wcsnlen-avx2
+endif
+
+ifeq ($(subdir),debug)
+sysdep_routines += wmemset_chk-nonshared
 endif

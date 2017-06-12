@@ -21,20 +21,19 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 
+#ifdef __USE_MISC
 /* Type for general register.  */
 typedef unsigned long int greg_t;
 
 /* Number of general registers.  */
-#define NGREG	80
-#define NFPREG	32
+# define NGREG	80
+# define NFPREG	32
 
 /* Container for all general registers.  */
 typedef struct gregset
@@ -50,6 +49,7 @@ typedef struct fpregset
   {
     double fp_dregs[32];
   } fpregset_t;
+#endif
 
 /* Context to describe whole processor state.  */
 typedef struct sigcontext mcontext_t;
@@ -61,7 +61,7 @@ typedef struct ucontext
     struct ucontext *uc_link;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
   } ucontext_t;
 
 #endif /* sys/ucontext.h */

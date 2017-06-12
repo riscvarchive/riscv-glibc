@@ -6,7 +6,6 @@ bdflush		EXTRA	bdflush		i:ii	__compat_bdflush	bdflush@GLIBC_2.0:GLIBC_2.23
 capget		EXTRA	capget		i:pp	capget
 capset		EXTRA	capset		i:pp	capset
 clock_adjtime	EXTRA	clock_adjtime	i:ip	clock_adjtime
-creat		-	creat		Ci:si	creat
 create_module	EXTRA	create_module	3	__compat_create_module	create_module@GLIBC_2.0:GLIBC_2.23
 delete_module	EXTRA	delete_module	3	delete_module
 epoll_create	EXTRA	epoll_create	i:i	epoll_create
@@ -14,7 +13,6 @@ epoll_create1	EXTRA	epoll_create1	i:i	epoll_create1
 epoll_ctl	EXTRA	epoll_ctl	i:iiip	epoll_ctl
 eventfd		EXTRA	eventfd2	i:ii	eventfd
 execve		-	execve		i:spp	__execve	execve
-fdatasync	-	fdatasync	Ci:i	fdatasync
 flock		-	flock		i:ii	__flock		flock
 get_kernel_syms	EXTRA	get_kernel_syms	i:p	__compat_get_kernel_syms	get_kernel_syms@GLIBC_2.0:GLIBC_2.23
 getpid          -       getpid          Ei:     __getpid        getpid
@@ -43,9 +41,7 @@ mount		EXTRA	mount		i:sssip	__mount	mount
 mremap		EXTRA	mremap		b:ainip	__mremap	mremap
 munlock		-	munlock		i:ai	munlock
 munlockall	-	munlockall	i:	munlockall
-nanosleep	-	nanosleep	Ci:pp	__nanosleep	nanosleep
 nfsservctl	EXTRA	nfsservctl	i:ipp	nfsservctl
-pause		-	pause		Ci:	__libc_pause	pause
 pipe		-	pipe		i:f	__pipe		pipe
 pipe2		-	pipe2		i:fi	__pipe2		pipe2
 pivot_root	EXTRA	pivot_root	i:ss	pivot_root
@@ -68,16 +64,13 @@ setfsgid	EXTRA	setfsgid	i:i	setfsgid
 setfsuid	EXTRA	setfsuid	i:i	setfsuid
 setpgid		-	setpgid		i:ii	__setpgid	setpgid
 sigaltstack	-	sigaltstack	i:PP	__sigaltstack	sigaltstack
-splice		EXTRA	splice		Ci:iPiPii	splice
 stime		-	stime		i:p	stime
 sysinfo		EXTRA	sysinfo		i:p	__sysinfo	sysinfo
 swapon		-	swapon		i:si	__swapon	swapon
 swapoff		-	swapoff		i:s	__swapoff	swapoff
-tee		EXTRA	tee		Ci:iiii	tee
 unshare		EXTRA	unshare		i:i	unshare
 uselib		EXTRA	uselib		i:s	__compat_uselib	uselib@GLIBC_2.0:GLIBC_2.23
 utime		-	utime		i:sP	utime
-vmsplice	EXTRA	vmsplice	Ci:iPii	vmsplice
 wait4		-	wait4		i:iWiP	__wait4		wait4
 
 chown		-	chown		i:sii	__libc_chown	__chown chown
@@ -102,8 +95,6 @@ removexattr	-	removexattr	i:ss	removexattr
 lremovexattr	-	lremovexattr	i:ss	lremovexattr
 fremovexattr	-	fremovexattr	i:is	fremovexattr
 
-mq_timedsend	-	mq_timedsend	Ci:ipiip	__mq_timedsend	mq_timedsend
-mq_timedreceive	-	mq_timedreceive	Ci:ipipp	__mq_timedreceive	mq_timedreceive
 mq_setattr	-	mq_getsetattr	i:ipp	mq_setattr
 
 timerfd_create	EXTRA	timerfd_create	i:ii	timerfd_create
@@ -113,7 +104,6 @@ timerfd_gettime	EXTRA	timerfd_gettime	i:ip	timerfd_gettime
 fanotify_init	EXTRA	fanotify_init	i:ii	fanotify_init
 
 name_to_handle_at EXTRA	name_to_handle_at i:isppi name_to_handle_at
-open_by_handle_at EXTRA	open_by_handle_at Ci:ipi  open_by_handle_at
 
 setns		EXTRA	setns		i:ii	setns
 

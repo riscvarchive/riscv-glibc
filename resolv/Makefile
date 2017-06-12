@@ -22,7 +22,7 @@ subdir	:= resolv
 
 include ../Makeconfig
 
-headers	:= resolv.h \
+headers	:= resolv.h bits/types/res_state.h \
 	   netdb.h bits/netdb.h \
 	   arpa/nameser.h arpa/nameser_compat.h \
 	   sys/bitypes.h
@@ -56,6 +56,11 @@ tests += \
 ifeq (yes,$(build-shared))
 tests += \
   tst-resolv-canonname \
+
+# uses DEPRECATED_RES_USE_INET6 from <resolv-internal.h>.
+tests-internal += \
+  tst-resolv-res_init \
+  tst-resolv-res_init-thread \
 
 endif
 
@@ -136,6 +141,9 @@ $(objpfx)tst-res_use_inet6: $(objpfx)libresolv.so $(shared-thread-library)
 $(objpfx)tst-resolv-basic: $(objpfx)libresolv.so $(shared-thread-library)
 $(objpfx)tst-resolv-edns: $(objpfx)libresolv.so $(shared-thread-library)
 $(objpfx)tst-resolv-network: $(objpfx)libresolv.so $(shared-thread-library)
+$(objpfx)tst-resolv-res_init: $(libdl) $(objpfx)libresolv.so
+$(objpfx)tst-resolv-res_init-thread: $(libdl) $(objpfx)libresolv.so \
+  $(shared-thread-library)
 $(objpfx)tst-resolv-qtypes: $(objpfx)libresolv.so $(shared-thread-library)
 $(objpfx)tst-resolv-search: $(objpfx)libresolv.so $(shared-thread-library)
 $(objpfx)tst-resolv-canonname: \

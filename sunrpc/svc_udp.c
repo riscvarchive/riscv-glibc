@@ -64,6 +64,7 @@
 
 #include <wchar.h>
 #include <libio/iolibio.h>
+#include <shlib-compat.h>
 
 #define rpc_buffer(xprt) ((xprt)->xp_p1)
 #ifndef MAX
@@ -137,7 +138,7 @@ svcudp_bufcreate (int sock, u_int sendsz, u_int recvsz)
 	}
       madesock = TRUE;
     }
-  __bzero ((char *) &addr, sizeof (addr));
+  memset ((char *) &addr, 0, sizeof (addr));
   addr.sin_family = AF_INET;
   if (bindresvport (sock, &addr))
     {

@@ -35,7 +35,11 @@ libsupport-routines = \
   oom_error \
   resolv_test \
   set_fortify_handler \
+  support-xstat \
   support_become_root \
+  support_can_chroot \
+  support_capture_subprocess \
+  support_capture_subprocess_check \
   support_enter_network_namespace \
   support_format_address_family \
   support_format_addrinfo \
@@ -43,8 +47,11 @@ libsupport-routines = \
   support_format_herrno \
   support_format_hostent \
   support_format_netent \
+  support_isolate_in_subprocess \
   support_record_failure \
   support_run_diff \
+  support_shared_allocate \
+  support_write_file_string \
   support_test_main \
   support_test_verify_impl \
   temp_file \
@@ -54,8 +61,10 @@ libsupport-routines = \
   xasprintf \
   xbind \
   xcalloc \
+  xchroot \
   xclose \
   xconnect \
+  xdup2 \
   xfclose \
   xfopen \
   xfork \
@@ -63,8 +72,11 @@ libsupport-routines = \
   xlisten \
   xmalloc \
   xmemstream \
+  xmkdir \
   xmmap \
   xmunmap \
+  xopen \
+  xpipe \
   xpoll \
   xpthread_attr_destroy \
   xpthread_attr_init \
@@ -113,6 +125,7 @@ endif
 tests = \
   README-testing \
   tst-support-namespace \
+  tst-support_capture_subprocess \
   tst-support_format_dns_packet \
   tst-support_record_failure \
 

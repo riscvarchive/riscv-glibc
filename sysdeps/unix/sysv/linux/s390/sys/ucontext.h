@@ -20,19 +20,23 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by in <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
+
+#ifdef __USE_MISC
+# define __ctx(fld) fld
+#else
+# define __ctx(fld) __ ## fld
+#endif
 
 /* Type for a program status word.  */
 typedef struct
 {
-  unsigned long mask;
-  unsigned long addr;
+  unsigned long __ctx(mask);
+  unsigned long __ctx(addr);
 } __attribute__ ((__aligned__(8))) __psw_t;
 
 /* Type for a general-purpose register.  */
@@ -44,34 +48,39 @@ typedef unsigned long greg_t;
    that has the same size as s390_regs.  This is needed for the
    elf_prstatus structure.  */
 #if __WORDSIZE == 64
-# define NGREG 27
+# define __NGREG 27
 #else
-# define NGREG 36
+# define __NGREG 36
+#endif
+#ifdef __USE_MISC
+# define NGREG __NGREG
 #endif
 /* Must match kernels psw_t alignment.  */
-typedef greg_t gregset_t[NGREG] __attribute__ ((__aligned__(8)));
+typedef greg_t gregset_t[__NGREG] __attribute__ ((__aligned__(8)));
 
 typedef union
   {
-    double  d;
-    float   f;
+    double  __ctx(d);
+    float   __ctx(f);
   } fpreg_t;
 
 /* Register set for the floating-point registers.  */
 typedef struct
   {
-    unsigned int fpc;
-    fpreg_t fprs[16];
+    unsigned int __ctx(fpc);
+    fpreg_t __ctx(fprs)[16];
   } fpregset_t;
 
 /* Context to describe whole processor state.  */
 typedef struct
   {
-    __psw_t psw;
-    unsigned long gregs[16];
-    unsigned int aregs[16];
-    fpregset_t fpregs;
+    __psw_t __ctx(psw);
+    unsigned long __ctx(gregs)[16];
+    unsigned int __ctx(aregs)[16];
+    fpregset_t __ctx(fpregs);
   } mcontext_t;
+
+#undef __ctx
 
 /* Userlevel context.  */
 typedef struct ucontext
@@ -80,7 +89,7 @@ typedef struct ucontext
     struct ucontext *uc_link;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
   } ucontext_t;
 
 

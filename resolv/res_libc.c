@@ -65,7 +65,7 @@ res_init(void) {
 	if (!_res.retrans)
 		_res.retrans = RES_TIMEOUT;
 	if (!_res.retry)
-		_res.retry = 4;
+		_res.retry = RES_DFLRETRY;
 	if (!(_res.options & RES_INIT))
 		_res.options = RES_DEFAULT;
 	else if (_res.nscount > 0)
@@ -103,7 +103,7 @@ __res_maybe_init (res_state resp, int preinit)
 		if (!resp->retrans)
 			resp->retrans = RES_TIMEOUT;
 		if (!resp->retry)
-			resp->retry = 4;
+			resp->retry = RES_DFLRETRY;
 		resp->options = RES_DEFAULT;
 		if (!resp->id)
 			resp->id = res_randomid ();
@@ -127,14 +127,13 @@ __thread struct __res_state *__resp = &_res;
 extern __thread struct __res_state *__libc_resp
   __attribute__ ((alias ("__resp"))) attribute_hidden;
 
+#include <shlib-compat.h>
+
 /* We declare this with compat_symbol so that it's not
    visible at link time.  Programs must use the accessor functions.  */
 #ifdef SHARED
-# include <shlib-compat.h>
 compat_symbol (libc, _res, _res, GLIBC_2_0);
 #endif
-
-#include <shlib-compat.h>
 
 #if SHLIB_COMPAT(libc, GLIBC_2_0, GLIBC_2_2)
 # undef res_init

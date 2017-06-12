@@ -1,3 +1,21 @@
+/* Tests of strtod in a locale using decimal comma.
+   Copyright (C) 2007-2017 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,38 +27,27 @@
 static const struct
 {
   const char *in;
-  int group;
   double expected;
 } tests[] =
   {
-    { "0", 0, 0.0 },
-    { "000", 0, 0.0 },
-    { "-0", 0, -0.0 },
-    { "-000", 0, -0.0 },
-    { "0,", 0, 0.0 },
-    { "-0,", 0, -0.0 },
-    { "0,0", 0, 0.0 },
-    { "-0,0", 0, -0.0 },
-    { "0e-10", 0, 0.0 },
-    { "-0e-10", 0, -0.0 },
-    { "0,e-10", 0, 0.0 },
-    { "-0,e-10", 0, -0.0 },
-    { "0,0e-10", 0, 0.0 },
-    { "-0,0e-10", 0, -0.0 },
-    { "0e-1000000", 0, 0.0 },
-    { "-0e-1000000", 0, -0.0 },
-    { "0,0e-1000000", 0, 0.0 },
-    { "-0,0e-1000000", 0, -0.0 },
-    { "0", 1, 0.0 },
-    { "000", 1, 0.0 },
-    { "-0", 1, -0.0 },
-    { "-000", 1, -0.0 },
-    { "0e-10", 1, 0.0 },
-    { "-0e-10", 1, -0.0 },
-    { "0e-1000000", 1, 0.0 },
-    { "-0e-1000000", 1, -0.0 },
-    { "000"NBSP"000"NBSP"000", 1, 0.0 },
-    { "-000"NBSP"000"NBSP"000", 1, -0.0 }
+    { "0", 0.0 },
+    { "000", 0.0 },
+    { "-0", -0.0 },
+    { "-000", -0.0 },
+    { "0,", 0.0 },
+    { "-0,", -0.0 },
+    { "0,0", 0.0 },
+    { "-0,0", -0.0 },
+    { "0e-10", 0.0 },
+    { "-0e-10", -0.0 },
+    { "0,e-10", 0.0 },
+    { "-0,e-10", -0.0 },
+    { "0,0e-10", 0.0 },
+    { "-0,0e-10", -0.0 },
+    { "0e-1000000", 0.0 },
+    { "-0e-1000000", -0.0 },
+    { "0,0e-1000000", 0.0 },
+    { "-0,0e-1000000", -0.0 },
   };
 #define NTESTS (sizeof (tests) / sizeof (tests[0]))
 
@@ -59,12 +66,7 @@ do_test (void)
   for (int i = 0; i < NTESTS; ++i)
     {
       char *ep;
-      double r;
-
-      if (tests[i].group)
-	r = __strtod_internal (tests[i].in, &ep, 1);
-      else
-	r = strtod (tests[i].in, &ep);
+      double r = strtod (tests[i].in, &ep);
 
       if (*ep != '\0')
 	{
@@ -84,5 +86,4 @@ do_test (void)
   return status;
 }
 
-#define TEST_FUNCTION do_test ()
-#include "../test-skeleton.c"
+#include <support/test-driver.c>

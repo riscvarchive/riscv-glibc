@@ -71,16 +71,6 @@
    2.6.27.  */
 #define __ASSUME_IN_NONBLOCK	1
 
-/* Support for accept4 functionality was added in 2.6.28, but for some
-   architectures using a separate syscall rather than socketcall that
-   syscall was only added later, and some architectures first had
-   socketcall support then a separate syscall.  Define
-   __ASSUME_ACCEPT4_SYSCALL if it is available through a separate
-   syscall, and __ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL if it became
-   available through a separate syscall at the same time as through
-   socketcall.  */
-#define __ASSUME_ACCEPT4_SYSCALL	1
-
 /* Support for the FUTEX_CLOCK_REALTIME flag was added in 2.6.29.  */
 #define __ASSUME_FUTEX_CLOCK_REALTIME	1
 
@@ -88,41 +78,8 @@
 #define __ASSUME_PREADV	1
 #define __ASSUME_PWRITEV	1
 
-/* Support for recvmmsg functionality was added in 2.6.33.  The macros
-   defined correspond to those for accept4.  */
-#if __LINUX_KERNEL_VERSION >= 0x020621
-# ifdef __ASSUME_SOCKETCALL
-#  define __ASSUME_RECVMMSG_SOCKETCALL	1
-# endif
-# define __ASSUME_RECVMMSG_SYSCALL	1
-# define __ASSUME_RECVMMSG	1
-#endif
-
-/* Support for /proc/self/task/$tid/comm and /proc/$pid/task/$tid/comm was
-   added in 2.6.33.  */
-#if __LINUX_KERNEL_VERSION >= 0x020621
-# define __ASSUME_PROC_PID_TASK_COMM	1
-#endif
-
-/* statfs fills in f_flags since 2.6.36.  */
-#if __LINUX_KERNEL_VERSION >= 0x020624
-# define __ASSUME_STATFS_F_FLAGS	1
-#endif
-
-/* prlimit64 is available in 2.6.36.  */
-#if __LINUX_KERNEL_VERSION >= 0x020624
-# define __ASSUME_PRLIMIT64	1
-#endif
-
-/* Support for sendmmsg functionality was added in 3.0.  The macros
-   defined correspond to those for accept4 and recvmmsg.  */
-#if __LINUX_KERNEL_VERSION >= 0x030000
-# ifdef __ASSUME_SOCKETCALL
-#  define __ASSUME_SENDMMSG_SOCKETCALL	1
-# endif
-# define __ASSUME_SENDMMSG_SYSCALL	1
-# define __ASSUME_SENDMMSG	1
-#endif
+/* Support for sendmmsg functionality was added in 3.0.  */
+#define __ASSUME_SENDMMSG	1
 
 /* On most architectures, most socket syscalls are supported for all
    supported kernel versions, but on some socketcall architectures
@@ -133,7 +90,15 @@
 #define __ASSUME_CONNECT_SYSCALL	1
 #define __ASSUME_RECVFROM_SYSCALL	1
 #define __ASSUME_SENDTO_SYSCALL		1
+#define __ASSUME_ACCEPT4_SYSCALL	1
+#define __ASSUME_RECVMMSG_SYSCALL	1
+#define __ASSUME_SENDMMSG_SYSCALL	1
 
 /* Support for SysV IPC through wired syscalls.  All supported architectures
    either support ipc syscall and/or all the ipc correspondent syscalls.  */
 #define __ASSUME_DIRECT_SYSVIPC_SYSCALLS	1
+
+/* Support for p{read,write}v2 was added in 4.6.  However Linux default
+   implementation does not assume the __ASSUME_* and instead use a fallback
+   implementation based on p{read,write}v and returning an error for
+   non supported flags.  */

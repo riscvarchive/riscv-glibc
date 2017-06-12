@@ -21,102 +21,116 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 
 /* Type for general register.  */
 typedef int greg_t;
 
 /* Number of general registers.  */
-#define NGREG	19
+#define __NGREG	19
+#ifdef __USE_MISC
+# define NGREG	__NGREG
+#endif
 
 /* Container for all general registers.  */
-typedef greg_t gregset_t[NGREG];
+typedef greg_t gregset_t[__NGREG];
 
+#ifdef __USE_MISC
 /* Number of each register is the `gregset_t' array.  */
 enum
 {
   REG_GS = 0,
-#define REG_GS	REG_GS
+# define REG_GS	REG_GS
   REG_FS,
-#define REG_FS	REG_FS
+# define REG_FS	REG_FS
   REG_ES,
-#define REG_ES	REG_ES
+# define REG_ES	REG_ES
   REG_DS,
-#define REG_DS	REG_DS
+# define REG_DS	REG_DS
   REG_EDI,
-#define REG_EDI	REG_EDI
+# define REG_EDI	REG_EDI
   REG_ESI,
-#define REG_ESI	REG_ESI
+# define REG_ESI	REG_ESI
   REG_EBP,
-#define REG_EBP	REG_EBP
+# define REG_EBP	REG_EBP
   REG_ESP,
-#define REG_ESP	REG_ESP
+# define REG_ESP	REG_ESP
   REG_EBX,
-#define REG_EBX	REG_EBX
+# define REG_EBX	REG_EBX
   REG_EDX,
-#define REG_EDX	REG_EDX
+# define REG_EDX	REG_EDX
   REG_ECX,
-#define REG_ECX	REG_ECX
+# define REG_ECX	REG_ECX
   REG_EAX,
-#define REG_EAX	REG_EAX
+# define REG_EAX	REG_EAX
   REG_TRAPNO,
-#define REG_TRAPNO	REG_TRAPNO
+# define REG_TRAPNO	REG_TRAPNO
   REG_ERR,
-#define REG_ERR	REG_ERR
+# define REG_ERR	REG_ERR
   REG_EIP,
-#define REG_EIP	REG_EIP
+# define REG_EIP	REG_EIP
   REG_CS,
-#define REG_CS	REG_CS
+# define REG_CS	REG_CS
   REG_EFL,
-#define REG_EFL	REG_EFL
+# define REG_EFL	REG_EFL
   REG_UESP,
-#define REG_UESP	REG_UESP
+# define REG_UESP	REG_UESP
   REG_SS
-#define REG_SS	REG_SS
+# define REG_SS	REG_SS
 };
+#endif
+
+#ifdef __USE_MISC
+# define __ctx(fld) fld
+# define __ctxt(tag) tag
+#else
+# define __ctx(fld) __ ## fld
+# define __ctxt(tag) /* Empty.  */
+#endif
 
 /* Structure to describe FPU registers.  */
 typedef struct fpregset
   {
     union
       {
-	struct fpchip_state
+	struct __ctxt(fpchip_state)
 	  {
-	    int state[27];
-	    int status;
-	  } fpchip_state;
+	    int __ctx(state)[27];
+	    int __ctx(status);
+	  } __ctx(fpchip_state);
 
-	struct fp_emul_space
+	struct __ctxt(fp_emul_space)
 	  {
-	    char fp_emul[246];
-	    char fp_epad[2];
-	  } fp_emul_space;
+	    char __ctx(fp_emul)[246];
+	    char __ctx(fp_epad)[2];
+	  } __ctx(fp_emul_space);
 
-	int f_fpregs[62];
-      } fp_reg_set;
+	int __ctx(f_fpregs)[62];
+      } __ctx(fp_reg_set);
 
-    long int f_wregs[33];
+    long int __ctx(f_wregs)[33];
   } fpregset_t;
 
 /* Context to describe whole processor state.  */
 typedef struct
   {
-    gregset_t gregs;
-    fpregset_t fpregs;
+    gregset_t __ctx(gregs);
+    fpregset_t __ctx(fpregs);
   } mcontext_t;
+
+#undef __ctx
+#undef __ctxt
 
 /* Userlevel context.  */
 typedef struct ucontext
   {
     unsigned long int uc_flags;
     struct ucontext *uc_link;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
     long int uc_filler[5];

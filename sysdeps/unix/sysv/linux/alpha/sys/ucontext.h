@@ -19,31 +19,35 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 
 /* Type for general register.  */
 typedef long int greg_t;
 
 /* Number of general registers.  */
-#define NGREG	33
+#define __NGREG	33
+#ifdef __USE_MISC
+# define NGREG	__NGREG
+#endif
 
 /* Container for all general registers.  */
-typedef greg_t gregset_t[NGREG];
+typedef greg_t gregset_t[__NGREG];
 
 /* Type for floating-point register.  */
 typedef long int fpreg_t;
 
 /* Number of general registers.  */
-#define NFPREG	32
+#define __NFPREG	32
+#ifdef __USE_MISC
+# define NFPREG	__NFPREG
+#endif
 
 /* Container for all general registers.  */
-typedef fpreg_t fpregset_t[NFPREG];
+typedef fpreg_t fpregset_t[__NFPREG];
 
 
 /* A machine context is exactly a sigcontext.  */
@@ -57,7 +61,7 @@ typedef struct ucontext
     unsigned long __uc_osf_sigmask;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
   } ucontext_t;
 
 #endif /* sys/ucontext.h */

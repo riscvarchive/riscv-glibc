@@ -22,24 +22,32 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 
 /* These definitions must be in sync with the kernel.  */
 
-#define MCONTEXT_VERSION 2
+#ifdef __USE_MISC
+# define MCONTEXT_VERSION 2
+#endif
+
+#ifdef __USE_MISC
+# define __ctx(fld) fld
+#else
+# define __ctx(fld) __ ## fld
+#endif
 
 /* Context to describe whole processor state.  */
 typedef struct mcontext
   {
-    int version;
-    unsigned long regs[32];
+    int __ctx(version);
+    unsigned long __ctx(regs)[32];
   } mcontext_t;
+
+#undef __ctx
 
 /* Userlevel context.  */
 typedef struct ucontext
@@ -48,7 +56,7 @@ typedef struct ucontext
     struct ucontext *uc_link;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
   } ucontext_t;
 
 #endif /* sys/ucontext.h */

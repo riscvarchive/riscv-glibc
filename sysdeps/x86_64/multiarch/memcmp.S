@@ -27,7 +27,18 @@
 ENTRY(memcmp)
 	.type	memcmp, @gnu_indirect_function
 	LOAD_RTLD_GLOBAL_RO_RDX
-	HAS_CPU_FEATURE (SSSE3)
+	HAS_ARCH_FEATURE (Prefer_No_VZEROUPPER)
+	jnz	1f
+	HAS_ARCH_FEATURE (AVX2_Usable)
+	jz	1f
+	HAS_CPU_FEATURE (MOVBE)
+	jz	1f
+	HAS_ARCH_FEATURE (AVX_Fast_Unaligned_Load)
+	jz	1f
+	leaq	__memcmp_avx2_movbe(%rip), %rax
+	ret
+
+1:	HAS_CPU_FEATURE (SSSE3)
 	jnz	2f
 	leaq	__memcmp_sse2(%rip), %rax
 	ret
@@ -56,9 +67,9 @@ END(memcmp)
 
 # ifdef SHARED
 #  undef libc_hidden_builtin_def
-/* IFUNC doesn't work with the hidden functions in shared library since
-   they will be called without setting up EBX needed for PLT which is
-   used by IFUNC.  */
+/* It doesn't make sense to send libc-internal memcmp calls through a PLT.
+   The speedup we get from using SSE4 instructions is likely eaten away
+   by the indirect call in the PLT.  */
 #  define libc_hidden_builtin_def(name) \
 	.globl __GI_memcmp; __GI_memcmp = __memcmp_sse2
 # endif

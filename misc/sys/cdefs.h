@@ -55,15 +55,18 @@
 #  define __THROW	__attribute__ ((__nothrow__ __LEAF))
 #  define __THROWNL	__attribute__ ((__nothrow__))
 #  define __NTH(fct)	__attribute__ ((__nothrow__ __LEAF)) fct
+#  define __NTHNL(fct)  __attribute__ ((__nothrow__)) fct
 # else
 #  if defined __cplusplus && __GNUC_PREREQ (2,8)
 #   define __THROW	throw ()
 #   define __THROWNL	throw ()
 #   define __NTH(fct)	__LEAF_ATTR fct throw ()
+#   define __NTHNL(fct) fct throw ()
 #  else
 #   define __THROW
 #   define __THROWNL
 #   define __NTH(fct)	fct
+#   define __NTHNL(fct) fct
 #  endif
 # endif
 
@@ -459,6 +462,22 @@
   __glibc_macro_warning1 (GCC warning message)
 #else
 # define __glibc_macro_warning(msg)
+#endif
+
+/* Support for generic selection (ISO C11) is available in GCC since
+   version 4.9.  Previous versions do not provide generic selection,
+   even though they might set __STDC_VERSION__ to 201112L, when in
+   -std=c11 mode.  Thus, we must check for !defined __GNUC__ when
+   testing __STDC_VERSION__ for generic selection support.
+   On the other hand, Clang also defines __GNUC__, so a clang-specific
+   check is required to enable the use of generic selection.  */
+#if __GNUC_PREREQ (4, 9) \
+    || __glibc_clang_has_extension (c_generic_selections) \
+    || (!defined __GNUC__ && defined __STDC_VERSION__ \
+	&& __STDC_VERSION__ >= 201112L)
+# define __HAVE_GENERIC_SELECTION 1
+#else
+# define __HAVE_GENERIC_SELECTION 0
 #endif
 
 #endif	 /* sys/cdefs.h */

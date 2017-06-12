@@ -21,18 +21,17 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 
+#ifdef __USE_MISC
 typedef int greg_t;
 
 /* Number of general registers.  */
-#define NGREG	18
+# define NGREG	18
 
 /* Container for all general registers.  */
 typedef greg_t gregset_t[NGREG];
@@ -41,37 +40,37 @@ typedef greg_t gregset_t[NGREG];
 enum
 {
   REG_R0 = 0,
-#define REG_R0	REG_R0
+# define REG_R0	REG_R0
   REG_R1 = 1,
-#define REG_R1	REG_R1
+# define REG_R1	REG_R1
   REG_R2 = 2,
-#define REG_R2	REG_R2
+# define REG_R2	REG_R2
   REG_R3 = 3,
-#define REG_R3	REG_R3
+# define REG_R3	REG_R3
   REG_R4 = 4,
-#define REG_R4	REG_R4
+# define REG_R4	REG_R4
   REG_R5 = 5,
-#define REG_R5	REG_R5
+# define REG_R5	REG_R5
   REG_R6 = 6,
-#define REG_R6	REG_R6
+# define REG_R6	REG_R6
   REG_R7 = 7,
-#define REG_R7	REG_R7
+# define REG_R7	REG_R7
   REG_R8 = 8,
-#define REG_R8	REG_R8
+# define REG_R8	REG_R8
   REG_R9 = 9,
-#define REG_R9	REG_R9
+# define REG_R9	REG_R9
   REG_R10 = 10,
-#define REG_R10	REG_R10
+# define REG_R10	REG_R10
   REG_R11 = 11,
-#define REG_R11	REG_R11
+# define REG_R11	REG_R11
   REG_R12 = 12,
-#define REG_R12	REG_R12
+# define REG_R12	REG_R12
   REG_R13 = 13,
-#define REG_R13	REG_R13
+# define REG_R13	REG_R13
   REG_R14 = 14,
-#define REG_R14	REG_R14
+# define REG_R14	REG_R14
   REG_R15 = 15
-#define REG_R15	REG_R15
+# define REG_R15	REG_R15
 };
 
 struct _libc_fpstate
@@ -93,6 +92,7 @@ struct _libc_fpstate
 };
 /* Structure to describe FPU registers.  */
 typedef struct _libc_fpstate fpregset_t;
+#endif
 
 /* Context to describe whole processor state.  This only describes
    the core registers; coprocessor registers get saved elsewhere
@@ -107,7 +107,7 @@ typedef struct ucontext
     struct ucontext *uc_link;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
     unsigned long uc_regspace[128] __attribute__((__aligned__(8)));
   } ucontext_t;
 

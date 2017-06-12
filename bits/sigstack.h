@@ -23,33 +23,6 @@
 # error "Never include this file directly.  Use <signal.h> instead"
 #endif
 
-
-/* Structure describing a signal stack (obsolete).  */
-struct sigstack
-  {
-    __ptr_t ss_sp;		/* Signal stack pointer.  */
-    int ss_onstack;		/* Nonzero if executing on this stack.  */
-  };
-
-
-/* Alternate, preferred interface.  */
-typedef struct sigaltstack
-  {
-    __ptr_t ss_sp;
-    size_t ss_size;
-    int ss_flags;
-  } stack_t;
-
-
-/* Possible values for `ss_flags.'.  */
-enum
-{
-  SS_ONSTACK = 0x0001,
-#define SS_ONSTACK	SS_ONSTACK
-  SS_DISABLE = 0x0004
-#define SS_DISABLE	SS_DISABLE
-};
-
 /* Minumum stack size for a signal handler.  */
 #define MINSIGSTKSZ	8192
 

@@ -29,7 +29,8 @@ headers		:= math.h bits/mathcalls.h bits/mathinline.h bits/huge_val.h \
 		   bits/math-finite.h bits/math-vector.h \
 		   bits/libm-simd-decl-stubs.h bits/iscanonical.h \
 		   bits/flt-eval-method.h bits/fp-fast.h bits/fp-logb.h \
-		   bits/long-double.h bits/mathcalls-helper-functions.h
+		   bits/long-double.h bits/mathcalls-helper-functions.h \
+		   bits/floatn.h bits/huge_val_flt128.h
 
 # FPU support code.
 aux		:= setfpucw fpu_control
@@ -58,7 +59,7 @@ gen-libm-calls = cargF conjF cimagF crealF cabsF s_cacosF		  \
 		 w_acoshF w_asinF w_atan2F w_atanhF w_coshF w_exp10F	  \
 		 w_exp2F w_fmodF w_hypotF w_j0F w_j1F w_jnF w_logF	  \
 		 w_log10F w_log2F w_powF w_remainderF w_sinhF w_sqrtF	  \
-		 w_tgammaF w_lgammaF w_lgammaF_r w_expF
+		 w_tgammaF w_lgammaF w_lgammaF_r w_expF e_exp2F
 
 libm-calls =								  \
 	e_acosF e_acoshF e_asinF e_atan2F e_atanhF e_coshF e_expF e_fmodF \
@@ -71,7 +72,7 @@ libm-calls =								  \
 	s_nextafterF s_nexttowardF s_rintF s_scalblnF			  \
 	s_significandF s_sinF s_tanF s_tanhF				  \
 	s_fpclassifyF s_truncF						  \
-	s_remquoF e_log2F e_exp2F s_roundF s_nearbyintF s_sincosF	  \
+	s_remquoF e_log2F s_roundF s_nearbyintF s_sincosF		  \
 	s_fmaF s_lrintF s_llrintF s_lroundF s_llroundF e_exp10F		  \
 	s_issignalingF $(calls:s_%=m_%) x2y2m1F				  \
 	gamma_productF lgamma_negF lgamma_productF			  \
@@ -100,7 +101,7 @@ libm-compat-calls =							\
 # Finally, note that types is an intentionally recursive variable.
 # We only know the full set of supported types for the target machine
 # after the Rules makefile has been parsed.
-types = $(type-ldouble-$(long-double-fcts)) double float
+types-basic = $(type-ldouble-$(long-double-fcts)) double float
 
 # long double support
 type-ldouble-suffix := l
@@ -117,12 +118,23 @@ type-double-routines := branred doasin dosincos halfulp mpa mpatan2	\
 type-float-suffix := f
 type-float-routines := k_rem_pio2f
 
+# _Float128 support
+type-float128-suffix := f128
+type-float128-routines := t_sincosf128 k_sincosf128
+type-float128-yes := float128
+types = $(types-basic) $(type-float128-$(float128-fcts))
+
+# For each of the basic types (float, double, long double), replace the
+# occurrences of 'F' in arg 1 with the appropriate suffix for the type.
+type-basic-foreach = $(foreach t, $(types-basic), \
+		       $(subst F,$(type-$(t)-suffix),$(1)))
 
 # Apply suffix to each type in arg 1
 type-foreach = $(foreach t,$(types),$(subst F,$(type-$(t)-suffix),$(1)))
 
 libm-routines = $(strip $(libm-support)					\
-			$(call type-foreach, $(libm-compat-calls))	\
+			$(call type-basic-foreach,			\
+			       $(libm-compat-calls))			\
 			$(call type-foreach, $(libm-calls))		\
 			$(foreach t, $(types), $(type-$(t)-routines))) 	\
 
@@ -543,6 +555,7 @@ endif
 CFLAGS-s_modf.c += -fsignaling-nans
 CFLAGS-s_modff.c += -fsignaling-nans
 CFLAGS-s_modfl.c += -fsignaling-nans
+CFLAGS-s_modff128.c += -fsignaling-nans
 
 # The -lieee library is actually an object file.
 # The module just defines the _LIB_VERSION_ variable.

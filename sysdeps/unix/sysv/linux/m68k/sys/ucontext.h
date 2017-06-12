@@ -21,88 +21,101 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not exposed
-   by <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
-#include <bits/sigstack.h>
+#include <bits/types/stack_t.h>
 
 
 /* Type for general register.  */
 typedef int greg_t;
 
 /* Number of general registers.  */
-#define NGREG	18
+#define __NGREG	18
+#ifdef __USE_MISC
+# define NGREG	__NGREG
+#endif
 
 /* Container for all general registers.  */
-typedef greg_t gregset_t[NGREG];
+typedef greg_t gregset_t[__NGREG];
 
+#ifdef __USE_MISC
 /* Number of each register is the `gregset_t' array.  */
 enum
 {
   R_D0 = 0,
-#define R_D0	R_D0
+# define R_D0	R_D0
   R_D1 = 1,
-#define R_D1	R_D1
+# define R_D1	R_D1
   R_D2 = 2,
-#define R_D2	R_D2
+# define R_D2	R_D2
   R_D3 = 3,
-#define R_D3	R_D3
+# define R_D3	R_D3
   R_D4 = 4,
-#define R_D4	R_D4
+# define R_D4	R_D4
   R_D5 = 5,
-#define R_D5	R_D5
+# define R_D5	R_D5
   R_D6 = 6,
-#define R_D6	R_D6
+# define R_D6	R_D6
   R_D7 = 7,
-#define R_D7	R_D7
+# define R_D7	R_D7
   R_A0 = 8,
-#define R_A0	R_A0
+# define R_A0	R_A0
   R_A1 = 9,
-#define R_A1	R_A1
+# define R_A1	R_A1
   R_A2 = 10,
-#define R_A2	R_A2
+# define R_A2	R_A2
   R_A3 = 11,
-#define R_A3	R_A3
+# define R_A3	R_A3
   R_A4 = 12,
-#define R_A4	R_A4
+# define R_A4	R_A4
   R_A5 = 13,
-#define R_A5	R_A5
+# define R_A5	R_A5
   R_A6 = 14,
-#define R_A6	R_A6
+# define R_A6	R_A6
   R_A7 = 15,
-#define R_A7	R_A7
+# define R_A7	R_A7
   R_SP = 15,
-#define R_SP	R_SP
+# define R_SP	R_SP
   R_PC = 16,
-#define R_PC	R_PC
+# define R_PC	R_PC
   R_PS = 17
-#define R_PS	R_PS
+# define R_PS	R_PS
 };
+#endif
+
+#ifdef __USE_MISC
+# define __ctx(fld) fld
+#else
+# define __ctx(fld) __ ## fld
+#endif
 
 /* Structure to describe FPU registers.  */
 typedef struct fpregset
 {
-  int f_pcr;
-  int f_psr;
-  int f_fpiaddr;
+  int __ctx(f_pcr);
+  int __ctx(f_psr);
+  int __ctx(f_fpiaddr);
 #ifdef __mcoldfire__
-  int f_fpregs[8][2];
+  int __ctx(f_fpregs)[8][2];
 #else
-  int f_fpregs[8][3];
+  int __ctx(f_fpregs)[8][3];
 #endif
 } fpregset_t;
 
 /* Context to describe whole processor state.  */
 typedef struct
 {
-  int version;
-  gregset_t gregs;
-  fpregset_t fpregs;
+  int __ctx(version);
+  gregset_t __ctx(gregs);
+  fpregset_t __ctx(fpregs);
 } mcontext_t;
 
-#define MCONTEXT_VERSION 2
+#undef __ctx
+
+#ifdef __USE_MISC
+# define MCONTEXT_VERSION 2
+#endif
 
 /* Userlevel context.  */
 typedef struct ucontext
@@ -112,7 +125,7 @@ typedef struct ucontext
   stack_t uc_stack;
   mcontext_t uc_mcontext;
   unsigned long uc_filler[80];
-  __sigset_t uc_sigmask;
+  sigset_t uc_sigmask;
 } ucontext_t;
 
 #endif /* sys/ucontext.h */
