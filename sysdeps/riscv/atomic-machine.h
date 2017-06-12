@@ -47,6 +47,15 @@ typedef uintmax_t uatomic_max_t;
 #define __HAVE_64B_ATOMICS (__riscv_xlen >= 64)
 #define USE_ATOMIC_COMPILER_BUILTINS 1
 
+/* MIPS uses swap on machines that have it, and uses CAS on machines that
+ * don't.  This, we use amoswap when the A extension is enabled, and fall back
+ * to the atomic system call when the A extension is disabled.  */
+#ifdef __riscv_atomic
+# define ATOMIC_EXCHANGE_USES_CAS 0
+#else
+# define ATOMIC_EXCHANGE_USES_CAS 1
+#endif
+
 #define asm_amo(which, ordering, mem, value) ({ 		\
   typeof(*mem) __tmp; 						\
   if (sizeof(__tmp) == 4)					\
