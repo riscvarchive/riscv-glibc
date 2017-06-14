@@ -99,6 +99,11 @@
 /* AArch64 big endian ABI */
 #undef HAVE_AARCH64_BE
 
+/* RISC-V integer ABI for ld.so.  */
+#undef RISCV_ABI_XLEN
+
+/* RISC-V floating-point ABI for ld.so.  */
+#undef RISCV_ABI_FLEN
 
 /* Defined to some form of __attribute__ ((...)) if the compiler supports
    a different, more efficient calling convention.  */
