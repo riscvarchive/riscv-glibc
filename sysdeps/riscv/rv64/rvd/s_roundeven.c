@@ -1,5 +1,4 @@
 /* Round to nearest integer value, rounding halfway cases to even.
-   RISC-V version.
    Copyright (C) 2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
