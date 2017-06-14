@@ -22,9 +22,6 @@
 
 #include <dl-sysdep.h>
 
-/* Signal that TLS support is available.  */
-#define USE_TLS	1
-
 #ifndef __ASSEMBLER__
 # include <stdbool.h>
 # include <stddef.h>
