@@ -1,5 +1,4 @@
 libc {
-  GLIBC_2.14 {
-    __memcpy_g;
+  GLIBC_2.26 {
   }
 }
