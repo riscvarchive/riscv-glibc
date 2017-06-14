@@ -43,3 +43,7 @@ sysdep_headers += sys/asm.h
 endif
 
 ASFLAGS-.os += $(pic-ccflag)
+
+ifeq ($(subdir),math)
+CPPFLAGS += -I../soft-fp
+endif
