@@ -2,4 +2,4 @@ sinclude(./aclocal.m4)dnl Autoconf lossage
 GLIBC_PROVIDES dnl See aclocal.m4 in the top level source directory.
 # Local configure fragment for sysdeps/unix/sysv/linux/riscv.
 
-arch_minimum_kernel=10.0.0
+arch_minimum_kernel=3.0.0
