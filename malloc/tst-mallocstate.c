@@ -26,6 +26,7 @@
 
 #include "malloc.h"
 
+#if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_25)
 /* Make the compatibility symbols availabile to this test case.  */
 void *malloc_get_state (void);
 compat_symbol_reference (libc, malloc_get_state, malloc_get_state, GLIBC_2_0);
@@ -503,3 +504,11 @@ do_test (void)
 
   return errors;
 }
+#else
+static int do_test (void)
+{
+  return 0;
+}
+#define TEST_FUNCTION do_test ()
+#include "../test-skeleton.c"
+#endif
