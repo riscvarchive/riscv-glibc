@@ -1,1 +1,0 @@
-/* libgcc.a provides optimized versions of these routines.  */
