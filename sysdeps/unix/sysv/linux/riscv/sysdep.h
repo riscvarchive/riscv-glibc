@@ -27,34 +27,88 @@
 
 #define ENTRY(name) LEAF(name)
 
-#undef PSEUDO_END
-#define PSEUDO_END(sym) END(sym)
-
-#define PSEUDO_NOERRNO(name, syscall_name, args)	\
-  .align 2;						\
-  ENTRY(name)						\
-  li a7, SYS_ify(syscall_name);				\
-  scall
-
-#define ret_NOERRNO ret
-
-#define PSEUDO_ERRVAL(name, syscall_name, args) \
-  PSEUDO_NOERRNO(name, syscall_name, args)
-
-#define ret_ERRVAL ret
-
 #define L(label) .L ## label
 
-#define PSEUDO(name, syscall_name, args) \
+/* Performs a system call, handling errors by setting errno.  Linux indicates
+ * errors by setting a0 to a value between -1 and -4095.  */
+#undef PSEUDO
+#define PSEUDO(name, syscall_name, args)			\
+  .text;							\
   .align 2;							\
-  99: j __syscall_error;					\
-  ENTRY(name)							\
+  ENTRY (name);							\
   li a7, SYS_ify(syscall_name);					\
   scall;							\
-  bltz a0, 99b;							\
-L(syse1):
+  li a7, -4096;							\
+  bgtu a0, a7, .Lsyscall_error ## name;
+
+#undef PSEUDO_END
+#define PSEUDO_END(sym) 					\
+  SYSCALL_ERROR_HANDLER(sym)					\
+  ret;								\
+  END(sym)
+
+# if !IS_IN (libc)
+#  if RTLD_PRIVATE_ERRNO
+#   define SYSCALL_ERROR_HANDLER(name)				\
+.Lsyscall_error ## name:					\
+	li t1, -4096;						\
+        sw a0, rtld_errno, t1;					\
+        li a0, -1;
+#  elif defined (__PIC__)
+#   define SYSCALL_ERROR_HANDLER(name)				\
+.Lsyscall_error ## name:					\
+        la.tls.ie t1, errno;					\
+	add t1, t1, tp;						\
+	sw a0, 0(t1);						\
+        li a0, -1;
+#  else
+#   define SYSCALL_ERROR_HANDLER(name)				\
+.Lsyscall_error ## name:					\
+        lui t1, %tprel_hi(errno);				\
+        add t1, t1, tp, %tprel_add(errno);			\
+        sw a0, %tprel_lo(errno)(t1);				\
+        li a0, -1;
+#  endif
+# else
+#  define SYSCALL_ERROR_HANDLER(name)				\
+.Lsyscall_error ## name:					\
+        j       __syscall_error;
+# endif
+
+/* Performs a system call, not setting errno.  */
+#undef PSEUDO_NEORRNO
+#define PSEUDO_NOERRNO(name, syscall_name, args)	\
+  .align 2;						\
+  ENTRY(name);						\
+  li a7, SYS_ify(syscall_name);				\
+  scall;
+
+#undef PSEUDO_END_NOERRNO
+#define PSEUDO_END_NOERRNO(name)			\
+  END (name)
+
+#undef ret_NOERRNO
+#define ret_NOERRNO ret
+
+/* Perfroms a system call, returning the error code.  */
+#undef PSEUDO_ERRVAL
+#define PSEUDO_ERRVAL(name, syscall_name, args) 	\
+  PSEUDO_NOERRNO(name, syscall_name, args)		\
+  neg a0, a0;
+
+#undef PSEUDO_END_ERRVAL
+#define PSEUDO_END_ERRVAL(name)				\
+  END (name)
+
+#undef ret_ERRVAL
+#define ret_ERRVAL ret
 
 #endif /* __ASSEMBLER__ */
+
+/* In order to get __set_errno() definition in INLINE_SYSCALL.  */
+#ifndef __ASSEMBLER__
+#include <errno.h>
+#endif
 
 #include <sysdeps/unix/sysdep.h>
 
@@ -68,20 +122,13 @@ L(syse1):
 #undef INLINE_SYSCALL
 #define INLINE_SYSCALL(name, nr, args...)				\
   ({ INTERNAL_SYSCALL_DECL(err);					\
-     long result = INTERNAL_SYSCALL (name, err, nr, args);		\
-     register long __a0 asm ("a0") = result;				\
-     if (__a0 < 0)							\
-	__asm__ volatile ("call t0, __syscall_set_errno"		\
-			  : "+r" (__a0) : : "t0", "t1", "t2"); 		\
-     __a0; })
-
-/* Set error number and return -1.  Return the internal function,
-   __syscall_error, which sets errno from the negative error number
-   and returns -1.  */
-#undef INLINE_SYSCALL_ERROR_RETURN_VALUE
-#define INLINE_SYSCALL_ERROR_RETURN_VALUE(resultvar)			\
-  ({ extern int __syscall_error (long neg_errno);			\
-     __syscall_error (-(resultvar)); })
+     long __sys_result = INTERNAL_SYSCALL (name, err, nr, args);	\
+     if (__sys_result < 0)						\
+       {								\
+         __set_errno (INTERNAL_SYSCALL_ERRNO (__sys_result, ));		\
+	 __sys_result = (unsigned long) -1;				\
+       }								\
+     __sys_result; })
 
 #define INTERNAL_SYSCALL_DECL(err) do { } while (0)
 

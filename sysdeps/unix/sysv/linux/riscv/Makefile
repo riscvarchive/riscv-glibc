@@ -11,20 +11,6 @@ ifeq ($(subdir),stdlib)
 gen-as-const-headers += ucontext_i.sym
 endif
 
-ifeq ($(subdir),crypt)
-libcrypt-sysdep_routines += sysdep
-endif
-
-ifeq ($(subdir),nss)
-libnss_db-sysdep_routines += sysdep
-libnss_db-shared-only-routines += sysdep
-endif
-
-ifeq ($(subdir),rt)
-librt-sysdep_routines += sysdep
-librt-shared-only-routines += sysdep
-endif
-
 abi-variants := ilp32 ilp32f ilp32d lp64 lp64f lp64d
 
 ifeq (,$(filter $(default-abi),$(abi-variants)))
