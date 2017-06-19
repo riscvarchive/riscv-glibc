@@ -22,16 +22,12 @@
 #define _SYS_UCONTEXT_H	1
 
 #include <features.h>
-#include <signal.h>
 
-/* We need the signal context definitions even if they are not used
-   included in <signal.h>.  */
+#include <bits/types/sigset_t.h>
 #include <bits/sigcontext.h>
+#include <bits/types/stack_t.h>
 
-/* Type for general register.  Even in o32 we assume 64-bit registers,
-   like the kernel.  */
-__extension__ typedef unsigned long long int greg_t;
-typedef double fpreg_t;
+#ifdef __USE_MISC
 
 /* Number of general registers.  */
 #define NGREG	32
@@ -45,6 +41,11 @@ typedef double fpreg_t;
 #define REG_A0 10
 #define REG_NARGS 8
 
+/* Type for general register.  Even in RV32 we assume 64-bit registers,
+   like the kernel.  */
+__extension__ typedef unsigned long long int greg_t;
+typedef double fpreg_t;
+
 /* Container for all general registers.  */
 typedef greg_t gregset_t[NGREG];
 
@@ -54,6 +55,8 @@ typedef fpreg_t fpregset_t[NFPREG];
 /* Context to describe whole processor state.  */
 typedef struct sigcontext mcontext_t;
 
+#endif
+
 /* Userlevel context.  */
 typedef struct ucontext
   {
@@ -61,7 +64,7 @@ typedef struct ucontext
     struct ucontext *uc_link;
     stack_t uc_stack;
     mcontext_t uc_mcontext;
-    __sigset_t uc_sigmask;
+    sigset_t uc_sigmask;
   } ucontext_t;
 
 #endif /* sys/ucontext.h */
