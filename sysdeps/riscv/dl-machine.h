@@ -20,24 +20,9 @@
 #define dl_machine_h
 
 #define ELF_MACHINE_NAME "RISC-V"
-#define EM_RISCV 243
-
-/* Relocs. */
-#define R_RISCV_NONE          0
-#define R_RISCV_32            1
-#define R_RISCV_64            2
-#define R_RISCV_RELATIVE      3
-#define R_RISCV_COPY          4
-#define R_RISCV_JUMP_SLOT     5
-#define R_RISCV_TLS_DTPMOD32  6
-#define R_RISCV_TLS_DTPMOD64  7
-#define R_RISCV_TLS_DTPREL32  8
-#define R_RISCV_TLS_DTPREL64  9
-#define R_RISCV_TLS_TPREL32  10
-#define R_RISCV_TLS_TPREL64  11
 
 #include <entry.h>
-
+#include <elf/elf.h>
 #include <sys/asm.h>
 #include <dl-tls.h>
 
