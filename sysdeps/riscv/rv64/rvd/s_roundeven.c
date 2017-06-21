@@ -49,4 +49,5 @@ __roundeven (double x)
   return x;
 }
 
+hidden_def (roundeven)
 weak_alias (__roundeven, roundeven)
