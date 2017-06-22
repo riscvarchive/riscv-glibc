@@ -52,44 +52,17 @@
 
 struct __pthread_rwlock_arch_t
 {
-# if __riscv_xlen == 64
-    unsigned int __readers;
-    unsigned int __writers;
-    unsigned int __wrphase_futex;
-    unsigned int __writers_futex;
-    int __cur_writer;
-    int __shared;
-    int __pad3;
-    int __pad4;
-    unsigned long int __pad1;
-    unsigned long int __pad2;
-    /* FLAGS must stay at this position in the structure to maintain
-       binary compatibility.  */
-    unsigned int __flags;
-# else
-    unsigned int __readers;
-    unsigned int __writers;
-    unsigned int __wrphase_futex;
-    unsigned int __writers_futex;
-    int __cur_writer;
-    int __pad3;
-#if __BYTE_ORDER == __BIG_ENDIAN
-    unsigned char __pad1;
-    unsigned char __pad2;
-    unsigned char __shared;
-    /* FLAGS must stay at this position in the structure to maintain
-       binary compatibility.  */
-    unsigned char __flags;
-#else
-    /* FLAGS must stay at this position in the structure to maintain
-       binary compatibility.  */
-    unsigned char __flags;
-    unsigned char __shared;
-    unsigned char __pad1;
-    unsigned char __pad2;
-#endif
-    int __writer;
-# endif
+  unsigned int __readers;
+  unsigned int __writers;
+  unsigned int __wrphase_futex;
+  unsigned int __writers_futex;
+  unsigned int __pad3;
+  unsigned int __pad4;
+  int __cur_writer;
+  int __shared;
+  unsigned long int __pad1;
+  unsigned long int __pad2;
+  unsigned int __flags;
 };
 
 #define __PTHREAD_RWLOCK_ELISION_EXTRA 0
