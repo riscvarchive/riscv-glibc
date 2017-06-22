@@ -23,6 +23,12 @@
 
 #ifndef __riscv_atomic
 
+/* If the A (atomic) extension is not present, we need help from the
+   kernel to do atomic accesses.  Linux provides two system calls for
+   this purpose.  RISCV_ATOMIC_CMPXCHG will perform an atomic compare
+   and exchange operation for a 32-bit value.  RISCV_ATOMIC_CMPXCHG64
+   will do the same for a 64-bit value. */
+
 #include <sys/syscall.h>
 #include <sysdep.h>
 
