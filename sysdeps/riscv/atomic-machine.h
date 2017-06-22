@@ -93,14 +93,15 @@ typedef uintmax_t uatomic_max_t;
 
 /* Atomically add value and return the previous (unincremented) value.  */
 
-#define atomic_exchange_and_add(mem, value) asm_amo("amoadd", "", mem, value)
+#define atomic_exchange_and_add_acq(mem, value) asm_amo("amoadd", ".aq", mem, value)
+#define atomic_exchange_and_add_rel(mem, value) asm_amo("amoadd", ".rl", mem, value)
 
-#define atomic_max(mem, value) asm_amo("amomaxu", "", mem, value)
-#define atomic_min(mem, value) asm_amo("amominu", "", mem, value)
+#define atomic_max(mem, value) asm_amo("amomaxu", ".aq", mem, value)
+#define atomic_min(mem, value) asm_amo("amominu", ".aq", mem, value)
 
 #define atomic_bit_test_set(mem, bit)                   \
   ({ typeof(*mem) __mask = (typeof(*mem))1 << (bit);    \
-     asm_amo("amoor", "", mem, __mask) & __mask; })
+     asm_amo("amoor", ".aq", mem, __mask) & __mask; })
 
 #define catomic_exchange_and_add(mem, value)		\
   atomic_exchange_and_add(mem, value)
