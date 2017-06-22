@@ -23,13 +23,9 @@
 
 typedef int32_t atomic32_t;
 typedef uint32_t uatomic32_t;
-typedef int_fast32_t atomic_fast32_t;
-typedef uint_fast32_t uatomic_fast32_t;
 
 typedef int64_t atomic64_t;
 typedef uint64_t uatomic64_t;
-typedef int_fast64_t atomic_fast64_t;
-typedef uint_fast64_t uatomic_fast64_t;
 
 typedef intptr_t atomicptr_t;
 typedef uintptr_t uatomicptr_t;
