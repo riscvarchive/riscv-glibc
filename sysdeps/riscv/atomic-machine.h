@@ -162,6 +162,7 @@ typedef uintmax_t uatomic_max_t;
 /* Miscellaneous. */
 
 #define asm_amo(which, ordering, mem, value) ({ 		\
+  __atomic_check_size(mem);					\
   typeof(*mem) __tmp; 						\
   if (sizeof(__tmp) == 4)					\
     asm volatile (which ".w" ordering "\t%0, %z2, %1"		\
