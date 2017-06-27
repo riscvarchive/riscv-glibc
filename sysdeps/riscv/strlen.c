@@ -1,4 +1,5 @@
-/* Copyright (C) 2011-2017 Free Software Foundation, Inc.
+/* Determine the length of a string.  RISC-V version.
+   Copyright (C) 2011-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or

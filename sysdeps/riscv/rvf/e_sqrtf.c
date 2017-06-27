@@ -1,5 +1,5 @@
-/* Copyright (C) 2017 Free Software Foundation, Inc.
-   Contributed by Andrew Waterman (andrew@sifive.com).
+/* Single precision floating point square root.  RISC-V version.
+   Copyright (C) 2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
