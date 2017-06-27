@@ -1,4 +1,6 @@
-/* Copyright (C) 2014, 2017 Free Software Foundation, Inc.
+/* Set flags signalling availability of kernel features based on given
+   kernel version number.  RISC-V version.
+   Copyright (C) 2014-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or

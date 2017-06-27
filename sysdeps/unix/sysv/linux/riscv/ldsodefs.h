@@ -1,6 +1,6 @@
 /* Run-time dynamic linker data structures for loaded ELF shared objects.
-   RISC-V
-   Copyright (C) 2001, 2003, 2017 Free Software Foundation, Inc.
+   RISC-V version.
+   Copyright (C) 2001-2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -14,9 +14,8 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
+   License along with the GNU C Library.  If not, see
+   <http://www.gnu.org/licenses/>.  */
 
 #ifndef	_LDSODEFS_H
 
