@@ -1,6 +1,5 @@
 /* Thread-local storage handling in the ELF dynamic linker.  RISC-V version.
    Copyright (C) 2011-2016 Free Software Foundation, Inc.
-   Contributed by Andrew Waterman (andrew@sifive.com).
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
