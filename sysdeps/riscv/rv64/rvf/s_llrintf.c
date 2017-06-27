@@ -1,5 +1,6 @@
-/* Copyright (C) 2017 Free Software Foundation, Inc.
-   Contributed by Andrew Waterman (andrew@sifive.com).
+/* Round argument to nearest integral value according to current rounding
+   direction.  RISC-V version.
+   Copyright (C) 2017 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
