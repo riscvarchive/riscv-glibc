@@ -39,5 +39,3 @@
 	     UNLOAD_GP					\
 	     : "=r"(__result));				\
 	__tls_get_addr(__result); })
-
-#endif /* __mips16 */
