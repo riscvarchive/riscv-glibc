@@ -28,10 +28,14 @@ typedef struct __jmp_buf_internal_tag
     /* Stack pointer.  */
     long __sp;
 
-    /* Callee-saved floating point registers.
-       Note that there are an even number of preceding words in this struct,
-       so no padding will be inserted before __fpregs, even for RV32. */
-    double __fpregs[12];
+    /* Callee-saved floating point registers.  */
+#ifdef __riscv_float_abi_single
+   float __fpregs[12];
+#elif defined (__riscv_float_abi_double)
+   double __fpregs[12];
+#elif !defined (__riscv_float_abi_soft)
+# error unsupported FLEN
+#endif
   } __jmp_buf[1];
 
 #endif /* _RISCV_BITS_SETJMP_H */

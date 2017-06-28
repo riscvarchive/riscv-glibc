@@ -35,7 +35,6 @@
 
 typedef greg_t elf_greg_t;
 typedef gregset_t elf_gregset_t;
-typedef fpreg_t elf_fpreg_t;
 typedef fpregset_t elf_fpregset_t;
 
 __BEGIN_DECLS
