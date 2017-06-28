@@ -16,26 +16,16 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sysdep.h>
-#include <sys/asm.h>
+#include "ucontext-macros.h"
 
-#include "ucontext_i.h"
+/*  int __setcontext (const ucontext_t *ucp)
 
-#define RESTORE_FP_REG(name, num, base)			\
-  FREG_L name, ((num) * SZFREG + MCONTEXT_FPREGS)(base)
+  Restores the machine context in UCP and thereby resumes execution
+  in that context.
 
-#define RESTORE_FP_REG_CFI(name, num, base)		\
-  RESTORE_FP_REG (name, num, base);			\
-  cfi_offset (name, (num) * SZREG + MCONTEXT_GREGS)
-
-#define RESTORE_INT_REG(name, num, base)		\
-  REG_L name, ((num) * SZREG + MCONTEXT_GREGS)(base)
-
-#define RESTORE_INT_REG_CFI(name, num, base)		\
-  RESTORE_INT_REG (name, num, base);			\
-  cfi_offset (name, (num) * SZREG + MCONTEXT_GREGS)
-
-/* int setcontext (const ucontext_t *ucp) */
+  This implementation is intended to be used for *synchronous* context
+  switches only.  Therefore, it does not have to restore anything
+  other than the PRESERVED state.  */
 
 	.text
 LEAF (__setcontext)
@@ -76,7 +66,7 @@ LEAF (__setcontext)
 
 	/* Note the contents of argument registers will be random
 	   unless makecontext() has been called.  */
-	REG_L	t1, MCONTEXT_PC(t0)
+	RESTORE_INT_REG     (t1,   0, t0)
 	RESTORE_INT_REG_CFI (ra,   1, t0)
 	RESTORE_INT_REG     (sp,   2, t0)
 	RESTORE_INT_REG_CFI (s0,   8, t0)

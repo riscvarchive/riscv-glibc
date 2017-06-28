@@ -16,47 +16,44 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sysdep.h>
-#include <sys/asm.h>
-
-#include "ucontext_i.h"
+#include "ucontext-macros.h"
 
 /* int getcontext (ucontext_t *ucp) */
 
 	.text
 LEAF (__getcontext)
-	REG_S	ra, MCONTEXT_PC(a0)
-	REG_S	ra, ( 1 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	sp, ( 2 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s0, ( 8 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s1, ( 9 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	x0, (10 * SZREG + MCONTEXT_GREGS)(a0)	/* return 0 */
-	REG_S	s2, (18 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s3, (19 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s4, (20 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s5, (21 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s6, (22 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s7, (23 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s8, (24 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s9, (25 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s10,(26 * SZREG + MCONTEXT_GREGS)(a0)
-	REG_S	s11,(27 * SZREG + MCONTEXT_GREGS)(a0)
+	SAVE_INT_REG (ra,   0, a0)
+	SAVE_INT_REG (ra,   1, a0)
+	SAVE_INT_REG (sp,   2, a0)
+	SAVE_INT_REG (s0,   8, a0)
+	SAVE_INT_REG (s1,   9, a0)
+	SAVE_INT_REG (x0,  10, a0)	/* return 0 */
+	SAVE_INT_REG (s2,  18, a0)
+	SAVE_INT_REG (s3,  19, a0)
+	SAVE_INT_REG (s4,  20, a0)
+	SAVE_INT_REG (s5,  21, a0)
+	SAVE_INT_REG (s6,  22, a0)
+	SAVE_INT_REG (s7,  23, a0)
+	SAVE_INT_REG (s8,  24, a0)
+	SAVE_INT_REG (s9,  25, a0)
+	SAVE_INT_REG (s10, 26, a0)
+	SAVE_INT_REG (s11, 27, a0)
 
 #ifndef __riscv_float_abi_soft
 	frsr	a1
 
-	FREG_S fs0, ( 8 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs1, ( 9 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs2, (18 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs3, (19 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs4, (20 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs5, (21 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs6, (22 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs7, (23 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs8, (24 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs9, (25 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs10,(26 * SZFREG + MCONTEXT_FPREGS)(a0)
-	FREG_S fs11,(27 * SZFREG + MCONTEXT_FPREGS)(a0)
+	SAVE_FP_REG (fs0,   8, a0)
+	SAVE_FP_REG (fs1,   9, a0)
+	SAVE_FP_REG (fs2,  18, a0)
+	SAVE_FP_REG (fs3,  19, a0)
+	SAVE_FP_REG (fs4,  20, a0)
+	SAVE_FP_REG (fs5,  21, a0)
+	SAVE_FP_REG (fs6,  22, a0)
+	SAVE_FP_REG (fs7,  23, a0)
+	SAVE_FP_REG (fs8,  24, a0)
+	SAVE_FP_REG (fs9,  25, a0)
+	SAVE_FP_REG (fs10, 26, a0)
+	SAVE_FP_REG (fs11, 27, a0)
 
 	sw	a1, MCONTEXT_FSR(a0)
 #endif /* __riscv_float_abi_soft */

@@ -29,9 +29,7 @@
 
 #ifdef __USE_MISC
 
-/* Number of general registers.  */
 #define NGREG	32
-#define NFPREG	32
 
 #define REG_PC 0
 #define REG_RA 1
@@ -41,16 +39,13 @@
 #define REG_A0 10
 #define REG_NARGS 8
 
-/* Type for general register.  Even in RV32 we assume 64-bit registers,
-   like the kernel.  */
-__extension__ typedef unsigned long long int greg_t;
-typedef double fpreg_t;
+typedef unsigned long greg_t;
 
 /* Container for all general registers.  */
 typedef greg_t gregset_t[NGREG];
 
-/* Container for all FPU registers.  */
-typedef fpreg_t fpregset_t[NFPREG];
+/* Container for floating-point state.  */
+typedef union __riscv_fp_state fpregset_t;
 
 /* Context to describe whole processor state.  */
 typedef struct sigcontext mcontext_t;
