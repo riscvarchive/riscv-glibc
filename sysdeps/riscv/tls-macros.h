@@ -34,7 +34,7 @@
 	({ void *__result;				\
 	asm (LOAD_GP					\
 	     "lui %0, %%tprel_hi(" #x ")\n\t"		\
-	     "addi %0, %0, %%tprel_add(" #x ")\n\t"	\
+	     "add %0, %0, tp, %%tprel_add(" #x ")\n\t"	\
 	     "lw %0, %%tprel_lo(" #x ")(%0)\n\t"	\
 	     UNLOAD_GP					\
 	     : "=r"(__result));				\
