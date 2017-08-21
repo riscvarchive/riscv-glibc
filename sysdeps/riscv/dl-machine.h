@@ -126,7 +126,7 @@ elf_machine_load_address (void)
 
 /* Bias .got.plt entry by the offset requested by the PLT header. */
 #define elf_machine_plt_value(map, reloc, value) (value)
-#define elf_machine_fixup_plt(map, t, reloc, reloc_addr, value) \
+#define elf_machine_fixup_plt(map, t, refsym, sym, reloc, reloc_addr, value) \
   (*(ElfW(Addr) *)(reloc_addr) = (value))
 
 #endif /* !dl_machine_h */
