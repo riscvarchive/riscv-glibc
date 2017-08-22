@@ -124,7 +124,7 @@
 #define INLINE_SYSCALL(name, nr, args...)				\
   ({ INTERNAL_SYSCALL_DECL(err);					\
      long __sys_result = INTERNAL_SYSCALL (name, err, nr, args);	\
-     if (__sys_result < 0)						\
+     if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P(__sys_result, ), 0)) \
        {								\
          __set_errno (INTERNAL_SYSCALL_ERRNO (__sys_result, ));		\
 	 __sys_result = (unsigned long) -1;				\
