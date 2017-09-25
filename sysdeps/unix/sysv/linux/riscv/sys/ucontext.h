@@ -58,8 +58,8 @@ typedef struct ucontext
     unsigned long int uc_flags;
     struct ucontext *uc_link;
     stack_t uc_stack;
-    mcontext_t uc_mcontext;
     sigset_t uc_sigmask;
+    mcontext_t uc_mcontext;
   } ucontext_t;
 
 #endif /* sys/ucontext.h */
