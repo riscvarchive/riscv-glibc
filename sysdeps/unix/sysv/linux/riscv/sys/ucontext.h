@@ -24,8 +24,13 @@
 #include <features.h>
 
 #include <bits/types/sigset_t.h>
-#include <bits/sigcontext.h>
 #include <bits/types/stack_t.h>
+
+#ifdef __USE_MISC
+# define __ctx(fld) fld
+#else
+# define __ctx(fld) __ ## fld
+#endif
 
 #ifdef __USE_MISC
 
@@ -47,16 +52,19 @@ typedef greg_t gregset_t[NGREG];
 /* Container for floating-point state.  */
 typedef union __riscv_fp_state fpregset_t;
 
-/* Context to describe whole processor state.  */
-typedef struct sigcontext mcontext_t;
-
 #endif
+typedef struct mcontext_t
+  {
+    /* gregs[0] holds the program counter. */
+    unsigned long __ctx(gregs)[32];
+    unsigned long long __ctx(fpregs)[66] __attribute__((aligned(16)));
+  } mcontext_t;
 
 /* Userlevel context.  */
-typedef struct ucontext
+typedef struct ucontext_t
   {
     unsigned long int uc_flags;
-    struct ucontext *uc_link;
+    struct ucontext_t *uc_link;
     stack_t uc_stack;
     sigset_t uc_sigmask;
     mcontext_t uc_mcontext;
