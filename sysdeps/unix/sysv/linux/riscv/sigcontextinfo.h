@@ -18,7 +18,7 @@
 
 #include <sys/ucontext.h>
 
-#define SIGCONTEXT siginfo_t *_si, struct ucontext *
+#define SIGCONTEXT siginfo_t *_si, ucontext_t *
 #define SIGCONTEXT_EXTRA_ARGS _si,
 #define GET_PC(ctx)	((void *) ctx->uc_mcontext.gregs[REG_PC])
 #define GET_FRAME(ctx)	((void *) ctx->uc_mcontext.gregs[REG_S0])
