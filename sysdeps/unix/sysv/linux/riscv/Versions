@@ -1,0 +1,5 @@
+libc {
+  GLIBC_2.26 {
+    __riscv_flush_icache;
+  }
+}
