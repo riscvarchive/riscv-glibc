@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <math_private.h>
+#include <libm-alias-double.h>
 
 double
 __roundeven (double x)
@@ -49,5 +50,5 @@ __roundeven (double x)
   return x;
 }
 
-hidden_def (roundeven)
-weak_alias (__roundeven, roundeven)
+hidden_def (__roundeven)
+libm_alias_double (__roundeven, roundeven)
