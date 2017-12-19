@@ -320,6 +320,11 @@ class Context(object):
                         os_name='linux-gnuspe',
                         variant='e500v1',
                         gcc_cfg=['--disable-multilib', '--enable-secureplt'])
+        self.add_config(arch='riscv',
+                        os_name='linux-gnu',
+                        variant='rv64imafdc-lp64d',
+                        glibcs=[{'variant': 'rv64imafdc-lp64d',
+                                 'ccopts': '-march=rv64imafdc -mabi=lp64d'}])
         self.add_config(arch='s390x',
                         os_name='linux-gnu',
                         glibcs=[{},
