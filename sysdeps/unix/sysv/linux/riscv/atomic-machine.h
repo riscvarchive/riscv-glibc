@@ -188,40 +188,7 @@ typedef uintmax_t uatomic_max_t;
 #define catomic_max(mem, value) atomic_max(mem, value)
 
 #else /* __riscv_atomic */
-
-/* If the A (atomic) extension is not present, we need help from the
-   kernel to do atomic accesses.  Linux provides two system calls for
-   this purpose.  RISCV_ATOMIC_CMPXCHG will perform an atomic compare
-   and exchange operation for a 32-bit value.  RISCV_ATOMIC_CMPXCHG64
-   will do the same for a 64-bit value. */
-
-#include <sys/syscall.h>
-#include <sysdep.h>
-
-#define __HAVE_64B_ATOMICS (__riscv_xlen >= 64)
-#define USE_ATOMIC_COMPILER_BUILTINS 0
-
-#define __arch_compare_and_exchange_val_8_acq(mem, newval, oldval) \
-  (abort (), (__typeof (*mem)) 0)
-
-#define __arch_compare_and_exchange_val_16_acq(mem, newval, oldval) \
-  (abort (), (__typeof (*mem)) 0)
-
-/* The only basic operation needed is compare and exchange.  */
-#define __arch_compare_and_exchange_val_32_acq(mem, newval, oldval) \
-  ({									      \
-    INTERNAL_SYSCALL_DECL (__err);					      \
-    (__typeof (*mem)) INTERNAL_SYSCALL (sysriscv, __err, 4,		      \
-		      RISCV_ATOMIC_CMPXCHG, mem, oldval, newval);	      \
-  })
-
-#define __arch_compare_and_exchange_val_64_acq(mem, newval, oldval) \
-  ({									      \
-    INTERNAL_SYSCALL_DECL (__err);					      \
-    (__typeof (*mem)) INTERNAL_SYSCALL (sysriscv, __err, 4,		      \
-		      RISCV_ATOMIC_CMPXCHG64, mem, oldval, newval);	      \
-  })
-
+#error "ISAs that do not subsume the A extension are not supported"
 #endif /* !__riscv_atomic */
 
 #endif /* bits/atomic.h */
