@@ -21,6 +21,7 @@
 #include <sys/cdefs.h>
 #include <sys/asm.h>
 #include <sysdep.h>
+#include "dl-tls.h"
 
 #define LOAD_GP						\
 	".option push\n\t"				\
