@@ -20,7 +20,6 @@ GLIBC_2.27 __p_fqnname F
 GLIBC_2.27 __p_option F
 GLIBC_2.27 __p_query F
 GLIBC_2.27 __p_rcode F
-GLIBC_2.27 __p_secstodate F
 GLIBC_2.27 __p_time F
 GLIBC_2.27 __p_type F
 GLIBC_2.27 __p_type_syms D 0x450
@@ -48,14 +47,8 @@ GLIBC_2.27 __res_send F
 GLIBC_2.27 __sym_ntop F
 GLIBC_2.27 __sym_ntos F
 GLIBC_2.27 __sym_ston F
-GLIBC_2.27 _gethtbyaddr F
-GLIBC_2.27 _gethtbyname F
-GLIBC_2.27 _gethtbyname2 F
-GLIBC_2.27 _gethtent F
 GLIBC_2.27 _getlong F
 GLIBC_2.27 _getshort F
-GLIBC_2.27 _res_opcodes D 0x80
-GLIBC_2.27 _sethtent F
 GLIBC_2.27 inet_net_ntop F
 GLIBC_2.27 inet_net_pton F
 GLIBC_2.27 inet_neta F
@@ -85,8 +78,3 @@ GLIBC_2.27 ns_skiprr F
 GLIBC_2.27 ns_sprintrr F
 GLIBC_2.27 ns_sprintrrf F
 GLIBC_2.27 ns_subdomain F
-GLIBC_2.27 res_gethostbyaddr F
-GLIBC_2.27 res_gethostbyname F
-GLIBC_2.27 res_gethostbyname2 F
-GLIBC_2.27 res_send_setqhook F
-GLIBC_2.27 res_send_setrhook F

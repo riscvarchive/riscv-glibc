@@ -161,6 +161,7 @@ GLIBC_2.27 __curbrk D 0x8
 GLIBC_2.27 __cxa_at_quick_exit F
 GLIBC_2.27 __cxa_atexit F
 GLIBC_2.27 __cxa_finalize F
+GLIBC_2.27 __cxa_thread_atexit_impl F
 GLIBC_2.27 __cyg_profile_func_enter F
 GLIBC_2.27 __cyg_profile_func_exit F
 GLIBC_2.27 __daylight D 0x4
@@ -173,6 +174,7 @@ GLIBC_2.27 __duplocale F
 GLIBC_2.27 __endmntent F
 GLIBC_2.27 __environ D 0x8
 GLIBC_2.27 __errno_location F
+GLIBC_2.27 __explicit_bzero_chk F
 GLIBC_2.27 __fbufsize F
 GLIBC_2.27 __fcntl F
 GLIBC_2.27 __fdelt_chk F
@@ -292,7 +294,6 @@ GLIBC_2.27 __lseek F
 GLIBC_2.27 __lxstat F
 GLIBC_2.27 __lxstat64 F
 GLIBC_2.27 __malloc_hook D 0x8
-GLIBC_2.27 __malloc_initialize_hook D 0x8
 GLIBC_2.27 __mbrlen F
 GLIBC_2.27 __mbrtowc F
 GLIBC_2.27 __mbsnrtowcs_chk F
@@ -303,7 +304,6 @@ GLIBC_2.27 __memcpy_chk F
 GLIBC_2.27 __memmove_chk F
 GLIBC_2.27 __mempcpy F
 GLIBC_2.27 __mempcpy_chk F
-GLIBC_2.27 __mempcpy_small F
 GLIBC_2.27 __memset_chk F
 GLIBC_2.27 __monstartup F
 GLIBC_2.27 __morecore D 0x8
@@ -312,11 +312,8 @@ GLIBC_2.27 __newlocale F
 GLIBC_2.27 __nl_langinfo_l F
 GLIBC_2.27 __nss_configure_lookup F
 GLIBC_2.27 __nss_database_lookup F
-GLIBC_2.27 __nss_group_lookup F
 GLIBC_2.27 __nss_hostname_digits_dots F
-GLIBC_2.27 __nss_hosts_lookup F
 GLIBC_2.27 __nss_next F
-GLIBC_2.27 __nss_passwd_lookup F
 GLIBC_2.27 __obstack_printf_chk F
 GLIBC_2.27 __obstack_vprintf_chk F
 GLIBC_2.27 __open F
@@ -357,6 +354,7 @@ GLIBC_2.27 __res_nclose F
 GLIBC_2.27 __res_ninit F
 GLIBC_2.27 __res_randomid F
 GLIBC_2.27 __res_state F
+GLIBC_2.27 __riscv_flush_icache F
 GLIBC_2.27 __rpc_thread_createerr F
 GLIBC_2.27 __rpc_thread_svc_fdset F
 GLIBC_2.27 __rpc_thread_svc_max_pollfd F
@@ -372,12 +370,10 @@ GLIBC_2.27 __sched_getscheduler F
 GLIBC_2.27 __sched_setscheduler F
 GLIBC_2.27 __sched_yield F
 GLIBC_2.27 __select F
+GLIBC_2.27 __send F
 GLIBC_2.27 __setmntent F
 GLIBC_2.27 __setpgid F
 GLIBC_2.27 __sigaction F
-GLIBC_2.27 __sigaddset F
-GLIBC_2.27 __sigdelset F
-GLIBC_2.27 __sigismember F
 GLIBC_2.27 __signbit F
 GLIBC_2.27 __signbitf F
 GLIBC_2.27 __signbitl F
@@ -390,7 +386,6 @@ GLIBC_2.27 __stack_chk_fail F
 GLIBC_2.27 __statfs F
 GLIBC_2.27 __stpcpy F
 GLIBC_2.27 __stpcpy_chk F
-GLIBC_2.27 __stpcpy_small F
 GLIBC_2.27 __stpncpy F
 GLIBC_2.27 __stpncpy_chk F
 GLIBC_2.27 __strcasecmp F
@@ -399,10 +394,6 @@ GLIBC_2.27 __strcasestr F
 GLIBC_2.27 __strcat_chk F
 GLIBC_2.27 __strcoll_l F
 GLIBC_2.27 __strcpy_chk F
-GLIBC_2.27 __strcpy_small F
-GLIBC_2.27 __strcspn_c1 F
-GLIBC_2.27 __strcspn_c2 F
-GLIBC_2.27 __strcspn_c3 F
 GLIBC_2.27 __strdup F
 GLIBC_2.27 __strerror_r F
 GLIBC_2.27 __strfmon_l F
@@ -411,21 +402,12 @@ GLIBC_2.27 __strncasecmp_l F
 GLIBC_2.27 __strncat_chk F
 GLIBC_2.27 __strncpy_chk F
 GLIBC_2.27 __strndup F
-GLIBC_2.27 __strpbrk_c2 F
-GLIBC_2.27 __strpbrk_c3 F
-GLIBC_2.27 __strsep_1c F
-GLIBC_2.27 __strsep_2c F
-GLIBC_2.27 __strsep_3c F
 GLIBC_2.27 __strsep_g F
-GLIBC_2.27 __strspn_c1 F
-GLIBC_2.27 __strspn_c2 F
-GLIBC_2.27 __strspn_c3 F
 GLIBC_2.27 __strtod_internal F
 GLIBC_2.27 __strtod_l F
 GLIBC_2.27 __strtof_internal F
 GLIBC_2.27 __strtof_l F
 GLIBC_2.27 __strtok_r F
-GLIBC_2.27 __strtok_r_1c F
 GLIBC_2.27 __strtol_internal F
 GLIBC_2.27 __strtol_l F
 GLIBC_2.27 __strtold_internal F
@@ -528,6 +510,7 @@ GLIBC_2.27 _flushlbf F
 GLIBC_2.27 _libc_intl_domainname D 0x5
 GLIBC_2.27 _longjmp F
 GLIBC_2.27 _mcleanup F
+GLIBC_2.27 _mcount F
 GLIBC_2.27 _nl_default_dirname D 0x12
 GLIBC_2.27 _nl_domain_bindings D 0x8
 GLIBC_2.27 _nl_msg_cat_cntr D 0x4
@@ -559,7 +542,6 @@ GLIBC_2.27 addmntent F
 GLIBC_2.27 addseverity F
 GLIBC_2.27 adjtime F
 GLIBC_2.27 adjtimex F
-GLIBC_2.27 advance F
 GLIBC_2.27 alarm F
 GLIBC_2.27 aligned_alloc F
 GLIBC_2.27 alphasort F
@@ -605,7 +587,6 @@ GLIBC_2.27 backtrace_symbols_fd F
 GLIBC_2.27 basename F
 GLIBC_2.27 bcmp F
 GLIBC_2.27 bcopy F
-GLIBC_2.27 bdflush F
 GLIBC_2.27 bind F
 GLIBC_2.27 bind_textdomain_codeset F
 GLIBC_2.27 bindresvport F
@@ -629,7 +610,6 @@ GLIBC_2.27 cbc_crypt F
 GLIBC_2.27 cfgetispeed F
 GLIBC_2.27 cfgetospeed F
 GLIBC_2.27 cfmakeraw F
-GLIBC_2.27 cfree F
 GLIBC_2.27 cfsetispeed F
 GLIBC_2.27 cfsetospeed F
 GLIBC_2.27 cfsetspeed F
@@ -672,7 +652,6 @@ GLIBC_2.27 copysignf F
 GLIBC_2.27 copysignl F
 GLIBC_2.27 creat F
 GLIBC_2.27 creat64 F
-GLIBC_2.27 create_module F
 GLIBC_2.27 ctermid F
 GLIBC_2.27 ctime F
 GLIBC_2.27 ctime_r F
@@ -759,6 +738,7 @@ GLIBC_2.27 execve F
 GLIBC_2.27 execvp F
 GLIBC_2.27 execvpe F
 GLIBC_2.27 exit F
+GLIBC_2.27 explicit_bzero F
 GLIBC_2.27 faccessat F
 GLIBC_2.27 fallocate F
 GLIBC_2.27 fallocate64 F
@@ -866,6 +846,11 @@ GLIBC_2.27 ftok F
 GLIBC_2.27 ftruncate F
 GLIBC_2.27 ftruncate64 F
 GLIBC_2.27 ftrylockfile F
+GLIBC_2.27 fts64_children F
+GLIBC_2.27 fts64_close F
+GLIBC_2.27 fts64_open F
+GLIBC_2.27 fts64_read F
+GLIBC_2.27 fts64_set F
 GLIBC_2.27 fts_children F
 GLIBC_2.27 fts_close F
 GLIBC_2.27 fts_open F
@@ -886,7 +871,6 @@ GLIBC_2.27 gai_strerror F
 GLIBC_2.27 gcvt F
 GLIBC_2.27 get_avphys_pages F
 GLIBC_2.27 get_current_dir_name F
-GLIBC_2.27 get_kernel_syms F
 GLIBC_2.27 get_myaddress F
 GLIBC_2.27 get_nprocs F
 GLIBC_2.27 get_nprocs_conf F
@@ -912,6 +896,7 @@ GLIBC_2.27 getdirentries64 F
 GLIBC_2.27 getdomainname F
 GLIBC_2.27 getdtablesize F
 GLIBC_2.27 getegid F
+GLIBC_2.27 getentropy F
 GLIBC_2.27 getenv F
 GLIBC_2.27 geteuid F
 GLIBC_2.27 getfsent F
@@ -983,6 +968,7 @@ GLIBC_2.27 getpwnam F
 GLIBC_2.27 getpwnam_r F
 GLIBC_2.27 getpwuid F
 GLIBC_2.27 getpwuid_r F
+GLIBC_2.27 getrandom F
 GLIBC_2.27 getresgid F
 GLIBC_2.27 getresuid F
 GLIBC_2.27 getrlimit F
@@ -1221,14 +1207,11 @@ GLIBC_2.27 llabs F
 GLIBC_2.27 lldiv F
 GLIBC_2.27 llistxattr F
 GLIBC_2.27 llseek F
-GLIBC_2.27 loc1 D 0x8
-GLIBC_2.27 loc2 D 0x8
 GLIBC_2.27 localeconv F
 GLIBC_2.27 localtime F
 GLIBC_2.27 localtime_r F
 GLIBC_2.27 lockf F
 GLIBC_2.27 lockf64 F
-GLIBC_2.27 locs D 0x8
 GLIBC_2.27 longjmp F
 GLIBC_2.27 lrand48 F
 GLIBC_2.27 lrand48_r F
@@ -1242,9 +1225,7 @@ GLIBC_2.27 madvise F
 GLIBC_2.27 makecontext F
 GLIBC_2.27 mallinfo F
 GLIBC_2.27 malloc F
-GLIBC_2.27 malloc_get_state F
 GLIBC_2.27 malloc_info F
-GLIBC_2.27 malloc_set_state F
 GLIBC_2.27 malloc_stats F
 GLIBC_2.27 malloc_trim F
 GLIBC_2.27 malloc_usable_size F
@@ -1268,6 +1249,7 @@ GLIBC_2.27 memccpy F
 GLIBC_2.27 memchr F
 GLIBC_2.27 memcmp F
 GLIBC_2.27 memcpy F
+GLIBC_2.27 memfd_create F
 GLIBC_2.27 memfrob F
 GLIBC_2.27 memmem F
 GLIBC_2.27 memmove F
@@ -1291,6 +1273,7 @@ GLIBC_2.27 mkstemps64 F
 GLIBC_2.27 mktemp F
 GLIBC_2.27 mktime F
 GLIBC_2.27 mlock F
+GLIBC_2.27 mlock2 F
 GLIBC_2.27 mlockall F
 GLIBC_2.27 mmap F
 GLIBC_2.27 mmap64 F
@@ -1363,6 +1346,11 @@ GLIBC_2.27 personality F
 GLIBC_2.27 pipe F
 GLIBC_2.27 pipe2 F
 GLIBC_2.27 pivot_root F
+GLIBC_2.27 pkey_alloc F
+GLIBC_2.27 pkey_free F
+GLIBC_2.27 pkey_get F
+GLIBC_2.27 pkey_mprotect F
+GLIBC_2.27 pkey_set F
 GLIBC_2.27 pmap_getmaps F
 GLIBC_2.27 pmap_getport F
 GLIBC_2.27 pmap_rmtcall F
@@ -1403,7 +1391,9 @@ GLIBC_2.27 prctl F
 GLIBC_2.27 pread F
 GLIBC_2.27 pread64 F
 GLIBC_2.27 preadv F
+GLIBC_2.27 preadv2 F
 GLIBC_2.27 preadv64 F
+GLIBC_2.27 preadv64v2 F
 GLIBC_2.27 printf F
 GLIBC_2.27 printf_size F
 GLIBC_2.27 printf_size_info F
@@ -1474,7 +1464,9 @@ GLIBC_2.27 pvalloc F
 GLIBC_2.27 pwrite F
 GLIBC_2.27 pwrite64 F
 GLIBC_2.27 pwritev F
+GLIBC_2.27 pwritev2 F
 GLIBC_2.27 pwritev64 F
+GLIBC_2.27 pwritev64v2 F
 GLIBC_2.27 qecvt F
 GLIBC_2.27 qecvt_r F
 GLIBC_2.27 qfcvt F
@@ -1482,7 +1474,6 @@ GLIBC_2.27 qfcvt_r F
 GLIBC_2.27 qgcvt F
 GLIBC_2.27 qsort F
 GLIBC_2.27 qsort_r F
-GLIBC_2.27 query_module F
 GLIBC_2.27 quick_exit F
 GLIBC_2.27 quotactl F
 GLIBC_2.27 raise F
@@ -1514,6 +1505,7 @@ GLIBC_2.27 readlink F
 GLIBC_2.27 readlinkat F
 GLIBC_2.27 readv F
 GLIBC_2.27 realloc F
+GLIBC_2.27 reallocarray F
 GLIBC_2.27 realpath F
 GLIBC_2.27 reboot F
 GLIBC_2.27 recv F
@@ -1680,7 +1672,6 @@ GLIBC_2.27 sigsetmask F
 GLIBC_2.27 sigstack F
 GLIBC_2.27 sigsuspend F
 GLIBC_2.27 sigtimedwait F
-GLIBC_2.27 sigvec F
 GLIBC_2.27 sigwait F
 GLIBC_2.27 sigwaitinfo F
 GLIBC_2.27 sleep F
@@ -1706,7 +1697,6 @@ GLIBC_2.27 statvfs64 F
 GLIBC_2.27 stderr D 0x8
 GLIBC_2.27 stdin D 0x8
 GLIBC_2.27 stdout D 0x8
-GLIBC_2.27 step F
 GLIBC_2.27 stime F
 GLIBC_2.27 stpcpy F
 GLIBC_2.27 stpncpy F
@@ -1727,6 +1717,14 @@ GLIBC_2.27 strerror_l F
 GLIBC_2.27 strerror_r F
 GLIBC_2.27 strfmon F
 GLIBC_2.27 strfmon_l F
+GLIBC_2.27 strfromd F
+GLIBC_2.27 strfromf F
+GLIBC_2.27 strfromf128 F
+GLIBC_2.27 strfromf32 F
+GLIBC_2.27 strfromf32x F
+GLIBC_2.27 strfromf64 F
+GLIBC_2.27 strfromf64x F
+GLIBC_2.27 strfroml F
 GLIBC_2.27 strfry F
 GLIBC_2.27 strftime F
 GLIBC_2.27 strftime_l F
@@ -1749,6 +1747,16 @@ GLIBC_2.27 strstr F
 GLIBC_2.27 strtod F
 GLIBC_2.27 strtod_l F
 GLIBC_2.27 strtof F
+GLIBC_2.27 strtof128 F
+GLIBC_2.27 strtof128_l F
+GLIBC_2.27 strtof32 F
+GLIBC_2.27 strtof32_l F
+GLIBC_2.27 strtof32x F
+GLIBC_2.27 strtof32x_l F
+GLIBC_2.27 strtof64 F
+GLIBC_2.27 strtof64_l F
+GLIBC_2.27 strtof64x F
+GLIBC_2.27 strtof64x_l F
 GLIBC_2.27 strtof_l F
 GLIBC_2.27 strtoimax F
 GLIBC_2.27 strtok F
@@ -1886,7 +1894,6 @@ GLIBC_2.27 unsetenv F
 GLIBC_2.27 unshare F
 GLIBC_2.27 updwtmp F
 GLIBC_2.27 updwtmpx F
-GLIBC_2.27 uselib F
 GLIBC_2.27 uselocale F
 GLIBC_2.27 user2netname F
 GLIBC_2.27 usleep F
@@ -1963,6 +1970,16 @@ GLIBC_2.27 wcsstr F
 GLIBC_2.27 wcstod F
 GLIBC_2.27 wcstod_l F
 GLIBC_2.27 wcstof F
+GLIBC_2.27 wcstof128 F
+GLIBC_2.27 wcstof128_l F
+GLIBC_2.27 wcstof32 F
+GLIBC_2.27 wcstof32_l F
+GLIBC_2.27 wcstof32x F
+GLIBC_2.27 wcstof32x_l F
+GLIBC_2.27 wcstof64 F
+GLIBC_2.27 wcstof64_l F
+GLIBC_2.27 wcstof64x F
+GLIBC_2.27 wcstof64x_l F
 GLIBC_2.27 wcstof_l F
 GLIBC_2.27 wcstoimax F
 GLIBC_2.27 wcstok F
@@ -2076,65 +2093,3 @@ GLIBC_2.27 xdrstdio_create F
 GLIBC_2.27 xencrypt F
 GLIBC_2.27 xprt_register F
 GLIBC_2.27 xprt_unregister F
-GLIBC_2.18 GLIBC_2.18 A
-GLIBC_2.18 __cxa_thread_atexit_impl F
-GLIBC_2.18 _mcount F
-GLIBC_2.22 GLIBC_2.22 A
-GLIBC_2.22 fmemopen F
-GLIBC_2.23 GLIBC_2.23 A
-GLIBC_2.23 fts64_children F
-GLIBC_2.23 fts64_close F
-GLIBC_2.23 fts64_open F
-GLIBC_2.23 fts64_read F
-GLIBC_2.23 fts64_set F
-GLIBC_2.24 GLIBC_2.24 A
-GLIBC_2.24 quick_exit F
-GLIBC_2.25 GLIBC_2.25 A
-GLIBC_2.25 __explicit_bzero_chk F
-GLIBC_2.25 explicit_bzero F
-GLIBC_2.25 getentropy F
-GLIBC_2.25 getrandom F
-GLIBC_2.25 strfromd F
-GLIBC_2.25 strfromf F
-GLIBC_2.25 strfroml F
-GLIBC_2.26 GLIBC_2.26 A
-GLIBC_2.26 preadv2 F
-GLIBC_2.26 preadv64v2 F
-GLIBC_2.26 pwritev2 F
-GLIBC_2.26 pwritev64v2 F
-GLIBC_2.26 reallocarray F
-GLIBC_2.27 GLIBC_2.27 A
-GLIBC_2.27 glob F
-GLIBC_2.27 glob64 F
-GLIBC_2.27 memfd_create F
-GLIBC_2.27 mlock2 F
-GLIBC_2.27 pkey_alloc F
-GLIBC_2.27 pkey_free F
-GLIBC_2.27 pkey_get F
-GLIBC_2.27 pkey_mprotect F
-GLIBC_2.27 pkey_set F
-GLIBC_2.27 strfromf128 F
-GLIBC_2.27 strfromf32 F
-GLIBC_2.27 strfromf32x F
-GLIBC_2.27 strfromf64 F
-GLIBC_2.27 strfromf64x F
-GLIBC_2.27 strtof128 F
-GLIBC_2.27 strtof128_l F
-GLIBC_2.27 strtof32 F
-GLIBC_2.27 strtof32_l F
-GLIBC_2.27 strtof32x F
-GLIBC_2.27 strtof32x_l F
-GLIBC_2.27 strtof64 F
-GLIBC_2.27 strtof64_l F
-GLIBC_2.27 strtof64x F
-GLIBC_2.27 strtof64x_l F
-GLIBC_2.27 wcstof128 F
-GLIBC_2.27 wcstof128_l F
-GLIBC_2.27 wcstof32 F
-GLIBC_2.27 wcstof32_l F
-GLIBC_2.27 wcstof32x F
-GLIBC_2.27 wcstof32x_l F
-GLIBC_2.27 wcstof64 F
-GLIBC_2.27 wcstof64_l F
-GLIBC_2.27 wcstof64x F
-GLIBC_2.27 wcstof64x_l F
