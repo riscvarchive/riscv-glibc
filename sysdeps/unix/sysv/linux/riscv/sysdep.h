@@ -43,10 +43,10 @@
   bgtu a0, a7, .Lsyscall_error ## name;
 
 #undef PSEUDO_END
-#define PSEUDO_END (sym) 					\
-  SYSCALL_ERROR_HANDLER(sym)					\
+#define PSEUDO_END(sym) 					\
+  SYSCALL_ERROR_HANDLER (sym)					\
   ret;								\
-  END(sym)
+  END (sym)
 
 # if !IS_IN (libc)
 #  if RTLD_PRIVATE_ERRNO
