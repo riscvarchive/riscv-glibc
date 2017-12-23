@@ -30,7 +30,7 @@
 	     void *parent_tidptr, void *tls, void *child_tidptr) */
 
 	.text
-LEAF(__clone)
+LEAF (__clone)
 
 	/* Sanity check arguments.  */
 	beqz		a0,L(invalid)	/* No NULL function pointers.  */
@@ -56,19 +56,19 @@ LEAF(__clone)
 	/* Successful return from the parent */
 	ret
 
-L(invalid):
+L (invalid):
 	li		a0, -EINVAL
 	/* Something bad happened -- no child created */
-L(error):
+L (error):
 	j		__syscall_error
-	END(__clone)
+	END (__clone)
 
 /* Load up the arguments to the function.  Put this block of code in
    its own function so that we can terminate the stack trace with our
    debug info.  */
 
-ENTRY(__thread_start)
-L(thread_start):
+ENTRY (__thread_start)
+L (thread_start):
 	/* Restore the arg for user's function.  */
 	REG_L		a1,0(sp)	/* Function pointer.  */
 	REG_L		a0,SZREG(sp)	/* Argument pointer.  */
@@ -79,7 +79,7 @@ L(thread_start):
 	/* Call _exit with the function's return value.  */
 	j		_exit
 
-	END(__thread_start)
+	END (__thread_start)
 
-libc_hidden_def(__clone)
+libc_hidden_def (__clone)
 weak_alias (__clone, clone)

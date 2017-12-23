@@ -36,8 +36,8 @@
 	asm (LOAD_GP					\
 	     "la.tls.gd %0, " #x "\n\t"			\
 	     UNLOAD_GP					\
-	     : "=r"(__result));				\
-	__tls_get_addr(__result); })
+	     : "=r" (__result));			\
+	__tls_get_addr (__result); })
 
 #define TLS_LD(x) TLS_GD(x)
 
@@ -46,8 +46,8 @@
 	asm (LOAD_GP					\
 	     "la.tls.ie %0, " #x "\n\t"			\
 	     UNLOAD_GP					\
-	     : "=r"(__result));				\
-	__tls_get_addr(__result); })
+	     : "=r" (__result));			\
+	__tls_get_addr (__result); })
 
 #define TLS_LE(x)					\
 	({ void *__result;				\
@@ -56,5 +56,5 @@
 	     "add %0, %0, tp, %%tprel_add(" #x ")\n\t"	\
 	     "lw %0, %%tprel_lo(" #x ")(%0)\n\t"	\
 	     UNLOAD_GP					\
-	     : "=r"(__result));				\
-	__tls_get_addr(__result); })
+	     : "=r" (__result));			\
+	__tls_get_addr (__result); })

@@ -25,7 +25,7 @@
 
 #define FRAME_SIZE (-((-10 * SZREG) & ALMASK))
 
-ENTRY(_dl_runtime_resolve)
+ENTRY (_dl_runtime_resolve)
   # Save arguments to stack.
   addi sp, sp, -FRAME_SIZE
   REG_S ra, 9*SZREG(sp)
@@ -60,4 +60,4 @@ ENTRY(_dl_runtime_resolve)
 
   # Invoke the callee.
   jr t1
-END(_dl_runtime_resolve)
+END (_dl_runtime_resolve)

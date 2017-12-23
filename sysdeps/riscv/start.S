@@ -42,7 +42,7 @@
    a0 contains the address of a function to be passed to atexit.
    __libc_start_main wants this in a5.  */
 
-ENTRY(ENTRY_POINT)
+ENTRY (ENTRY_POINT)
 	call  .Lload_gp
 	mv    a5, a0  /* rtld_fini */
 	lla   a0, main
@@ -54,7 +54,7 @@ ENTRY(ENTRY_POINT)
 	mv    a6, sp  /* stack_end */
 
 	tail  __libc_start_main@plt
-END(ENTRY_POINT)
+END (ENTRY_POINT)
 
 /* Dynamic links need the global pointer to be initialized prior to calling
    any shared library's initializers, so we use preinit_array to load it.

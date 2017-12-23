@@ -35,7 +35,7 @@ void *__memcpy(void *aa, const void *bb, size_t n)
   int same_alignment = ((uintptr_t)a & msk) == ((uintptr_t)b & msk);
 
   /* Handle small cases, and those without mutual alignment.  */
-  if (__glibc_unlikely(!same_alignment || n < sizeof(long)))
+  if (__glibc_unlikely (!same_alignment || n < sizeof(long)))
     {
 small:
       while (a < end)
@@ -44,16 +44,16 @@ small:
     }
 
   /* Obtain alignment.  */
-  if (__glibc_unlikely(((uintptr_t)a & msk) != 0))
+  if (__glibc_unlikely (((uintptr_t)a & msk) != 0))
     while ((uintptr_t)a & msk)
-      MEMCPY_LOOP_BODY(a, b, char);
+      MEMCPY_LOOP_BODY (a, b, char);
 
   la = (long *)a;
   lb = (const long *)b;
   lend = (long *)((uintptr_t)end & ~msk);
 
   /* Handle large, aligned cases.  */
-  if (__glibc_unlikely(la < lend - 8))
+  if (__glibc_unlikely (la < lend - 8))
     while (la < lend - 8)
       {
 	long b0 = *lb++;
@@ -78,12 +78,12 @@ small:
 
   /* Handle aligned, small case.  */
   while (la < lend)
-    MEMCPY_LOOP_BODY(la, lb, long);
+    MEMCPY_LOOP_BODY (la, lb, long);
 
   /* Handle misaligned remainder.  */
   a = (char *)la;
   b = (const char *)lb;
-  if (__glibc_unlikely(a < end))
+  if (__glibc_unlikely (a < end))
     goto small;
 
   return aa;

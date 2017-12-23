@@ -19,7 +19,7 @@
 #include <sysdep.h>
 #include <sys/asm.h>
 
-ENTRY(memset)
+ENTRY (memset)
   li a6, 15
   mv a4, a0
   bleu a2, a6, .Ltiny
@@ -102,6 +102,6 @@ ENTRY(memset)
   add a2, a2, a5
   bleu a2, a6, .Ltiny
   j .Laligned
-END(memset)
+END (memset)
 
-weak_alias(memset, __GI_memset)
+weak_alias (memset, __GI_memset)

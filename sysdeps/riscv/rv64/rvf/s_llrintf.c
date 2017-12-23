@@ -26,4 +26,4 @@ __llrintf (float x)
   return res;
 }
 
-libm_alias_float(__llrint, llrint)
+libm_alias_float (__llrint, llrint)

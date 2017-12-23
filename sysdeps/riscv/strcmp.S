@@ -23,7 +23,7 @@
 # error
 #endif
 
-ENTRY(strcmp)
+ENTRY (strcmp)
   or    a4, a0, a1
   li    t2, -1
   and   a4, a4, SZREG-1

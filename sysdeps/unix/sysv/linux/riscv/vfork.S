@@ -25,7 +25,7 @@
 #include <asm/signal.h>
 
 	.text
-LEAF(__libc_vfork)
+LEAF (__libc_vfork)
 
 	li	a0, (CLONE_VFORK | CLONE_VM | SIGCHLD)
 	mv	a1, sp
@@ -37,7 +37,7 @@ LEAF(__libc_vfork)
 	ret
 
 1:	j		__syscall_error
-END(__libc_vfork)
+END (__libc_vfork)
 
 weak_alias (__libc_vfork, vfork)
 strong_alias (__libc_vfork, __vfork)
