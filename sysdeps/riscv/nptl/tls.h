@@ -27,7 +27,7 @@
 # include <stdint.h>
 # include <dl-dtv.h>
 
-register void* __thread_self asm("tp");
+register void *__thread_self asm ("tp");
 # define READ_THREAD_POINTER() ({ __thread_self; })
 
 /* Get system call information.  */
