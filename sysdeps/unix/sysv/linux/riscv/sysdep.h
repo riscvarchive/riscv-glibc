@@ -31,19 +31,19 @@
 #define L(label) .L ## label
 
 /* Performs a system call, handling errors by setting errno.  Linux indicates
- * errors by setting a0 to a value between -1 and -4095.  */
+   errors by setting a0 to a value between -1 and -4095.  */
 #undef PSEUDO
 #define PSEUDO(name, syscall_name, args)			\
   .text;							\
   .align 2;							\
   ENTRY (name);							\
-  li a7, SYS_ify(syscall_name);					\
+  li a7, SYS_ify (syscall_name);				\
   scall;							\
   li a7, -4096;							\
   bgtu a0, a7, .Lsyscall_error ## name;
 
 #undef PSEUDO_END
-#define PSEUDO_END(sym) 					\
+#define PSEUDO_END (sym) 					\
   SYSCALL_ERROR_HANDLER(sym)					\
   ret;								\
   END(sym)
@@ -80,8 +80,8 @@
 #undef PSEUDO_NEORRNO
 #define PSEUDO_NOERRNO(name, syscall_name, args)	\
   .align 2;						\
-  ENTRY(name);						\
-  li a7, SYS_ify(syscall_name);				\
+  ENTRY (name);						\
+  li a7, SYS_ify (syscall_name);			\
   scall;
 
 #undef PSEUDO_END_NOERRNO
@@ -94,11 +94,11 @@
 /* Perfroms a system call, returning the error code.  */
 #undef PSEUDO_ERRVAL
 #define PSEUDO_ERRVAL(name, syscall_name, args) 	\
-  PSEUDO_NOERRNO(name, syscall_name, args)		\
+  PSEUDO_NOERRNO (name, syscall_name, args)		\
   neg a0, a0;
 
 #undef PSEUDO_END_ERRVAL
-#define PSEUDO_END_ERRVAL(name)				\
+#define PSEUDO_END_ERRVAL(name)			\
   END (name)
 
 #undef ret_ERRVAL
@@ -128,9 +128,9 @@
    call.  */
 #undef INLINE_SYSCALL
 #define INLINE_SYSCALL(name, nr, args...)				\
-  ({ INTERNAL_SYSCALL_DECL(err);					\
+  ({ INTERNAL_SYSCALL_DECL (err);					\
      long __sys_result = INTERNAL_SYSCALL (name, err, nr, args);	\
-     if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P(__sys_result, ), 0)) \
+     if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (__sys_result, ), 0)) \
        {								\
          __set_errno (INTERNAL_SYSCALL_ERRNO (__sys_result, ));		\
 	 __sys_result = (unsigned long) -1;				\

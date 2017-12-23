@@ -36,14 +36,14 @@
 # error __riscv_xlen must equal 32 or 64
 #endif
 
-#ifndef __riscv_float_abi_soft
+#if !defined __riscv_float_abi_soft
 /* For ABI uniformity, reserve 8 bytes for floats, even if double-precision
    floating-point is not supported in hardware.  */
-# ifdef __riscv_float_abi_single
+# if defined __riscv_float_abi_single
 #  define FREG_L flw
 #  define FREG_S fsw
 #  define SZFREG 4
-# elif defined(__riscv_float_abi_double)
+# elif defined __riscv_float_abi_double
 #  define FREG_L fld
 #  define FREG_S fsd
 #  define SZFREG 8

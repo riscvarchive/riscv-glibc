@@ -34,14 +34,14 @@
        printf("#define SAVED_MASK_OFFSET %d\n", offsetof(struct __jmp_buf_tag, __saved_mask));
    } */
 
-#if defined(__riscv_float_abi_soft)
+#if defined __riscv_float_abi_soft
 # define JMP_BUF_SIZE 188
 # define JMP_BUF_ALIGN 4
 # define SIGJMP_BUF_SIZE 188
 # define SIGJMP_BUF_ALIGN 4
 # define MASK_WAS_SAVED_OFFSET 56
 # define SAVED_MASK_OFFSET 60
-#elif defined(__riscv_float_abi_double)
+#elif defined __riscv_float_abi_double
 # define JMP_BUF_SIZE 288
 # define JMP_BUF_ALIGN 8
 # define SIGJMP_BUF_SIZE 288

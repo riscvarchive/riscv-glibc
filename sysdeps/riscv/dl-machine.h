@@ -68,8 +68,8 @@ elf_machine_dynamic (void)
   return _GLOBAL_OFFSET_TABLE_;
 }
 
-#define STRINGXP(X) __STRING(X)
-#define STRINGXV(X) STRINGV_(X)
+#define STRINGXP(X) __STRING (X)
+#define STRINGXV(X) STRINGV_ (X)
 #define STRINGV_(...) # __VA_ARGS__
 
 /* Return the run-time load address of the shared object.  */
