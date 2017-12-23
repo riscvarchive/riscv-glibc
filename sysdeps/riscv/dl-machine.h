@@ -64,7 +64,7 @@ elf_machine_matches_host (const ElfW(Ehdr) *ehdr)
 static inline ElfW(Addr)
 elf_machine_dynamic (void)
 {
-  extern ElfW(Addr) _GLOBAL_OFFSET_TABLE_ __attribute__((visibility("hidden")));
+  extern ElfW(Addr) _GLOBAL_OFFSET_TABLE_ __attribute__ ((visibility("hidden")));
   return _GLOBAL_OFFSET_TABLE_;
 }
 
@@ -153,7 +153,7 @@ elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
   ElfW(Addr) r_info = reloc->r_info;
   const unsigned long int r_type = ELFW(R_TYPE) (r_info);
   ElfW(Addr) *addr_field = (ElfW(Addr) *) reloc_addr;
-  const ElfW(Sym) *const __attribute__((unused)) refsym = sym;
+  const ElfW(Sym) *const __attribute__ ((unused)) refsym = sym;
   struct link_map *sym_map = RESOLVE_MAP (&sym, version, r_type);
   ElfW(Addr) value = 0;
   if (sym_map != NULL)
@@ -249,7 +249,7 @@ elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
 }
 
 auto inline void
-__attribute__((always_inline))
+__attribute__ ((always_inline))
 elf_machine_rela_relative (ElfW(Addr) l_addr, const ElfW(Rela) *reloc,
 			  void *const reloc_addr)
 {
@@ -257,7 +257,7 @@ elf_machine_rela_relative (ElfW(Addr) l_addr, const ElfW(Rela) *reloc,
 }
 
 auto inline void
-__attribute__((always_inline))
+__attribute__ ((always_inline))
 elf_machine_lazy_rel (struct link_map *map, ElfW(Addr) l_addr,
 		      const ElfW(Rela) *reloc, int skip_ifunc)
 {
@@ -283,14 +283,14 @@ elf_machine_lazy_rel (struct link_map *map, ElfW(Addr) l_addr,
    will jump to the on-demand fixup code __dl_runtime_resolve.  */
 
 auto inline int
-__attribute__((always_inline))
+__attribute__ ((always_inline))
 elf_machine_runtime_setup (struct link_map *l, int lazy, int profile)
 {
 #ifndef RTLD_BOOTSTRAP
   /* If using PLTs, fill in the first two entries of .got.plt.  */
   if (l->l_info[DT_JMPREL])
     {
-      extern void _dl_runtime_resolve (void) __attribute__((visibility("hidden")));
+      extern void _dl_runtime_resolve (void) __attribute__ ((visibility("hidden")));
       ElfW(Addr) *gotplt = (ElfW(Addr) *) D_PTR (l, l_info[DT_PLTGOT]);
       /* If a library is prelinked but we have to relocate anyway,
 	 we have to be able to undo the prelinking of .got.plt.
