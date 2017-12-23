@@ -16,12 +16,15 @@ riscv*)
     case "$flen" in
     64)
     	float_machine=rvd
+	with_fp_cond=1
     	;;
     32)
     	float_machine=rvf
+	with_fp_cond=1
     	;;
     "")
     	float_machine=
+	with_fp_cond=0
     	;;
     *)
     	echo "Unable to determine FLEN" >&2
