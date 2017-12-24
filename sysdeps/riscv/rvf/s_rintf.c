@@ -26,7 +26,7 @@ __rintf (float x)
   int nan;
   float mag;
 
-  nan = isnanf (x);
+  nan = isnan (x);
   mag = fabsf (x);
 
   if (nan)
