@@ -28,6 +28,6 @@
 #define _STACK_GROWS_DOWN	1
 
 /* Default to a non-executable stack.  */
-#define DEFAULT_STACK_PERMS (PF_R|PF_W)
+#define DEFAULT_STACK_PERMS (PF_R | PF_W)
 
 #endif	/* stackinfo.h */

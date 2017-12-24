@@ -40,7 +40,7 @@ __lookup_riscv_flush_icache (void)
 
 #ifdef SHARED
 
-#define INIT_ARCH()
+# define INIT_ARCH()
 libc_ifunc (__riscv_flush_icache, __lookup_riscv_flush_icache ())
 
 #else

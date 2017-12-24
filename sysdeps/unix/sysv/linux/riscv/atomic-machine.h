@@ -36,9 +36,9 @@ typedef uintmax_t uatomic_max_t;
 
 #ifdef __riscv_atomic
 
-#define __HAVE_64B_ATOMICS (__riscv_xlen >= 64)
-#define USE_ATOMIC_COMPILER_BUILTINS 1
-#define ATOMIC_EXCHANGE_USES_CAS 0
+# define __HAVE_64B_ATOMICS (__riscv_xlen >= 64)
+# define USE_ATOMIC_COMPILER_BUILTINS 1
+# define ATOMIC_EXCHANGE_USES_CAS 0
 
 /* Compare and exchange.
    For all "bool" routines, we return FALSE if exchange succesful.  */
@@ -95,7 +95,7 @@ typedef uintmax_t uatomic_max_t;
     __oldval;								\
   })
 
-#  define __arch_compare_and_exchange_val_64_int(mem, newval, oldval, model) \
+# define __arch_compare_and_exchange_val_64_int(mem, newval, oldval, model) \
   ({									\
     typeof (*mem) __oldval = (oldval);					\
     __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
@@ -161,7 +161,7 @@ typedef uintmax_t uatomic_max_t;
 
 /* Miscellaneous. */
 
-#define asm_amo(which, ordering, mem, value) ({ 		\
+# define asm_amo(which, ordering, mem, value) ({ 		\
   __atomic_check_size(mem);					\
   typeof(*mem) __tmp; 						\
   if (sizeof(__tmp) == 4)					\
@@ -176,19 +176,19 @@ typedef uintmax_t uatomic_max_t;
     abort();							\
   __tmp; })
 
-#define atomic_max(mem, value) asm_amo("amomaxu", ".aq", mem, value)
-#define atomic_min(mem, value) asm_amo("amominu", ".aq", mem, value)
+# define atomic_max(mem, value) asm_amo("amomaxu", ".aq", mem, value)
+# define atomic_min(mem, value) asm_amo("amominu", ".aq", mem, value)
 
-#define atomic_bit_test_set(mem, bit)                   \
+# define atomic_bit_test_set(mem, bit)                   \
   ({ typeof(*mem) __mask = (typeof(*mem))1 << (bit);    \
      asm_amo("amoor", ".aq", mem, __mask) & __mask; })
 
-#define catomic_exchange_and_add(mem, value)		\
+# define catomic_exchange_and_add(mem, value)		\
   atomic_exchange_and_add(mem, value)
-#define catomic_max(mem, value) atomic_max(mem, value)
+# define catomic_max(mem, value) atomic_max(mem, value)
 
 #else /* __riscv_atomic */
-#error "ISAs that do not subsume the A extension are not supported"
+# error "ISAs that do not subsume the A extension are not supported"
 #endif /* !__riscv_atomic */
 
 #endif /* bits/atomic.h */

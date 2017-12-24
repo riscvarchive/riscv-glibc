@@ -111,7 +111,7 @@ typedef struct ucontext_t
      * future.  Though this is unlikely, other architectures put uc_sigmask
      * at the end of this structure and explicitly state it can be
      * expanded, so we didn't want to box ourselves in here. */
-    __u8               __unused[1024 / 8 - sizeof(sigset_t)];
+    __u8               __unused[1024 / 8 - sizeof (sigset_t)];
     /* We can't put uc_sigmask at the end of this structure because we need
      * to be able to expand sigcontext in the future.  For example, the
      * vector ISA extension will almost certainly add ISA state.  We want

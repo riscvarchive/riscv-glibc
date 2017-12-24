@@ -33,8 +33,8 @@
 LEAF (__clone)
 
 	/* Sanity check arguments.  */
-	beqz		a0,L(invalid)	/* No NULL function pointers.  */
-	beqz		a1,L(invalid)	/* No NULL stack pointers.  */
+	beqz		a0,L (invalid)	/* No NULL function pointers.  */
+	beqz		a1,L (invalid)	/* No NULL stack pointers.  */
 
 	addi		a1,a1,-16	/* Reserve argument save space.  */
 	REG_S		a0,0(a1)	/* Save function pointer.  */
@@ -50,8 +50,8 @@ LEAF (__clone)
 	li		a7,__NR_clone
 	scall
 
-	bltz		a0,L(error)
-	beqz		a0,L(thread_start)
+	bltz		a0,L (error)
+	beqz		a0,L (thread_start)
 
 	/* Successful return from the parent */
 	ret

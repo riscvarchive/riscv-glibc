@@ -24,16 +24,16 @@
 
 #ifdef __ASSEMBLER__
 
-#include <sys/asm.h>
+# include <sys/asm.h>
 
-#define ENTRY(name) LEAF(name)
+# define ENTRY(name) LEAF(name)
 
-#define L(label) .L ## label
+# define L(label) .L ## label
 
 /* Performs a system call, handling errors by setting errno.  Linux indicates
    errors by setting a0 to a value between -1 and -4095.  */
-#undef PSEUDO
-#define PSEUDO(name, syscall_name, args)			\
+# undef PSEUDO
+# define PSEUDO(name, syscall_name, args)			\
   .text;							\
   .align 2;							\
   ENTRY (name);							\
@@ -42,8 +42,8 @@
   li a7, -4096;							\
   bgtu a0, a7, .Lsyscall_error ## name;
 
-#undef PSEUDO_END
-#define PSEUDO_END(sym) 					\
+# undef PSEUDO_END
+# define PSEUDO_END(sym) 					\
   SYSCALL_ERROR_HANDLER (sym)					\
   ret;								\
   END (sym)
@@ -77,28 +77,28 @@
 # endif
 
 /* Performs a system call, not setting errno.  */
-#undef PSEUDO_NEORRNO
-#define PSEUDO_NOERRNO(name, syscall_name, args)	\
+# undef PSEUDO_NEORRNO
+# define PSEUDO_NOERRNO(name, syscall_name, args)	\
   .align 2;						\
   ENTRY (name);						\
   li a7, SYS_ify (syscall_name);			\
   scall;
 
-#undef PSEUDO_END_NOERRNO
-#define PSEUDO_END_NOERRNO(name)			\
+# undef PSEUDO_END_NOERRNO
+# define PSEUDO_END_NOERRNO(name)			\
   END (name)
 
-#undef ret_NOERRNO
-#define ret_NOERRNO ret
+# undef ret_NOERRNO
+# define ret_NOERRNO ret
 
 /* Perfroms a system call, returning the error code.  */
-#undef PSEUDO_ERRVAL
-#define PSEUDO_ERRVAL(name, syscall_name, args) 	\
+# undef PSEUDO_ERRVAL
+# define PSEUDO_ERRVAL(name, syscall_name, args) 	\
   PSEUDO_NOERRNO (name, syscall_name, args)		\
   neg a0, a0;
 
-#undef PSEUDO_END_ERRVAL
-#define PSEUDO_END_ERRVAL(name)			\
+# undef PSEUDO_END_ERRVAL
+# define PSEUDO_END_ERRVAL(name)			\
   END (name)
 
 #undef ret_ERRVAL
@@ -108,7 +108,7 @@
 
 /* In order to get __set_errno() definition in INLINE_SYSCALL.  */
 #ifndef __ASSEMBLER__
-#include <errno.h>
+# include <errno.h>
 #endif
 
 #include <sysdeps/unix/sysdep.h>
@@ -119,15 +119,15 @@
 #ifndef __ASSEMBLER__
 
 /* List of system calls which are supported as vsyscalls.  */
-#define HAVE_CLOCK_GETRES_VSYSCALL	1
-#define HAVE_CLOCK_GETTIME_VSYSCALL	1
-#define HAVE_GETTIMEOFDAY_VSYSCALL	1
-#define HAVE_GETCPU_VSYSCALL		1
+# define HAVE_CLOCK_GETRES_VSYSCALL	1
+# define HAVE_CLOCK_GETTIME_VSYSCALL	1
+# define HAVE_GETTIMEOFDAY_VSYSCALL	1
+# define HAVE_GETCPU_VSYSCALL		1
 
 /* Define a macro which expands into the inline wrapper code for a system
    call.  */
-#undef INLINE_SYSCALL
-#define INLINE_SYSCALL(name, nr, args...)				\
+# undef INLINE_SYSCALL
+# define INLINE_SYSCALL(name, nr, args...)				\
   ({ INTERNAL_SYSCALL_DECL (err);					\
      long __sys_result = INTERNAL_SYSCALL (name, err, nr, args);	\
      if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (__sys_result, ), 0)) \
@@ -137,19 +137,19 @@
        }								\
      __sys_result; })
 
-#define INTERNAL_SYSCALL_DECL(err) do { } while (0)
+# define INTERNAL_SYSCALL_DECL(err) do { } while (0)
 
-#define INTERNAL_SYSCALL_ERROR_P(val, err)   ((unsigned long) (val) > -4096UL)
+# define INTERNAL_SYSCALL_ERROR_P(val, err)   ((unsigned long) (val) > -4096UL)
 
-#define INTERNAL_SYSCALL_ERRNO(val, err)     (-val)
+# define INTERNAL_SYSCALL_ERRNO(val, err)     (-val)
 
-#define INTERNAL_SYSCALL(name, err, nr, args...) \
+# define INTERNAL_SYSCALL(name, err, nr, args...) \
 	internal_syscall##nr (SYS_ify (name), err, args)
 
-#define INTERNAL_SYSCALL_NCS(number, err, nr, args...) \
+# define INTERNAL_SYSCALL_NCS(number, err, nr, args...) \
 	internal_syscall##nr (number, err, args)
 
-#define internal_syscall0(number, err, dummy...)			\
+# define internal_syscall0(number, err, dummy...)			\
 ({ 									\
 	long _sys_result;						\
 									\
@@ -166,7 +166,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall1(number, err, arg0)				\
+# define internal_syscall1(number, err, arg0)				\
 ({ 									\
 	long _sys_result;						\
 									\
@@ -183,7 +183,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall2(number, err, arg0, arg1)	    		\
+# define internal_syscall2(number, err, arg0, arg1)	    		\
 ({ 									\
 	long _sys_result;						\
 									\
@@ -201,7 +201,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall3(number, err, arg0, arg1, arg2)      		\
+# define internal_syscall3(number, err, arg0, arg1, arg2)      		\
 ({ 									\
 	long _sys_result;						\
 									\
@@ -220,7 +220,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall4(number, err, arg0, arg1, arg2, arg3)	  \
+# define internal_syscall4(number, err, arg0, arg1, arg2, arg3)	  \
 ({ 									\
 	long _sys_result;						\
 									\
@@ -240,7 +240,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall5(number, err, arg0, arg1, arg2, arg3, arg4)    \
+# define internal_syscall5(number, err, arg0, arg1, arg2, arg3, arg4)    \
 ({ 									\
 	long _sys_result;						\
 									\
@@ -261,7 +261,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall6(number, err, arg0, arg1, arg2, arg3, arg4, arg5) \
+# define internal_syscall6(number, err, arg0, arg1, arg2, arg3, arg4, arg5) \
 ({ 									\
 	long _sys_result;						\
 									\
@@ -283,7 +283,7 @@
 	_sys_result;							\
 })
 
-#define internal_syscall7(number, err, arg0, arg1, arg2, arg3, arg4, arg5, arg6) \
+# define internal_syscall7(number, err, arg0, arg1, arg2, arg3, arg4, arg5, arg6) \
 ({ 									\
 	long _sys_result;						\
 									\
@@ -306,11 +306,11 @@
 	_sys_result;							\
 })
 
-#define __SYSCALL_CLOBBERS "memory"
+# define __SYSCALL_CLOBBERS "memory"
 #endif /* ! __ASSEMBLER__ */
 
 /* Pointer mangling is not supported.  */
 #define PTR_MANGLE(var) (void) (var)
 #define PTR_DEMANGLE(var) (void) (var)
 
-#endif /* linux/mips/sysdep.h */
+#endif /* linux/riscv/sysdep.h */
