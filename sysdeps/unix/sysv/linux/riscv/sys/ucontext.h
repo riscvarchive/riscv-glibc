@@ -57,47 +57,47 @@ typedef union __riscv_fp_state fpregset_t;
 
 /* These structures all must match what's in Linux.  Some are copied.  */
 struct __riscv_gp_state {
-  unsigned long pc;
-  unsigned long ra;
-  unsigned long sp;
-  unsigned long gp;
-  unsigned long tp;
-  unsigned long t0;
-  unsigned long t1;
-  unsigned long t2;
-  unsigned long s0;
-  unsigned long s1;
-  unsigned long a0;
-  unsigned long a1;
-  unsigned long a2;
-  unsigned long a3;
-  unsigned long a4;
-  unsigned long a5;
-  unsigned long a6;
-  unsigned long a7;
-  unsigned long s2;
-  unsigned long s3;
-  unsigned long s4;
-  unsigned long s5;
-  unsigned long s6;
-  unsigned long s7;
-  unsigned long s8;
-  unsigned long s9;
-  unsigned long s10;
-  unsigned long s11;
-  unsigned long t3;
-  unsigned long t4;
-  unsigned long t5;
-  unsigned long t6;
+  unsigned long __ctx(pc);
+  unsigned long __ctx(ra);
+  unsigned long __ctx(sp);
+  unsigned long __ctx(gp);
+  unsigned long __ctx(tp);
+  unsigned long __ctx(t0);
+  unsigned long __ctx(t1);
+  unsigned long __ctx(t2);
+  unsigned long __ctx(s0);
+  unsigned long __ctx(s1);
+  unsigned long __ctx(a0);
+  unsigned long __ctx(a1);
+  unsigned long __ctx(a2);
+  unsigned long __ctx(a3);
+  unsigned long __ctx(a4);
+  unsigned long __ctx(a5);
+  unsigned long __ctx(a6);
+  unsigned long __ctx(a7);
+  unsigned long __ctx(s2);
+  unsigned long __ctx(s3);
+  unsigned long __ctx(s4);
+  unsigned long __ctx(s5);
+  unsigned long __ctx(s6);
+  unsigned long __ctx(s7);
+  unsigned long __ctx(s8);
+  unsigned long __ctx(s9);
+  unsigned long __ctx(s10);
+  unsigned long __ctx(s11);
+  unsigned long __ctx(t3);
+  unsigned long __ctx(t4);
+  unsigned long __ctx(t5);
+  unsigned long __ctx(t6);
 };
 
 typedef struct mcontext_t
   {
     union {
-      struct __riscv_gp_state byname;
-      unsigned long byindex[32];
-    } gregs;
-    union  __riscv_fp_state fpregs;
+      struct __riscv_gp_state __ctx(byname);
+      unsigned long __ctx(byindex)[32];
+    } __ctx(gregs);
+    union  __riscv_fp_state __ctx(fpregs);
   } mcontext_t;
 
 /* Userlevel context.  */
