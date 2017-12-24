@@ -3,6 +3,7 @@ riscv*)
     xlen=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_xlen \(.*\)/\1/p'`
     flen=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_flen \(.*\)/\1/p'`
     float_abi=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | sed -n 's/^#define __riscv_float_abi_\([^ ]*\) .*/\1/p'`
+    atomic=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | grep '#define __riscv_atomic' | cut -d' ' -f2
     
     case "$xlen" in
     32 | 64)
@@ -46,6 +47,15 @@ riscv*)
     	echo "Unable to determine floating-point ABI" >&2
     	exit 1
     	;;
+    esac
+
+    case "$atomic" in
+    __riscv_atomic)
+        ;;
+    *)
+        echo "glibc requires the A extension" >&2
+	exit 1
+	;;
     esac
     
     base_machine=riscv
