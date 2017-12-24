@@ -23,7 +23,7 @@
 double
 __rint (double x)
 {
-  int nan;
+  bool nan;
   double mag;
 
   nan = isnan (x);

@@ -24,7 +24,7 @@ float
 __floorf (float x)
 {
   int flags = riscv_getflags ();
-  int nan = isnan (x);
+  bool nan = isnan (x);
   float mag = fabsf (x);
 
   if (nan)

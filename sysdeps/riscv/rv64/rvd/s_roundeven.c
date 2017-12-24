@@ -25,7 +25,7 @@ double
 __roundeven (double x)
 {
   int flags = riscv_getflags ();
-  int nan = isnan (x);
+  bool nan = isnan (x);
   double mag = fabs (x);
 
   if (nan)

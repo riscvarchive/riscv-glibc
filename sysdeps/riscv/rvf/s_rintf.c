@@ -23,7 +23,7 @@
 float
 __rintf (float x)
 {
-  int nan;
+  bool nan;
   float mag;
 
   nan = isnan (x);
