@@ -101,8 +101,8 @@
 # define PSEUDO_END_ERRVAL(name)			\
   END (name)
 
-#undef ret_ERRVAL
-#define ret_ERRVAL ret
+# undef ret_ERRVAL
+# define ret_ERRVAL ret
 
 #endif /* __ASSEMBLER__ */
 
