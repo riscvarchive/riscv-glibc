@@ -25,7 +25,6 @@
 
 #include <bits/types/sigset_t.h>
 #include <bits/types/stack_t.h>
-#include <asm/ptrace.h>
 
 #ifdef __USE_MISC
 # define __ctx(fld) fld
@@ -34,16 +33,17 @@
 #endif
 
 #ifdef __USE_MISC
+# include <sys/procfs.h>
 
-#define NGREG	32
+# define NGREG	32
 
-#define REG_PC 0
-#define REG_RA 1
-#define REG_SP 2
-#define REG_TP 4
-#define REG_S0 8
-#define REG_A0 10
-#define REG_NARGS 8
+# define REG_PC 0
+# define REG_RA 1
+# define REG_SP 2
+# define REG_TP 4
+# define REG_S0 8
+# define REG_A0 10
+# define REG_NARGS 8
 
 typedef unsigned long greg_t;
 
@@ -52,7 +52,37 @@ typedef greg_t gregset_t[NGREG];
 
 /* Container for floating-point state.  */
 typedef union __riscv_fp_state fpregset_t;
+#endif
 
+struct __riscv_f_ext_state
+  {
+    unsigned int __ctx(f)[32];
+    unsigned int __ctx(fcsr);
+  };
+
+struct __riscv_d_ext_state
+  {
+    unsigned long long __ctx(f[32]);
+    unsigned int __ctx(fcsr);
+  };
+
+struct __riscv_q_ext_state
+  {
+    unsigned long long __ctx(f[64]) __attribute__ ((aligned(16)));
+    unsigned int __ctx(fcsr);
+    /*
+     * Reserved for expansion of sigcontext structure.  Currently zeroed
+     * upon signal, and must be zero upon sigreturn.
+     */
+    unsigned int __ctx(reserved)[3];
+  };
+
+union __riscv_fp_state
+  {
+    struct __riscv_f_ext_state __ctx(f);
+    struct __riscv_d_ext_state __ctx(d);
+    struct __riscv_q_ext_state __ctx(q);
+  };
 #endif
 
 /* These structures all must match what's in Linux.  Some are copied.  */
@@ -93,10 +123,11 @@ struct __riscv_gp_state {
 
 typedef struct mcontext_t
   {
-    union {
-      struct __riscv_gp_state __ctx(byname);
-      unsigned long __ctx(byindex)[32];
-    } __ctx(gregs);
+    union
+      {
+        struct __riscv_gp_state __ctx(byname);
+        unsigned long __ctx(byindex)[32];
+      } __ctx(gregs);
     union  __riscv_fp_state __ctx(fpregs);
   } mcontext_t;
 
@@ -122,5 +153,7 @@ typedef struct ucontext_t
      * prioritizing this. */
     mcontext_t uc_mcontext;
   } ucontext_t;
+
+#undef __ctx
 
 #endif /* sys/ucontext.h */
