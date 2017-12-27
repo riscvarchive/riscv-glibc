@@ -82,45 +82,11 @@ union __riscv_fp_state
     struct __riscv_q_ext_state __ctx(q);
   };
 
-/* These structures all must match what's in Linux.  Some are copied.  */
-struct __riscv_gp_state {
-  unsigned long __ctx(pc);
-  unsigned long __ctx(ra);
-  unsigned long __ctx(sp);
-  unsigned long __ctx(gp);
-  unsigned long __ctx(tp);
-  unsigned long __ctx(t0);
-  unsigned long __ctx(t1);
-  unsigned long __ctx(t2);
-  unsigned long __ctx(s0);
-  unsigned long __ctx(s1);
-  unsigned long __ctx(a0);
-  unsigned long __ctx(a1);
-  unsigned long __ctx(a2);
-  unsigned long __ctx(a3);
-  unsigned long __ctx(a4);
-  unsigned long __ctx(a5);
-  unsigned long __ctx(a6);
-  unsigned long __ctx(a7);
-  unsigned long __ctx(s2);
-  unsigned long __ctx(s3);
-  unsigned long __ctx(s4);
-  unsigned long __ctx(s5);
-  unsigned long __ctx(s6);
-  unsigned long __ctx(s7);
-  unsigned long __ctx(s8);
-  unsigned long __ctx(s9);
-  unsigned long __ctx(s10);
-  unsigned long __ctx(s11);
-  unsigned long __ctx(t3);
-  unsigned long __ctx(t4);
-  unsigned long __ctx(t5);
-  unsigned long __ctx(t6);
-};
+typedef unsigned long __riscv_gp_state[32];
 
 typedef struct mcontext_t
   {
-    gregset_t __ctx(gregs);
+    __riscv_gp_state __ctx(gregs);
     union  __riscv_fp_state __ctx(fpregs);
   } mcontext_t;
 
