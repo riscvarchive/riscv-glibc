@@ -90,6 +90,9 @@ struct elf_prpsinfo
     char pr_psargs[ELF_PRARGSZ];	/* Initial part of arg list.  */
   };
 
+/* The rest of this file provides the types for emulation of the
+   Solaris <proc_service.h> interfaces that should be implemented by
+   users of libthread_db.  */
 
 /* Addresses.  */
 typedef void *psaddr_t;
@@ -102,7 +105,7 @@ typedef elf_fpregset_t prfpregset_t;
    therefore habe only ine PID type.  */
 typedef __pid_t lwpid_t;
 
-
+/* Process status and info.  In the end we do provide typedefs for them.  */
 typedef struct elf_prstatus prstatus_t;
 typedef struct elf_prpsinfo prpsinfo_t;
 
