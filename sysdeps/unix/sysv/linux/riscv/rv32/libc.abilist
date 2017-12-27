@@ -647,6 +647,7 @@ GLIBC_2.27 closedir F
 GLIBC_2.27 closelog F
 GLIBC_2.27 confstr F
 GLIBC_2.27 connect F
+GLIBC_2.27 copy_file_range F
 GLIBC_2.27 copysign F
 GLIBC_2.27 copysignf F
 GLIBC_2.27 copysignl F
