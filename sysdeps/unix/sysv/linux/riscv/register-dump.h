@@ -50,7 +50,7 @@ register_dump (int fd, ucontext_t *ctx)
     {
       strcat (str, names[i]);
       strcat (str, " ");
-      hexvalue (ctx->uc_mcontext.gregs.byindex[i], regvalue, __WORDSIZE/4);
+      hexvalue (ctx->uc_mcontext.gregs[i], regvalue, __WORDSIZE/4);
       strcat (str, regvalue);
 
       if ((i + 1) % REGDUMP_PER_LINE == 0)

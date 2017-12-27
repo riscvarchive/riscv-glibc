@@ -120,11 +120,7 @@ struct __riscv_gp_state {
 
 typedef struct mcontext_t
   {
-    union
-      {
-        struct __riscv_gp_state __ctx(byname);
-        unsigned long __ctx(byindex)[32];
-      } __ctx(gregs);
+    gregset_t __ctx(gregs);
     union  __riscv_fp_state __ctx(fpregs);
   } mcontext_t;
 
