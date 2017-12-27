@@ -127,7 +127,7 @@ typedef struct mcontext_t
 /* Userlevel context.  */
 typedef struct ucontext_t
   {
-    unsigned long      uc_flags;
+    unsigned long      __ctx(uc_flags);
     struct ucontext_t *uc_link;
     stack_t            uc_stack;
     sigset_t           uc_sigmask;
