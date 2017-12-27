@@ -33,8 +33,6 @@
 #endif
 
 #ifdef __USE_MISC
-# include <sys/procfs.h>
-
 # define NGREG	32
 
 # define REG_PC 0
@@ -68,7 +66,7 @@ struct __riscv_d_ext_state
 
 struct __riscv_q_ext_state
   {
-    unsigned long long __ctx(f[64]) __attribute__ ((aligned(16)));
+    unsigned long long __ctx(f[64]) __attribute__ ((__aligned__ (16)));
     unsigned int __ctx(fcsr);
     /*
      * Reserved for expansion of sigcontext structure.  Currently zeroed
@@ -83,7 +81,6 @@ union __riscv_fp_state
     struct __riscv_d_ext_state __ctx(d);
     struct __riscv_q_ext_state __ctx(q);
   };
-#endif
 
 /* These structures all must match what's in Linux.  Some are copied.  */
 struct __riscv_gp_state {
@@ -142,7 +139,7 @@ typedef struct ucontext_t
      * future.  Though this is unlikely, other architectures put uc_sigmask
      * at the end of this structure and explicitly state it can be
      * expanded, so we didn't want to box ourselves in here. */
-    __u8               __unused[1024 / 8 - sizeof (sigset_t)];
+    char               __unused[1024 / 8 - sizeof (sigset_t)];
     /* We can't put uc_sigmask at the end of this structure because we need
      * to be able to expand sigcontext in the future.  For example, the
      * vector ISA extension will almost certainly add ISA state.  We want
