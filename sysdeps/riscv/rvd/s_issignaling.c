@@ -22,6 +22,6 @@
 int
 __issignaling (double x)
 {
-  return _FCLASS (x) & _FCLASS_SNAN;
+  return (_FCLASS (x) & _FCLASS_SNAN) != 0;
 }
 libm_hidden_def (__issignaling)
