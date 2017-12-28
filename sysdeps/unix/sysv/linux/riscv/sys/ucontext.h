@@ -32,6 +32,8 @@
 # define __ctx(fld) __ ## fld
 #endif
 
+typedef unsigned long __riscv_mc_gp_state[32];
+
 #ifdef __USE_MISC
 # define NGREG	32
 
@@ -46,25 +48,25 @@
 typedef unsigned long greg_t;
 
 /* Container for all general registers.  */
-typedef greg_t gregset_t[NGREG];
+typedef __riscv_mc_gp_state gregset_t;
 
 /* Container for floating-point state.  */
-typedef union __riscv_fp_state fpregset_t;
+typedef union __riscv_mc_fp_state fpregset_t;
 #endif
 
-struct __riscv_f_ext_state
+struct __riscv_mc_f_ext_state
   {
     unsigned int __ctx(f)[32];
     unsigned int __ctx(fcsr);
   };
 
-struct __riscv_d_ext_state
+struct __riscv_mc_d_ext_state
   {
     unsigned long long __ctx(f[32]);
     unsigned int __ctx(fcsr);
   };
 
-struct __riscv_q_ext_state
+struct __riscv_mc_q_ext_state
   {
     unsigned long long __ctx(f[64]) __attribute__ ((__aligned__ (16)));
     unsigned int __ctx(fcsr);
@@ -75,19 +77,17 @@ struct __riscv_q_ext_state
     unsigned int __ctx(reserved)[3];
   };
 
-union __riscv_fp_state
+union __riscv_mc_fp_state
   {
-    struct __riscv_f_ext_state __ctx(f);
-    struct __riscv_d_ext_state __ctx(d);
-    struct __riscv_q_ext_state __ctx(q);
+    struct __riscv_mc_f_ext_state __ctx(f);
+    struct __riscv_mc_d_ext_state __ctx(d);
+    struct __riscv_mc_q_ext_state __ctx(q);
   };
-
-typedef unsigned long __riscv_gp_state[32];
 
 typedef struct mcontext_t
   {
-    __riscv_gp_state __ctx(gregs);
-    union  __riscv_fp_state __ctx(fpregs);
+    __riscv_mc_gp_state __ctx(gregs);
+    union  __riscv_mc_fp_state __ctx(fpregs);
   } mcontext_t;
 
 /* Userlevel context.  */
