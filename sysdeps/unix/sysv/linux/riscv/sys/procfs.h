@@ -35,7 +35,7 @@
 
 typedef unsigned long elf_greg_t;
 typedef unsigned long  elf_gregset_t[32];
-typedef union __riscv_fp_state elf_fpregset_t;
+typedef union __riscv_mc_fp_state elf_fpregset_t;
 
 __BEGIN_DECLS
 
