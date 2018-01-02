@@ -1,5 +1,5 @@
 /* Assembly macros for RISC-V.
-   Copyright (C) 2011-2017
+   Copyright (C) 2011-2018
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
