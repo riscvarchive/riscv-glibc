@@ -52,7 +52,7 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
   ucp->uc_mcontext.gregs[REG_A0 + 3] = a3;
   ucp->uc_mcontext.gregs[REG_A0 + 4] = a4;
 
-  if (__builtin_expect (argc > 5, 0))
+  if (__glibc_unlikely (argc > 5))
     {
       va_list vl;
       va_start (vl, a4);

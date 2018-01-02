@@ -106,9 +106,8 @@
 
 # ifndef __ASSEMBLER__
 #  define SINGLE_THREAD_P						\
-	__builtin_expect (THREAD_GETMEM (THREAD_SELF,			\
-					 header.multiple_threads)	\
-			  == 0, 1)
+	__glibc_likely (THREAD_GETMEM (THREAD_SELF,			\
+				       header.multiple_threads)	== 0)
 # else
 #  include "tcb-offsets.h"
 #  define SINGLE_THREAD_P(reg)						\
@@ -124,6 +123,6 @@
 
 #ifndef __ASSEMBLER__
 # define RTLD_SINGLE_THREAD_P \
-  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
-				   header.multiple_threads) == 0, 1)
+  __glibc_likely (THREAD_GETMEM (THREAD_SELF, \
+				 header.multiple_threads) == 0)
 #endif
