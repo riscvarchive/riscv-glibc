@@ -22,11 +22,11 @@
 typedef struct __jmp_buf_internal_tag
   {
     /* Program counter.  */
-    long __pc;
+    long int __pc;
     /* Callee-saved registers. */
-    long __regs[12];
+    long int __regs[12];
     /* Stack pointer.  */
-    long __sp;
+    long int __sp;
 
     /* Callee-saved floating point registers.  */
 #ifdef __riscv_float_abi_single

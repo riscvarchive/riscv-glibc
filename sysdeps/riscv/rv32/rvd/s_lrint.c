@@ -19,10 +19,10 @@
 #include <math.h>
 #include <libm-alias-double.h>
 
-long
+long int
 __lrint (double x)
 {
-  long res;
+  long int res;
   asm ("fcvt.w.d %0, %1" : "=r" (res) : "f" (x));
   return res;
 }

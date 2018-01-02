@@ -18,10 +18,10 @@
 
 #include <libm-alias-double.h>
 
-long long
+long long int
 __llround (double x)
 {
-  long long res;
+  long long int res;
   asm ("fcvt.l.d %0, %1, rmm" : "=r" (res) : "f" (x));
   return res;
 }
