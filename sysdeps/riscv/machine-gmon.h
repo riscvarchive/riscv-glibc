@@ -22,13 +22,16 @@
 
 #include <sysdep.h>
 
-static void mcount_internal (u_long frompc, u_long selfpc);
+static void mcount_internal (unsigned long int frompc,
+			     unsigned long int selfpc);
 
 #define _MCOUNT_DECL(frompc, selfpc) \
-static inline void mcount_internal (u_long frompc, u_long selfpc)
+static inline void mcount_internal (unsigned long int frompc, \
+unsigned long int selfpc)
 
 #define MCOUNT								\
 void _mcount (void *frompc)						\
 {									\
-  mcount_internal ((u_long) frompc, (u_long) RETURN_ADDRESS (0));	\
+  mcount_internal ((unsigned long int) frompc,				\
+		   (unsigned long int) RETURN_ADDRESS (0));		\
 }
