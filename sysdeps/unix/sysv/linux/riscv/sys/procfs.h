@@ -33,8 +33,8 @@
 #define ELF_NGREG	NGREG
 #define ELF_NFPREG	NFPREG
 
-typedef unsigned long elf_greg_t;
-typedef unsigned long  elf_gregset_t[32];
+typedef unsigned long int elf_greg_t;
+typedef unsigned long int elf_gregset_t[32];
 typedef union __riscv_mc_fp_state elf_fpregset_t;
 
 __BEGIN_DECLS
@@ -82,8 +82,8 @@ struct elf_prpsinfo
     char pr_zomb;			/* Zombie.  */
     char pr_nice;			/* Nice val.  */
     unsigned long int pr_flag;		/* Flags.  */
-    long pr_uid;
-    long pr_gid;
+    long int pr_uid;
+    long int pr_gid;
     int pr_pid, pr_ppid, pr_pgrp, pr_sid;
     /* Lots missing */
     char pr_fname[16];			/* Filename of executable.  */

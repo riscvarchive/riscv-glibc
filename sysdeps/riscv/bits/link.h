@@ -22,17 +22,17 @@
 
 typedef struct La_riscv_regs
 {
-  unsigned long lr_reg[8]; /* a0 - a7 */
+  unsigned long int lr_reg[8]; /* a0 - a7 */
   double lr_fpreg[8]; /* fa0 - fa7 */
-  unsigned long lr_ra;
-  unsigned long lr_sp;
+  unsigned long int lr_ra;
+  unsigned long int lr_sp;
 } La_riscv_regs;
 
 /* Return values for calls from PLT on RISC-V.  */
 typedef struct La_riscv_retval
 {
-  unsigned long lrv_a0;
-  unsigned long lrv_a1;
+  unsigned long int lrv_a0;
+  unsigned long int lrv_a1;
   double lrv_fa0;
   double lrv_fa1;
 } La_riscv_retval;

@@ -19,10 +19,10 @@
 #include <math.h>
 #include <libm-alias-float.h>
 
-long long
+long long int
 __llrintf (float x)
 {
-  long res;
+  long int res;
   asm ("fcvt.w.s %0, %1" : "=r" (res) : "f" (x));
   return res;
 }

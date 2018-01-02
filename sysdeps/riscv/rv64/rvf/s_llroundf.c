@@ -18,10 +18,10 @@
 
 #include <libm-alias-float.h>
 
-long long
+long long int
 __llroundf (float x)
 {
-  long long res;
+  long long int res;
   asm ("fcvt.l.s %0, %1, rmm" : "=r" (res) : "f" (x));
   return res;
 }

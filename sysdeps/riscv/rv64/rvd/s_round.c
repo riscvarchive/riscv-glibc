@@ -32,7 +32,7 @@ __round (double x)
 
   if (mag < (1ULL << __DBL_MANT_DIG__))
     {
-      long i;
+      long int i;
       double new_x;
 
       asm volatile ("fcvt.l.d %0, %1, rmm" : "=r" (i) : "f" (x));

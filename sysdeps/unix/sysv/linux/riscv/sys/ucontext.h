@@ -32,7 +32,7 @@
 # define __ctx(fld) __ ## fld
 #endif
 
-typedef unsigned long __riscv_mc_gp_state[32];
+typedef unsigned long int __riscv_mc_gp_state[32];
 
 #ifdef __USE_MISC
 # define NGREG	32
@@ -45,7 +45,7 @@ typedef unsigned long __riscv_mc_gp_state[32];
 # define REG_A0 10
 # define REG_NARGS 8
 
-typedef unsigned long greg_t;
+typedef unsigned long int greg_t;
 
 /* Container for all general registers.  */
 typedef __riscv_mc_gp_state gregset_t;
@@ -62,13 +62,13 @@ struct __riscv_mc_f_ext_state
 
 struct __riscv_mc_d_ext_state
   {
-    unsigned long long __ctx(f[32]);
+    unsigned long long int __ctx(f[32]);
     unsigned int __ctx(fcsr);
   };
 
 struct __riscv_mc_q_ext_state
   {
-    unsigned long long __ctx(f[64]) __attribute__ ((__aligned__ (16)));
+    unsigned long long int __ctx(f[64]) __attribute__ ((__aligned__ (16)));
     unsigned int __ctx(fcsr);
     /*
      * Reserved for expansion of sigcontext structure.  Currently zeroed
@@ -93,7 +93,7 @@ typedef struct mcontext_t
 /* Userlevel context.  */
 typedef struct ucontext_t
   {
-    unsigned long      __ctx(uc_flags);
+    unsigned long int  __ctx(uc_flags);
     struct ucontext_t *uc_link;
     stack_t            uc_stack;
     sigset_t           uc_sigmask;

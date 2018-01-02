@@ -18,11 +18,11 @@
 
 #include <sysdep.h>
 
-long
-syscall (long syscall_number, long arg1, long arg2, long arg3, long arg4,
-	 long arg5, long arg6, long arg7)
+long int
+syscall (long int syscall_number, long int arg1, long int arg2, long int arg3,
+	 long int arg4, long int arg5, long int arg6, long int arg7)
 {
-  long ret;
+  long int ret;
   INTERNAL_SYSCALL_DECL (err);
 
   ret = INTERNAL_SYSCALL_NCS (syscall_number, err, 7, arg1, arg2, arg3, arg4,
@@ -30,7 +30,7 @@ syscall (long syscall_number, long arg1, long arg2, long arg3, long arg4,
 
   if (INTERNAL_SYSCALL_ERROR_P (ret, err))
     {
-      extern long __syscall_error (long neg_errno);
+      extern long int __syscall_error (long int neg_errno);
       return __syscall_error (ret);
     }
 
