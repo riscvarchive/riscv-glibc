@@ -17,7 +17,6 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <libm-alias-float.h>
-#include <libm-alias-float.h>
 
 long long
 __llroundf (float x)
