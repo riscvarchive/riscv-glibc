@@ -19,6 +19,7 @@
 #include <math.h>
 #include <math_private.h>
 #include <libm-alias-float.h>
+#include <stdint.h>
 
 float
 __roundf (float x)
@@ -32,7 +33,7 @@ __roundf (float x)
 
   if (mag < (1 << __FLT_MANT_DIG__))
     {
-      int i;
+      int32_t i;
       float new_x;
 
       asm volatile ("fcvt.w.s %0, %1, rmm" : "=r" (i) : "f" (x));

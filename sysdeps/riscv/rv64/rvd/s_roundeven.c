@@ -16,10 +16,10 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-
 #include <math.h>
 #include <math_private.h>
 #include <libm-alias-double.h>
+#include <stdint.h>
 
 double
 __roundeven (double x)
@@ -33,7 +33,7 @@ __roundeven (double x)
 
   if (mag < (1ULL << __DBL_MANT_DIG__))
     {
-      long i;
+      int64_t i;
       double new_x;
 
       asm volatile ("fcvt.l.d %0, %1, rne" : "=r" (i) : "f" (x));
