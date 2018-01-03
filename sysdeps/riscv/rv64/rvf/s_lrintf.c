@@ -18,11 +18,12 @@
 
 #include <math.h>
 #include <libm-alias-float.h>
+#include <stdint.h>
 
 long int
 __lrintf (float x)
 {
-  long int res;
+  int64_t res;
   asm ("fcvt.l.s %0, %1" : "=r" (res) : "f" (x));
   return res;
 }

@@ -19,6 +19,7 @@
 #include <math.h>
 #include <math_private.h>
 #include <libm-alias-double.h>
+#include <stdint.h>
 
 double
 __trunc (double x)
@@ -32,7 +33,7 @@ __trunc (double x)
 
   if (mag < (1ULL << __DBL_MANT_DIG__))
     {
-      long i;
+      int64_t i;
       double new_x;
 
       asm volatile ("fcvt.l.d %0, %1, rtz" : "=r" (i) : "f" (x));

@@ -17,11 +17,12 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <libm-alias-double.h>
+#include <stdint.h>
 
 long int
 __lround (double x)
 {
-  long int res;
+  int64_t res;
   asm ("fcvt.l.d %0, %1, rmm" : "=r" (res) : "f" (x));
   return res;
 }

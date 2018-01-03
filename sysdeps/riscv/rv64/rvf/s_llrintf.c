@@ -17,11 +17,12 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <libm-alias-float.h>
+#include <stdint.h>
 
 long long int
 __llrintf (float x)
 {
-  long long int res;
+  int64_t res;
   asm ("fcvt.l.s %0, %1" : "=r" (res) : "f" (x));
   return res;
 }

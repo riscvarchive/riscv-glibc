@@ -19,6 +19,7 @@
 #include <math.h>
 #include <math_private.h>
 #include <libm-alias-float.h>
+#include <stdint.h>
 
 float
 __nearbyintf (float x)
@@ -32,7 +33,7 @@ __nearbyintf (float x)
 
   if (mag < (1 << __FLT_MANT_DIG__))
     {
-      int i;
+      int32_t i;
       float new_x;
 
       asm volatile ("fcvt.w.s %0, %1" : "=r" (i) : "f" (x));
