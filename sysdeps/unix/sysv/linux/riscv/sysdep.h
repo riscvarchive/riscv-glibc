@@ -155,8 +155,8 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0");				\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0");				\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "=r" (__a0)							\
@@ -172,8 +172,8 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -189,9 +189,9 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
-	register long int __a1 asm("a1") = (long int) (arg1);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
+	register long int __a1 asm ("a1") = (long int) (arg1);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -207,10 +207,10 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
-	register long int __a1 asm("a1") = (long int) (arg1);		\
-	register long int __a2 asm("a2") = (long int) (arg2);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
+	register long int __a1 asm ("a1") = (long int) (arg1);		\
+	register long int __a2 asm ("a2") = (long int) (arg2);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -226,11 +226,11 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
-	register long int __a1 asm("a1") = (long int) (arg1);		\
-	register long int __a2 asm("a2") = (long int) (arg2);		\
-	register long int __a3 asm("a3") = (long int) (arg3);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
+	register long int __a1 asm ("a1") = (long int) (arg1);		\
+	register long int __a2 asm ("a2") = (long int) (arg2);		\
+	register long int __a3 asm ("a3") = (long int) (arg3);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -246,12 +246,12 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
-	register long int __a1 asm("a1") = (long int) (arg1);		\
-	register long int __a2 asm("a2") = (long int) (arg2);		\
-	register long int __a3 asm("a3") = (long int) (arg3);		\
-	register long int __a4 asm("a4") = (long int) (arg4);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
+	register long int __a1 asm ("a1") = (long int) (arg1);		\
+	register long int __a2 asm ("a2") = (long int) (arg2);		\
+	register long int __a3 asm ("a3") = (long int) (arg3);		\
+	register long int __a4 asm ("a4") = (long int) (arg4);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -267,13 +267,13 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
-	register long int __a1 asm("a1") = (long int) (arg1);		\
-	register long int __a2 asm("a2") = (long int) (arg2);		\
-	register long int __a3 asm("a3") = (long int) (arg3);		\
-	register long int __a4 asm("a4") = (long int) (arg4);		\
-	register long int __a5 asm("a5") = (long int) (arg5);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
+	register long int __a1 asm ("a1") = (long int) (arg1);		\
+	register long int __a2 asm ("a2") = (long int) (arg2);		\
+	register long int __a3 asm ("a3") = (long int) (arg3);		\
+	register long int __a4 asm ("a4") = (long int) (arg4);		\
+	register long int __a5 asm ("a5") = (long int) (arg5);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -289,14 +289,14 @@
 	long int _sys_result;						\
 									\
 	{								\
-	register long int __a7 asm("a7") = number;			\
-	register long int __a0 asm("a0") = (long int) (arg0);		\
-	register long int __a1 asm("a1") = (long int) (arg1);		\
-	register long int __a2 asm("a2") = (long int) (arg2);		\
-	register long int __a3 asm("a3") = (long int) (arg3);		\
-	register long int __a4 asm("a4") = (long int) (arg4);		\
-	register long int __a5 asm("a5") = (long int) (arg5);		\
-	register long int __a6 asm("a6") = (long int) (arg6);		\
+	register long int __a7 asm ("a7") = number;			\
+	register long int __a0 asm ("a0") = (long int) (arg0);		\
+	register long int __a1 asm ("a1") = (long int) (arg1);		\
+	register long int __a2 asm ("a2") = (long int) (arg2);		\
+	register long int __a3 asm ("a3") = (long int) (arg3);		\
+	register long int __a4 asm ("a4") = (long int) (arg4);		\
+	register long int __a5 asm ("a5") = (long int) (arg5);		\
+	register long int __a6 asm ("a6") = (long int) (arg6);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
