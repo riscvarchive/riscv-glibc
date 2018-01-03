@@ -29,23 +29,23 @@ _dl_var_init (void *array[])
       DL_PAGESIZE = 0
     };
 
-  GLRO(dl_pagesize) = *((size_t *) array[DL_PAGESIZE]);
+  GLRO (dl_pagesize) = *((size_t *) array[DL_PAGESIZE]);
 }
 
 #else
 
 static void *variables[] =
 {
-  &GLRO(dl_pagesize)
+  &GLRO (dl_pagesize)
 };
 
 static void
 _dl_unprotect_relro (struct link_map *l)
 {
-  ElfW(Addr) start = ((l->l_addr + l->l_relro_addr)
-		      & ~(GLRO(dl_pagesize) - 1));
-  ElfW(Addr) end = ((l->l_addr + l->l_relro_addr + l->l_relro_size)
-		    & ~(GLRO(dl_pagesize) - 1));
+  ElfW (Addr) start = ((l->l_addr + l->l_relro_addr)
+		       & ~(GLRO (dl_pagesize) - 1));
+  ElfW (Addr) end = ((l->l_addr + l->l_relro_addr + l->l_relro_size)
+		     & ~(GLRO (dl_pagesize) - 1));
 
   if (start != end)
     __mprotect ((void *) start, end - start, PROT_READ | PROT_WRITE);
@@ -56,7 +56,7 @@ _dl_static_init (struct link_map *l)
 {
   struct link_map *rtld_map = l;
   struct r_scope_elem **scope;
-  const ElfW(Sym) *ref = NULL;
+  const ElfW (Sym) *ref = NULL;
   lookup_t loadbase;
   void (*f) (void *[]);
   size_t i;

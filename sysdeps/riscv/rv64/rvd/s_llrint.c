@@ -26,4 +26,4 @@ __llrint (double x)
   return res;
 }
 
-libm_alias_double(__llrint, llrint)
+libm_alias_double (__llrint, llrint)
