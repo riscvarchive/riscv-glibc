@@ -1,5 +1,5 @@
 /* RISC-V instruction cache flushing interface
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2017-2018 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -24,7 +24,8 @@
 
 __BEGIN_DECLS
 
-extern int __riscv_flush_icache (void *start, void *end, unsigned long flags);
+extern int __riscv_flush_icache (void *start, void *end,
+				 unsigned long int flags);
 
 __END_DECLS
 

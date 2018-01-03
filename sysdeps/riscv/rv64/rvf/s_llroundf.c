@@ -1,5 +1,5 @@
 /* Round float value to long long int.  RISC-V version.
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2017-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -17,12 +17,11 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <libm-alias-float.h>
-#include <libm-alias-float.h>
 
-long long
+long long int
 __llroundf (float x)
 {
-  long long res;
+  long long int res;
   asm ("fcvt.l.s %0, %1, rmm" : "=r" (res) : "f" (x));
   return res;
 }

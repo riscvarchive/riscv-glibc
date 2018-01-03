@@ -1,5 +1,5 @@
 /* Private floating point rounding and exceptions handling.  RISC-V version.
-   Copyright (C) 2014-2017 Free Software Foundation, Inc.
+   Copyright (C) 2014-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -93,7 +93,7 @@ libc_fetestexcept_riscv (int ex)
 static __always_inline void
 libc_fesetenv_riscv (const fenv_t *envp)
 {
-  long env = (long) envp - (long) FE_DFL_ENV;
+  long int env = (long int) envp - (long int) FE_DFL_ENV;
   if (env != 0)
     env = *envp;
 

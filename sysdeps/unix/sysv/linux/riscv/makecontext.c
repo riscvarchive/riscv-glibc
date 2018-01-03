@@ -1,5 +1,5 @@
 /* Create new context.  RISC-V version.
-   Copyright (C) 2001-2017 Free Software Foundation, Inc.
+   Copyright (C) 2001-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -24,15 +24,16 @@
 
 void
 __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
-	       long a0, long a1, long a2, long a3, long a4, ...)
+	       long int a0, long int a1, long int a2, long int a3, long int a4,
+	       ...)
 {
   extern void __start_context (void) attribute_hidden;
-  long i, sp;
+  long int i, sp;
 
   _Static_assert (REG_NARGS == 8, "__makecontext assumes 8 argument registers");
 
   /* Set up the stack. */
-  sp = ((long)ucp->uc_stack.ss_sp + ucp->uc_stack.ss_size) & ALMASK;
+  sp = ((long int)ucp->uc_stack.ss_sp + ucp->uc_stack.ss_size) & ALMASK;
 
   /* Set up the register context.
      ra = s0 = 0, terminating the stack for backtracing purposes.
@@ -40,10 +41,10 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
      s2 = the subsequent context to run.  */
   ucp->uc_mcontext.gregs[REG_RA] = 0;
   ucp->uc_mcontext.gregs[REG_S0 + 0] = 0;
-  ucp->uc_mcontext.gregs[REG_S0 + 1] = (long)func;
-  ucp->uc_mcontext.gregs[REG_S0 + 2] = (long)ucp->uc_link;
+  ucp->uc_mcontext.gregs[REG_S0 + 1] = (long int)func;
+  ucp->uc_mcontext.gregs[REG_S0 + 2] = (long int)ucp->uc_link;
   ucp->uc_mcontext.gregs[REG_SP] = sp;
-  ucp->uc_mcontext.gregs[REG_PC] = (long)&__start_context;
+  ucp->uc_mcontext.gregs[REG_PC] = (long int)&__start_context;
 
   /* Put args in a0-a7, then put any remaining args on the stack. */
   ucp->uc_mcontext.gregs[REG_A0 + 0] = a0;
@@ -52,17 +53,17 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
   ucp->uc_mcontext.gregs[REG_A0 + 3] = a3;
   ucp->uc_mcontext.gregs[REG_A0 + 4] = a4;
 
-  if (__builtin_expect (argc > 5, 0))
+  if (__glibc_unlikely (argc > 5))
     {
       va_list vl;
       va_start (vl, a4);
 
-      long reg_args = argc < REG_NARGS ? argc : REG_NARGS;
-      sp = (sp - (argc - reg_args) * sizeof (long)) & ALMASK;
+      long int reg_args = argc < REG_NARGS ? argc : REG_NARGS;
+      sp = (sp - (argc - reg_args) * sizeof (long int)) & ALMASK;
       for (i = 5; i < reg_args; i++)
-        ucp->uc_mcontext.gregs[REG_A0 + i] = va_arg (vl, long);
+        ucp->uc_mcontext.gregs[REG_A0 + i] = va_arg (vl, long int);
       for (i = 0; i < argc - reg_args; i++)
-        ((long*)sp)[i] = va_arg (vl, long);
+        ((long int *)sp)[i] = va_arg (vl, long int);
 
       va_end (vl);
     }

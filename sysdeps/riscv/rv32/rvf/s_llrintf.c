@@ -1,5 +1,5 @@
 /* lrintf().  RISC-V version.
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2017-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,10 +19,10 @@
 #include <math.h>
 #include <libm-alias-float.h>
 
-long long
+long long int
 __llrintf (float x)
 {
-  long res;
+  long int res;
   asm ("fcvt.w.s %0, %1" : "=r" (res) : "f" (x));
   return res;
 }

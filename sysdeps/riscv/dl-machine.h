@@ -1,5 +1,5 @@
 /* Machine-dependent ELF dynamic relocation inline functions.  RISC-V version.
-   Copyright (C) 2011-2017 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -182,7 +182,7 @@ elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
 
     case R_RISCV_COPY:
       {
-	if (__builtin_expect (sym == NULL, 0))
+	if (__glibc_unlikely (sym == NULL))
 	  /* This can happen in trace mode if an object could not be
 	     found.  */
 	  break;
@@ -197,7 +197,7 @@ elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
 	  }
 
 	size_t size = sym->st_size;
-	if (__builtin_expect (sym->st_size != refsym->st_size, 0))
+	if (__glibc_unlikely (sym->st_size != refsym->st_size))
 	  {
 	    const char *strtab = (const void *) D_PTR (map, l_info[DT_STRTAB]);
 	    if (sym->st_size > refsym->st_size)
@@ -265,9 +265,9 @@ elf_machine_lazy_rel (struct link_map *map, ElfW(Addr) l_addr,
   const unsigned int r_type = ELFW(R_TYPE) (reloc->r_info);
 
   /* Check for unexpected PLT reloc type.  */
-  if (__builtin_expect (r_type == R_RISCV_JUMP_SLOT, 1))
+  if (__glibc_likely (r_type == R_RISCV_JUMP_SLOT))
     {
-      if (__builtin_expect (map->l_mach.plt, 0) == 0)
+      if (__glibc_unlikely (map->l_mach.plt == 0))
 	{
 	  if (l_addr)
 	    *reloc_addr += l_addr;

@@ -1,5 +1,5 @@
 /* Assembly macros for RISC-V.
-   Copyright (C) 2011-2017
+   Copyright (C) 2011-2018
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -129,8 +129,8 @@
 # undef INLINE_SYSCALL
 # define INLINE_SYSCALL(name, nr, args...)				\
   ({ INTERNAL_SYSCALL_DECL (err);					\
-     long __sys_result = INTERNAL_SYSCALL (name, err, nr, args);	\
-     if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (__sys_result, ), 0)) \
+     long int __sys_result = INTERNAL_SYSCALL (name, err, nr, args);	\
+     if (__glibc_unlikely (INTERNAL_SYSCALL_ERROR_P (__sys_result, )))  \
        {								\
          __set_errno (INTERNAL_SYSCALL_ERRNO (__sys_result, ));		\
 	 __sys_result = (unsigned long) -1;				\
@@ -139,7 +139,8 @@
 
 # define INTERNAL_SYSCALL_DECL(err) do { } while (0)
 
-# define INTERNAL_SYSCALL_ERROR_P(val, err)   ((unsigned long) (val) > -4096UL)
+# define INTERNAL_SYSCALL_ERROR_P(val, err) \
+        ((unsigned long int) (val) > -4096UL)
 
 # define INTERNAL_SYSCALL_ERRNO(val, err)     (-val)
 
@@ -151,11 +152,11 @@
 
 # define internal_syscall0(number, err, dummy...)			\
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0");					\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0");				\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "=r" (__a0)							\
@@ -168,11 +169,11 @@
 
 # define internal_syscall1(number, err, arg0)				\
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -185,12 +186,12 @@
 
 # define internal_syscall2(number, err, arg0, arg1)	    		\
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
-	register long __a1 asm("a1") = (long) (arg1);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a1 asm("a1") = (long int) (arg1);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -203,13 +204,13 @@
 
 # define internal_syscall3(number, err, arg0, arg1, arg2)      		\
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
-	register long __a1 asm("a1") = (long) (arg1);			\
-	register long __a2 asm("a2") = (long) (arg2);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a1 asm("a1") = (long int) (arg1);		\
+	register long int __a2 asm("a2") = (long int) (arg2);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -222,14 +223,14 @@
 
 # define internal_syscall4(number, err, arg0, arg1, arg2, arg3)	  \
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
-	register long __a1 asm("a1") = (long) (arg1);			\
-	register long __a2 asm("a2") = (long) (arg2);			\
-	register long __a3 asm("a3") = (long) (arg3);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a1 asm("a1") = (long int) (arg1);		\
+	register long int __a2 asm("a2") = (long int) (arg2);		\
+	register long int __a3 asm("a3") = (long int) (arg3);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -240,17 +241,17 @@
 	_sys_result;							\
 })
 
-# define internal_syscall5(number, err, arg0, arg1, arg2, arg3, arg4)    \
+# define internal_syscall5(number, err, arg0, arg1, arg2, arg3, arg4)   \
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
-	register long __a1 asm("a1") = (long) (arg1);			\
-	register long __a2 asm("a2") = (long) (arg2);			\
-	register long __a3 asm("a3") = (long) (arg3);			\
-	register long __a4 asm("a4") = (long) (arg4);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a1 asm("a1") = (long int) (arg1);		\
+	register long int __a2 asm("a2") = (long int) (arg2);		\
+	register long int __a3 asm("a3") = (long int) (arg3);		\
+	register long int __a4 asm("a4") = (long int) (arg4);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -263,16 +264,16 @@
 
 # define internal_syscall6(number, err, arg0, arg1, arg2, arg3, arg4, arg5) \
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
-	register long __a1 asm("a1") = (long) (arg1);			\
-	register long __a2 asm("a2") = (long) (arg2);			\
-	register long __a3 asm("a3") = (long) (arg3);			\
-	register long __a4 asm("a4") = (long) (arg4);			\
-	register long __a5 asm("a5") = (long) (arg5);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a1 asm("a1") = (long int) (arg1);		\
+	register long int __a2 asm("a2") = (long int) (arg2);		\
+	register long int __a3 asm("a3") = (long int) (arg3);		\
+	register long int __a4 asm("a4") = (long int) (arg4);		\
+	register long int __a5 asm("a5") = (long int) (arg5);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
@@ -285,17 +286,17 @@
 
 # define internal_syscall7(number, err, arg0, arg1, arg2, arg3, arg4, arg5, arg6) \
 ({ 									\
-	long _sys_result;						\
+	long int _sys_result;						\
 									\
 	{								\
-	register long __a7 asm("a7") = number;				\
-	register long __a0 asm("a0") = (long) (arg0);			\
-	register long __a1 asm("a1") = (long) (arg1);			\
-	register long __a2 asm("a2") = (long) (arg2);			\
-	register long __a3 asm("a3") = (long) (arg3);			\
-	register long __a4 asm("a4") = (long) (arg4);			\
-	register long __a5 asm("a5") = (long) (arg5);			\
-	register long __a6 asm("a6") = (long) (arg6);			\
+	register long int __a7 asm("a7") = number;			\
+	register long int __a0 asm("a0") = (long int) (arg0);		\
+	register long int __a1 asm("a1") = (long int) (arg1);		\
+	register long int __a2 asm("a2") = (long int) (arg2);		\
+	register long int __a3 asm("a3") = (long int) (arg3);		\
+	register long int __a4 asm("a4") = (long int) (arg4);		\
+	register long int __a5 asm("a5") = (long int) (arg5);		\
+	register long int __a6 asm("a6") = (long int) (arg6);		\
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\

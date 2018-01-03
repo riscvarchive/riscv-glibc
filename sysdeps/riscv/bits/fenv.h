@@ -1,5 +1,5 @@
 /* Floating point environment, RISC-V version.
-   Copyright (C) 1998-2017 Free Software Foundation, Inc.
+   Copyright (C) 1998-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -36,7 +36,7 @@ enum
       FE_DIVBYZERO,
     FE_INVALID   =
 #define FE_INVALID	(0x10)
-      FE_INVALID,
+      FE_INVALID
   };
 
 #define FE_ALL_EXCEPT \
@@ -55,7 +55,7 @@ enum
       FE_DOWNWARD,
     FE_UPWARD     =
 #define FE_UPWARD	(0x3)
-      FE_UPWARD,
+      FE_UPWARD
   };
 
 

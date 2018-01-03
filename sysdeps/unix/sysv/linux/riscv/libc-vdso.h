@@ -1,5 +1,5 @@
 /* RISC-V VDSO function declarations
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2017-2018 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -24,13 +24,13 @@
 
 # include <sysdep-vdso.h>
 
-extern long (*VDSO_SYMBOL(getcpu)) (unsigned *, unsigned *, void *)
+extern long int (*VDSO_SYMBOL(getcpu)) (unsigned int *, unsigned int *, void *)
     attribute_hidden;
-extern long (*VDSO_SYMBOL(gettimeofday)) (struct timeval *, void *)
+extern long int (*VDSO_SYMBOL(gettimeofday)) (struct timeval *, void *)
     attribute_hidden;
-extern long (*VDSO_SYMBOL(clock_gettime)) (clockid_t, struct timespec *)
+extern long int (*VDSO_SYMBOL(clock_gettime)) (clockid_t, struct timespec *)
     attribute_hidden;
-extern long (*VDSO_SYMBOL(clock_getres)) (clockid_t, struct timespec *)
+extern long int (*VDSO_SYMBOL(clock_getres)) (clockid_t, struct timespec *)
     attribute_hidden;
 
 #endif

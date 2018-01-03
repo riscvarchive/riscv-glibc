@@ -1,5 +1,5 @@
 /* RISC-V instruction cache flushing VDSO calls
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2017-2018 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.
 
@@ -22,9 +22,10 @@
 #include <atomic.h>
 #include <sys/cachectl.h>
 
-typedef int (*func_type) (void *, void *, unsigned long);
+typedef int (*func_type) (void *, void *, unsigned long int);
 
-static int __riscv_flush_icache_syscall (void *start, void *end, unsigned long flags)
+static int __riscv_flush_icache_syscall (void *start, void *end,
+					 unsigned long int flags)
 {
 #ifdef __NR_riscv_flush_icache
 	return INLINE_SYSCALL (riscv_flush_icache, 3, start, end, flags);
@@ -57,7 +58,7 @@ libc_ifunc (__riscv_flush_icache, __lookup_riscv_flush_icache ())
 #else
 
 int
-__riscv_flush_icache (void *start, void *end, unsigned long flags)
+__riscv_flush_icache (void *start, void *end, unsigned long int flags)
 {
   static volatile func_type cached_func;
 

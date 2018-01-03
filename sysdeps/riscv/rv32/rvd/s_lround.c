@@ -1,5 +1,5 @@
 /* lround().  RISC-V version.
-   Copyright (C) 2017 Free Software Foundation, Inc.
+   Copyright (C) 2017-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,10 +19,10 @@
 #include <math.h>
 #include <libm-alias-double.h>
 
-long
+long int
 __lround (double x)
 {
-  long res;
+  long int res;
   asm ("fcvt.w.d %0, %1, rmm" : "=r" (res) : "f" (x));
   return res;
 }

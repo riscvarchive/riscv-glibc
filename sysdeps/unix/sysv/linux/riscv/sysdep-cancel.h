@@ -1,5 +1,5 @@
 /* Assembler macros with cancellation support, RISC-V version.
-   Copyright (C) 2003-2017 Free Software Foundation, Inc.
+   Copyright (C) 2003-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -106,9 +106,8 @@
 
 # ifndef __ASSEMBLER__
 #  define SINGLE_THREAD_P						\
-	__builtin_expect (THREAD_GETMEM (THREAD_SELF,			\
-					 header.multiple_threads)	\
-			  == 0, 1)
+	__glibc_likely (THREAD_GETMEM (THREAD_SELF,			\
+				       header.multiple_threads)	== 0)
 # else
 #  include "tcb-offsets.h"
 #  define SINGLE_THREAD_P(reg)						\
@@ -124,6 +123,6 @@
 
 #ifndef __ASSEMBLER__
 # define RTLD_SINGLE_THREAD_P \
-  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
-				   header.multiple_threads) == 0, 1)
+  __glibc_likely (THREAD_GETMEM (THREAD_SELF, \
+				 header.multiple_threads) == 0)
 #endif

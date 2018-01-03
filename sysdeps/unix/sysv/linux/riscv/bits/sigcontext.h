@@ -1,5 +1,5 @@
 /* Machine-dependent signal context structure for Linux.  RISC-V version.
-   Copyright (C) 1996-2017 Free Software
+   Copyright (C) 1996-2018 Free Software
    Foundation, Inc.  This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -25,8 +25,8 @@
 
 struct sigcontext {
   /* gregs[0] holds the program counter. */
-  unsigned long gregs[32];
-  unsigned long long fpregs[66] __attribute__ ((aligned(16)));
+  unsigned long int gregs[32];
+  unsigned long long int fpregs[66] __attribute__ ((aligned(16)));
 };
 
 #endif
