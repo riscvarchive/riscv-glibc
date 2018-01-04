@@ -18,10 +18,6 @@ AC_EGREP_CPP(yes, [#ifdef __riscv_float_abi_double
 		   yes
 		   #endif
   ],libc_cv_riscv_float_abi=d)
-AC_EGREP_CPP(yes, [#ifdef __riscv_float_abi_single
-		   yes
-		   #endif
-  ],libc_cv_riscv_float_abi=f)
 AC_EGREP_CPP(yes, [#ifdef __riscv_float_abi_soft
 		   yes
 		   #endif

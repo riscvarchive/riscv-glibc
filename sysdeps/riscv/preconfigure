@@ -19,10 +19,6 @@ riscv*)
     	float_machine=rvd
 	with_fp_cond=1
     	;;
-    32)
-    	float_machine=rvf
-	with_fp_cond=1
-    	;;
     "")
     	float_machine=
 	with_fp_cond=0
@@ -36,9 +32,6 @@ riscv*)
     case "$float_abi" in
     soft)
     	abi_flen=0
-    	;;
-    single)
-    	abi_flen=32
     	;;
     double)
     	abi_flen=64
