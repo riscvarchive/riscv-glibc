@@ -21,8 +21,8 @@
 
 #include <elf/sotruss-lib.c>
 
-ElfW(Addr)
-la_riscv_gnu_pltenter (ElfW(Sym) *sym __attribute__ ((unused)),
+ElfW (Addr)
+la_riscv_gnu_pltenter (ElfW (Sym) *sym __attribute__ ((unused)),
 		       unsigned int ndx __attribute__ ((unused)),
 		       uintptr_t *refcook, uintptr_t *defcook,
 		       La_riscv_regs *regs, unsigned int *flags,
@@ -39,7 +39,7 @@ la_riscv_gnu_pltenter (ElfW(Sym) *sym __attribute__ ((unused)),
 }
 
 unsigned int
-la_riscv_gnu_pltexit (ElfW(Sym) *sym, unsigned int ndx, uintptr_t *refcook,
+la_riscv_gnu_pltexit (ElfW (Sym) *sym, unsigned int ndx, uintptr_t *refcook,
 		      uintptr_t *defcook,
 		      const struct La_riscv_regs *inregs,
 		      struct La_riscv_retval *outregs,

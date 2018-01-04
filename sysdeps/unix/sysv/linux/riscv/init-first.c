@@ -21,13 +21,13 @@
 # include <dl-vdso.h>
 # include <libc-vdso.h>
 
-long int (*VDSO_SYMBOL(getcpu)) (unsigned int *, unsigned int *, void *)
+long int (*VDSO_SYMBOL (getcpu)) (unsigned int *, unsigned int *, void *)
     attribute_hidden;
-long int (*VDSO_SYMBOL(gettimeofday)) (struct timeval *, void *)
+long int (*VDSO_SYMBOL (gettimeofday)) (struct timeval *, void *)
     attribute_hidden;
-long int (*VDSO_SYMBOL(clock_gettime)) (clockid_t, struct timespec *)
+long int (*VDSO_SYMBOL (clock_gettime)) (clockid_t, struct timespec *)
     attribute_hidden;
-long int (*VDSO_SYMBOL(clock_getres)) (clockid_t, struct timespec *)
+long int (*VDSO_SYMBOL (clock_getres)) (clockid_t, struct timespec *)
     attribute_hidden;
 
 static inline void
@@ -37,19 +37,19 @@ _libc_vdso_platform_setup (void)
 
   void *p = _dl_vdso_vsym ("__vdso_getcpu", &linux_version);
   PTR_MANGLE (p);
-  VDSO_SYMBOL(getcpu) = p;
+  VDSO_SYMBOL (getcpu) = p;
 
   p = _dl_vdso_vsym ("__vdso_gettimeofday", &linux_version);
   PTR_MANGLE (p);
-  VDSO_SYMBOL(gettimeofday) = p;
+  VDSO_SYMBOL (gettimeofday) = p;
 
   p = _dl_vdso_vsym ("__vdso_clock_gettime", &linux_version);
   PTR_MANGLE (p);
-  VDSO_SYMBOL(clock_gettime) = p;
+  VDSO_SYMBOL (clock_gettime) = p;
 
   p = _dl_vdso_vsym ("__vdso_clock_getres", &linux_version);
   PTR_MANGLE (p);
-  VDSO_SYMBOL(clock_getres) = p;
+  VDSO_SYMBOL (clock_getres) = p;
 }
 
 # define VDSO_SETUP _libc_vdso_platform_setup

@@ -29,13 +29,13 @@ hexvalue (unsigned long int value, char *buf, size_t len)
 }
 
 #define REGDUMP_NREGS 32
-#define REGDUMP_PER_LINE (80 / (__WORDSIZE/4 + 4))
+#define REGDUMP_PER_LINE (80 / (__WORDSIZE / 4 + 4))
 
 static void
 register_dump (int fd, ucontext_t *ctx)
 {
   int i;
-  char regvalue[__WORDSIZE/4 + 1];
+  char regvalue[__WORDSIZE / 4 + 1];
   char str[82 * ((REGDUMP_NREGS + REGDUMP_PER_LINE - 1) / REGDUMP_PER_LINE)];
 
   static const char names[REGDUMP_NREGS][4] = {
@@ -50,7 +50,7 @@ register_dump (int fd, ucontext_t *ctx)
     {
       strcat (str, names[i]);
       strcat (str, " ");
-      hexvalue (ctx->uc_mcontext.gregs[i], regvalue, __WORDSIZE/4);
+      hexvalue (ctx->uc_mcontext.gregs[i], regvalue, __WORDSIZE / 4);
       strcat (str, regvalue);
 
       if ((i + 1) % REGDUMP_PER_LINE == 0)

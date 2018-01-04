@@ -162,30 +162,30 @@ typedef uintmax_t uatomic_max_t;
 /* Miscellaneous. */
 
 # define asm_amo(which, ordering, mem, value) ({ 		\
-  __atomic_check_size(mem);					\
-  typeof(*mem) __tmp; 						\
-  if (sizeof(__tmp) == 4)					\
+  __atomic_check_size (mem);					\
+  typeof (*mem) __tmp; 						\
+  if (sizeof (__tmp) == 4)					\
     asm volatile (which ".w" ordering "\t%0, %z2, %1"		\
-		  : "=r"(__tmp), "+A"(*(mem))			\
-		  : "rJ"(value));				\
-  else if (sizeof(__tmp) == 8)					\
+		  : "=r" (__tmp), "+A" (* (mem))		\
+		  : "rJ" (value));				\
+  else if (sizeof (__tmp) == 8)					\
     asm volatile (which ".d" ordering "\t%0, %z2, %1"		\
-		  : "=r"(__tmp), "+A"(*(mem))			\
-		  : "rJ"(value));				\
+		  : "=r" (__tmp), "+A" (* (mem))		\
+		  : "rJ" (value));				\
   else								\
-    abort();							\
+    abort ();							\
   __tmp; })
 
-# define atomic_max(mem, value) asm_amo("amomaxu", ".aq", mem, value)
-# define atomic_min(mem, value) asm_amo("amominu", ".aq", mem, value)
+# define atomic_max(mem, value) asm_amo ("amomaxu", ".aq", mem, value)
+# define atomic_min(mem, value) asm_amo ("amominu", ".aq", mem, value)
 
 # define atomic_bit_test_set(mem, bit)                   \
-  ({ typeof(*mem) __mask = (typeof(*mem))1 << (bit);    \
-     asm_amo("amoor", ".aq", mem, __mask) & __mask; })
+  ({ typeof (*mem) __mask = (typeof (*mem))1 << (bit);    \
+     asm_amo ("amoor", ".aq", mem, __mask) & __mask; })
 
 # define catomic_exchange_and_add(mem, value)		\
-  atomic_exchange_and_add(mem, value)
-# define catomic_max(mem, value) atomic_max(mem, value)
+  atomic_exchange_and_add (mem, value)
+# define catomic_max(mem, value) atomic_max (mem, value)
 
 #else /* __riscv_atomic */
 # error "ISAs that do not subsume the A extension are not supported"

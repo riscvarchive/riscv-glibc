@@ -26,7 +26,7 @@
 struct sigcontext {
   /* gregs[0] holds the program counter. */
   unsigned long int gregs[32];
-  unsigned long long int fpregs[66] __attribute__ ((aligned(16)));
+  unsigned long long int fpregs[66] __attribute__ ((aligned (16)));
 };
 
 #endif
