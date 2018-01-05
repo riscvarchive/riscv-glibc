@@ -19,9 +19,7 @@
 #ifndef _SYS_ASM_H
 #define _SYS_ASM_H
 
-/*
- * Macros to handle different pointer/register sizes for 32/64-bit code
- */
+/* Macros to handle different pointer/register sizes for 32/64-bit code */
 #if __riscv_xlen == 64
 # define PTRLOG 3
 # define SZREG	8
@@ -48,9 +46,7 @@
 # endif
 #endif
 
-/*
- * LEAF - declare leaf routine
- */
+/* Declare leaf routine */
 #define	LEAF(symbol)				\
 		.globl	symbol;			\
 		.align	2;			\
@@ -58,17 +54,13 @@
 symbol:						\
 		cfi_startproc;
 
-/*
- * END - mark end of function
- */
+/* Mark end of function */
 #undef END
 #define END(function)				\
 		cfi_endproc;			\
 		.size	function,.-function
 
-/*
- * Stack alignment
- */
+/* Stack alignment */
 #define ALMASK	~15
 
 #endif /* sys/asm.h */
