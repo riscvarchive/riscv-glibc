@@ -72,7 +72,7 @@ struct __riscv_mc_q_ext_state
     unsigned int __ctx(fcsr);
     /* Reserved for expansion of sigcontext structure.  Currently zeroed
        upon signal, and must be zero upon sigreturn.  */
-    unsigned int __ctx(reserved)[3];
+    unsigned int __glibc_reserved[3];
   };
 
 union __riscv_mc_fp_state
