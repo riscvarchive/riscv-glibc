@@ -308,6 +308,9 @@
 })
 
 # define __SYSCALL_CLOBBERS "memory"
+
+extern long int __syscall_error (long int neg_errno);
+
 #endif /* ! __ASSEMBLER__ */
 
 /* Pointer mangling is not supported.  */
