@@ -33,7 +33,7 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
   _Static_assert (REG_NARGS == 8, "__makecontext assumes 8 argument registers");
 
   /* Set up the stack. */
-  sp = ((long int)ucp->uc_stack.ss_sp + ucp->uc_stack.ss_size) & ALMASK;
+  sp = ((long int) ucp->uc_stack.ss_sp + ucp->uc_stack.ss_size) & ALMASK;
 
   /* Set up the register context.
      ra = s0 = 0, terminating the stack for backtracing purposes.
@@ -41,10 +41,10 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
      s2 = the subsequent context to run.  */
   ucp->uc_mcontext.gregs[REG_RA] = 0;
   ucp->uc_mcontext.gregs[REG_S0 + 0] = 0;
-  ucp->uc_mcontext.gregs[REG_S0 + 1] = (long int)func;
-  ucp->uc_mcontext.gregs[REG_S0 + 2] = (long int)ucp->uc_link;
+  ucp->uc_mcontext.gregs[REG_S0 + 1] = (long int) func;
+  ucp->uc_mcontext.gregs[REG_S0 + 2] = (long int) ucp->uc_link;
   ucp->uc_mcontext.gregs[REG_SP] = sp;
-  ucp->uc_mcontext.gregs[REG_PC] = (long int)&__start_context;
+  ucp->uc_mcontext.gregs[REG_PC] = (long int) &__start_context;
 
   /* Put args in a0-a7, then put any remaining args on the stack. */
   ucp->uc_mcontext.gregs[REG_A0 + 0] = a0;
@@ -63,7 +63,7 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
       for (i = 5; i < reg_args; i++)
         ucp->uc_mcontext.gregs[REG_A0 + i] = va_arg (vl, long int);
       for (i = 0; i < argc - reg_args; i++)
-        ((long int *)sp)[i] = va_arg (vl, long int);
+        ((long int *) sp)[i] = va_arg (vl, long int);
 
       va_end (vl);
     }
