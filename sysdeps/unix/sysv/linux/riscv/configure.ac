@@ -27,3 +27,12 @@ if test $libc_cv_riscv_float_abi = no; then
 fi
 
 LIBC_CONFIG_VAR([default-abi], [$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi])
+
+case $machine in
+riscv/rv64/*)
+  LIBC_SLIBDIR_RTLDDIR([lib64/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi], [lib])
+  ;;
+riscv/rv32/*)
+  LIBC_SLIBDIR_RTLDDIR([lib32/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi], [lib])
+  ;;
+esac

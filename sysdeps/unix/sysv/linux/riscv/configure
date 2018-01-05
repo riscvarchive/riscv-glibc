@@ -178,19 +178,6 @@ rm -f conftest*
 
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-#ifdef __riscv_float_abi_single
-		   yes
-		   #endif
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "yes" >/dev/null 2>&1; then :
-  libc_cv_riscv_float_abi=f
-fi
-rm -f conftest*
-
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
 #ifdef __riscv_float_abi_soft
 		   yes
 		   #endif
@@ -208,3 +195,34 @@ fi
 
 config_vars="$config_vars
 default-abi = $libc_cv_riscv_int_abi$libc_cv_riscv_float_abi"
+
+case $machine in
+riscv/rv64/*)
+  test -n "$libc_cv_slibdir" ||
+case "$prefix" in
+/usr | /usr/)
+  libc_cv_slibdir=/lib64/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi
+  libc_cv_rtlddir=/lib
+  if test "$libdir" = '${exec_prefix}/lib'; then
+    libdir='${exec_prefix}/lib64/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi';
+    # Locale data can be shared between 32-bit and 64-bit libraries.
+    libc_cv_complocaledir='${exec_prefix}/lib/locale'
+  fi
+  ;;
+esac
+  ;;
+riscv/rv32/*)
+  test -n "$libc_cv_slibdir" ||
+case "$prefix" in
+/usr | /usr/)
+  libc_cv_slibdir=/lib32/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi
+  libc_cv_rtlddir=/lib
+  if test "$libdir" = '${exec_prefix}/lib'; then
+    libdir='${exec_prefix}/lib32/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi';
+    # Locale data can be shared between 32-bit and 64-bit libraries.
+    libc_cv_complocaledir='${exec_prefix}/lib/locale'
+  fi
+  ;;
+esac
+  ;;
+esac
