@@ -24,7 +24,7 @@
 #include <bits/wordsize.h>
 
 /* In 64-bit ISA files are always with 64bit off_t and F_*LK64 are the same as
- * non-64-bit versions.  It will need to be revised for 128-bit.  */
+   non-64-bit versions.  It will need to be revised for 128-bit.  */
 #if __WORDSIZE == 64
 # define __O_LARGEFILE	0
 

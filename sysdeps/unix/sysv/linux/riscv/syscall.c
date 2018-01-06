@@ -30,7 +30,6 @@ syscall (long int syscall_number, long int arg1, long int arg2, long int arg3,
 
   if (INTERNAL_SYSCALL_ERROR_P (ret, err))
     {
-      extern long int __syscall_error (long int neg_errno);
       return __syscall_error (ret);
     }
 

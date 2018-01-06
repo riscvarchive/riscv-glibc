@@ -253,7 +253,7 @@ __attribute__ ((always_inline))
 elf_machine_rela_relative (ElfW (Addr) l_addr, const ElfW (Rela) *reloc,
 			  void *const reloc_addr)
 {
-  *(ElfW (Addr) *)reloc_addr = l_addr + reloc->r_addend;
+  *(ElfW (Addr) *) reloc_addr = l_addr + reloc->r_addend;
 }
 
 auto inline void
