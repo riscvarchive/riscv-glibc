@@ -62,10 +62,13 @@ __riscv_flush_icache (void *start, void *end, unsigned long int flags)
 {
   static volatile func_type cached_func;
 
-  func_type func = cached_func;
+  func_type func = atomic_load_relaxed (&cached_func);
 
   if (!func)
-    cached_func = func = __lookup_riscv_flush_icache ();
+    {
+      func = __lookup_riscv_flush_icache ();
+      atomic_store_relaxed (&cached_func, func);
+    }
 
   return func (start, end, flags);
 }
