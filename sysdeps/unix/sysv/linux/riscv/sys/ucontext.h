@@ -26,12 +26,6 @@
 #include <bits/types/sigset_t.h>
 #include <bits/types/stack_t.h>
 
-#ifdef __USE_MISC
-# define __ctx(fld) fld
-#else
-# define __ctx(fld) __ ## fld
-#endif
-
 typedef unsigned long int __riscv_mc_gp_state[32];
 
 #ifdef __USE_MISC
@@ -56,20 +50,20 @@ typedef union __riscv_mc_fp_state fpregset_t;
 
 struct __riscv_mc_f_ext_state
   {
-    unsigned int __ctx(f)[32];
-    unsigned int __ctx(fcsr);
+    unsigned int __f[32];
+    unsigned int __fcsr;
   };
 
 struct __riscv_mc_d_ext_state
   {
-    unsigned long long int __ctx(f[32]);
-    unsigned int __ctx(fcsr);
+    unsigned long long int __f[32];
+    unsigned int __fcsr;
   };
 
 struct __riscv_mc_q_ext_state
   {
-    unsigned long long int __ctx(f[64]) __attribute__ ((__aligned__ (16)));
-    unsigned int __ctx(fcsr);
+    unsigned long long int __f[64] __attribute__ ((__aligned__ (16)));
+    unsigned int __fcsr;
     /* Reserved for expansion of sigcontext structure.  Currently zeroed
        upon signal, and must be zero upon sigreturn.  */
     unsigned int __glibc_reserved[3];
@@ -77,21 +71,21 @@ struct __riscv_mc_q_ext_state
 
 union __riscv_mc_fp_state
   {
-    struct __riscv_mc_f_ext_state __ctx(f);
-    struct __riscv_mc_d_ext_state __ctx(d);
-    struct __riscv_mc_q_ext_state __ctx(q);
+    struct __riscv_mc_f_ext_state __f;
+    struct __riscv_mc_d_ext_state __d;
+    struct __riscv_mc_q_ext_state __q;
   };
 
 typedef struct mcontext_t
   {
-    __riscv_mc_gp_state __ctx(gregs);
-    union  __riscv_mc_fp_state __ctx(fpregs);
+    __riscv_mc_gp_state __gregs;
+    union  __riscv_mc_fp_state __fpregs;
   } mcontext_t;
 
 /* Userlevel context.  */
 typedef struct ucontext_t
   {
-    unsigned long int  __ctx(uc_flags);
+    unsigned long int  __uc_flags;
     struct ucontext_t *uc_link;
     stack_t            uc_stack;
     sigset_t           uc_sigmask;
@@ -110,7 +104,5 @@ typedef struct ucontext_t
        prioritizing this.  */
     mcontext_t uc_mcontext;
   } ucontext_t;
-
-#undef __ctx
 
 #endif /* sys/ucontext.h */
