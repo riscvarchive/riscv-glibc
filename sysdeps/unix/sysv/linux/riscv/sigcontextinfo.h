@@ -20,9 +20,9 @@
 
 #define SIGCONTEXT siginfo_t *_si, ucontext_t *
 #define SIGCONTEXT_EXTRA_ARGS _si,
-#define GET_PC(ctx)	((void *) ctx->uc_mcontext.gregs[REG_PC])
-#define GET_FRAME(ctx)	((void *) ctx->uc_mcontext.gregs[REG_S0])
-#define GET_STACK(ctx)	((void *) ctx->uc_mcontext.gregs[REG_SP])
+#define GET_PC(ctx)	((void *) ctx->uc_mcontext.__gregs[REG_PC])
+#define GET_FRAME(ctx)	((void *) ctx->uc_mcontext.__gregs[REG_S0])
+#define GET_STACK(ctx)	((void *) ctx->uc_mcontext.__gregs[REG_SP])
 
 #define CALL_SIGHANDLER(handler, signo, ctx) \
   (handler)((signo), SIGCONTEXT_EXTRA_ARGS (ctx))
