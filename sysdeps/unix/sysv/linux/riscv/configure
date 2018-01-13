@@ -196,29 +196,57 @@ fi
 config_vars="$config_vars
 default-abi = $libc_cv_riscv_int_abi$libc_cv_riscv_float_abi"
 
-case $machine in
-riscv/rv64/*)
+case $libc_cv_riscv_int_abi$libc_cv_riscv_float_abi-$machine in
+lp64-riscv/rv64/*)
   test -n "$libc_cv_slibdir" ||
 case "$prefix" in
 /usr | /usr/)
-  libc_cv_slibdir=/lib64/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi
+  libc_cv_slibdir=/lib64/lp64
   libc_cv_rtlddir=/lib
   if test "$libdir" = '${exec_prefix}/lib'; then
-    libdir='${exec_prefix}/lib64/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi';
+    libdir='${exec_prefix}/lib64/lp64';
     # Locale data can be shared between 32-bit and 64-bit libraries.
     libc_cv_complocaledir='${exec_prefix}/lib/locale'
   fi
   ;;
 esac
   ;;
-riscv/rv32/*)
+lp64d-riscv/rv64/*)
   test -n "$libc_cv_slibdir" ||
 case "$prefix" in
 /usr | /usr/)
-  libc_cv_slibdir=/lib32/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi
+  libc_cv_slibdir=/lib64/lp64d
   libc_cv_rtlddir=/lib
   if test "$libdir" = '${exec_prefix}/lib'; then
-    libdir='${exec_prefix}/lib32/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi';
+    libdir='${exec_prefix}/lib64/lp64d';
+    # Locale data can be shared between 32-bit and 64-bit libraries.
+    libc_cv_complocaledir='${exec_prefix}/lib/locale'
+  fi
+  ;;
+esac
+  ;;
+ilp32-riscv/rv32/*)
+  test -n "$libc_cv_slibdir" ||
+case "$prefix" in
+/usr | /usr/)
+  libc_cv_slibdir=/lib32/ilp32
+  libc_cv_rtlddir=/lib
+  if test "$libdir" = '${exec_prefix}/lib'; then
+    libdir='${exec_prefix}/lib32/ilp32';
+    # Locale data can be shared between 32-bit and 64-bit libraries.
+    libc_cv_complocaledir='${exec_prefix}/lib/locale'
+  fi
+  ;;
+esac
+  ;;
+ilp32d-riscv/rv32/*)
+  test -n "$libc_cv_slibdir" ||
+case "$prefix" in
+/usr | /usr/)
+  libc_cv_slibdir=/lib32/ilp32d
+  libc_cv_rtlddir=/lib
+  if test "$libdir" = '${exec_prefix}/lib'; then
+    libdir='${exec_prefix}/lib32/ilp32d';
     # Locale data can be shared between 32-bit and 64-bit libraries.
     libc_cv_complocaledir='${exec_prefix}/lib/locale'
   fi

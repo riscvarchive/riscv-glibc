@@ -28,11 +28,17 @@ fi
 
 LIBC_CONFIG_VAR([default-abi], [$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi])
 
-case $machine in
-riscv/rv64/*)
-  LIBC_SLIBDIR_RTLDDIR([lib64/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi], [lib])
+case $libc_cv_riscv_int_abi$libc_cv_riscv_float_abi-$machine in
+lp64-riscv/rv64/*)
+  LIBC_SLIBDIR_RTLDDIR([lib64/lp64], [lib])
   ;;
-riscv/rv32/*)
-  LIBC_SLIBDIR_RTLDDIR([lib32/$libc_cv_riscv_int_abi$libc_cv_riscv_float_abi], [lib])
+lp64d-riscv/rv64/*)
+  LIBC_SLIBDIR_RTLDDIR([lib64/lp64d], [lib])
+  ;;
+ilp32-riscv/rv32/*)
+  LIBC_SLIBDIR_RTLDDIR([lib32/ilp32], [lib])
+  ;;
+ilp32d-riscv/rv32/*)
+  LIBC_SLIBDIR_RTLDDIR([lib32/ilp32d], [lib])
   ;;
 esac
