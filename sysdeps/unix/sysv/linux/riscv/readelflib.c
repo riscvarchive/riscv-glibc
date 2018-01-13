@@ -36,7 +36,7 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
   ElfW(Ehdr) *elf_header = (ElfW(Ehdr) *) file_contents;
   Elf32_Ehdr *elf32_header = (Elf32_Ehdr *) elf_header;
   int ret;
-  long flags;
+  long eflags;
 
   /* RISC-V libraries are always libc.so.6+.  */
   if (!ret)
@@ -46,17 +46,17 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
     {
       ret = process_elf32_file (file_name, lib, flag, osversion, soname,
 				file_contents, file_length);
-      flags = elf32_header->e_flags;
+      eflags = elf32_header->e_flags;
     }
   else
     {
       ret = process_elf64_file (file_name, lib, flag, osversion, soname,
 				file_contents, file_length);
-      flags = elf32_header->e_flags;
+      eflags = elf32_header->e_flags;
     }
 
   /* RISC-V linkers encode the floating point ABI as part of the ELF headers.  */
-  switch (flags & EF_RISCV_FLOAT_ABI)
+  switch (eflags & EF_RISCV_FLOAT_ABI)
     {
       case EF_RISCV_FLOAT_ABI_SOFT:
         *flags |= FLAG_RISCV_FLOAT_ABI_SOFT;
@@ -69,12 +69,12 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
     }
 
   /* RISC-V Linux ABIs mandate the presence of the C extension.  */
-  if (flags & EF_RISCV_RVC)
+  if (eflags & EF_RISCV_RVC)
     return 1;
 
   /* The remainder of the header bits are reserved, so just be on the safe side
      and don't support them at all.  */
-  if (flags & SUPPORTED_ELF_FLAGS)
+  if (eflags & SUPPORTED_ELF_FLAGS)
     return 1;
 
   return ret;
