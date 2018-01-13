@@ -39,8 +39,7 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
   long flags;
 
   /* RISC-V libraries are always libc.so.6+.  */
-  if (!ret)
-    *flag = FLAG_ELF_LIBC6;
+  *flag = FLAG_ELF_LIBC6;
 
   if (elf_header->e_ident [EI_CLASS] == ELFCLASS32)
     {
