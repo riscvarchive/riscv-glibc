@@ -31,15 +31,15 @@ typedef unsigned long int __riscv_mc_gp_state[32];
 #ifdef __USE_MISC
 # define NGREG	32
 
-# define REG_PC 0
-# define REG_RA 1
-# define REG_SP 2
-# define REG_TP 4
-# define REG_S0 8
-# define REG_S1 9
-# define REG_A0 10
-# define REG_S2 18
-# define REG_NARGS 8
+#define REG_PC 0
+#define REG_RA 1
+#define REG_SP 2
+#define REG_TP 4
+#define REG_S0 8
+#define REG_S1 9
+#define REG_A0 10
+#define REG_S2 18
+#define REG_NARGS 8
 
 typedef unsigned long int greg_t;
 
