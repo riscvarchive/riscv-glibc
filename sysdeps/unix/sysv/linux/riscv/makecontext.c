@@ -40,9 +40,9 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
      s1 = the function we must call.
      s2 = the subsequent context to run.  */
   ucp->uc_mcontext.__gregs[REG_RA] = 0;
-  ucp->uc_mcontext.__gregs[REG_S0 + 0] = 0;
-  ucp->uc_mcontext.__gregs[REG_S0 + 1] = (long int) func;
-  ucp->uc_mcontext.__gregs[REG_S0 + 2] = (long int) ucp->uc_link;
+  ucp->uc_mcontext.__gregs[REG_S0] = 0;
+  ucp->uc_mcontext.__gregs[REG_S1] = (long int) func;
+  ucp->uc_mcontext.__gregs[REG_S2] = (long int) ucp->uc_link;
   ucp->uc_mcontext.__gregs[REG_SP] = sp;
   ucp->uc_mcontext.__gregs[REG_PC] = (long int) &__start_context;
 
