@@ -76,8 +76,9 @@ L (thread_start):
 	/* Call the user's function.  */
 	jalr		a1
 
-	/* Call _exit with the function's return value.  */
-	j		_exit
+	/* Call exit with the function's return value.  */
+	li		a7, __NR_exit
+	scall
 
 	END (__thread_start)
 
