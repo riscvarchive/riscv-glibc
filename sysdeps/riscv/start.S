@@ -45,7 +45,8 @@
 ENTRY (ENTRY_POINT)
 	call  .Lload_gp
 	mv    a5, a0  /* rtld_fini */
-	lla   a0, main
+	/* main may be in a shared library.  */
+	la   a0, main
 	REG_L a1, 0(sp)      /* argc */
 	addi  a2, sp, SZREG  /* argv */
 	andi  sp, sp, ALMASK /* Align stack. */
