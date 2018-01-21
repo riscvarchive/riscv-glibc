@@ -26,16 +26,17 @@
 	({ void *__result;				\
 	asm (LOAD_GP					\
 	     "la.tls.ie %0, " #x "\n\t"			\
+	     "add %0, %0, tp\n\t"			\
 	     UNLOAD_GP					\
 	     : "=r"(__result));				\
-	__tls_get_addr(__result); })
+	__result; })
 
 #define TLS_LE(x)					\
 	({ void *__result;				\
 	asm (LOAD_GP					\
 	     "lui %0, %%tprel_hi(" #x ")\n\t"		\
 	     "add %0, %0, tp, %%tprel_add(" #x ")\n\t"	\
-	     "lw %0, %%tprel_lo(" #x ")(%0)\n\t"	\
+	     "addi %0, %0, %%tprel_lo(" #x ")\n\t"	\
 	     UNLOAD_GP					\
 	     : "=r"(__result));				\
-	__tls_get_addr(__result); })
+	__result; })
