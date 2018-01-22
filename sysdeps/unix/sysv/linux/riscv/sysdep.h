@@ -195,7 +195,7 @@
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
-	: "r" (__a7), "r"(__a1)						\
+	: "r" (__a7), "r" (__a1)					\
 	: __SYSCALL_CLOBBERS); 						\
 	_sys_result = __a0;						\
 	}								\
@@ -214,7 +214,7 @@
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
-	: "r" (__a7), "r"(__a1), "r"(__a2)				\
+	: "r" (__a7), "r" (__a1), "r" (__a2)				\
 	: __SYSCALL_CLOBBERS); 						\
 	_sys_result = __a0;						\
 	}								\
@@ -234,7 +234,7 @@
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
-	: "r" (__a7), "r"(__a1), "r"(__a2), "r"(__a3)			\
+	: "r" (__a7), "r" (__a1), "r" (__a2), "r" (__a3)		\
 	: __SYSCALL_CLOBBERS); 						\
 	_sys_result = __a0;						\
 	}								\
@@ -255,7 +255,7 @@
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
-	: "r" (__a7), "r"(__a1), "r"(__a2), "r"(__a3), "r"(__a4)	\
+	: "r" (__a7), "r"(__a1), "r"(__a2), "r"(__a3), "r" (__a4)	\
 	: __SYSCALL_CLOBBERS); 						\
 	_sys_result = __a0;						\
 	}								\
@@ -277,7 +277,8 @@
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
-	: "r" (__a7), "r"(__a1), "r"(__a2), "r"(__a3), "r"(__a4), "r"(__a5)	\
+	: "r" (__a7), "r" (__a1), "r" (__a2), "r" (__a3),		\
+	  "r" (__a4), "r" (__a5)					\
 	: __SYSCALL_CLOBBERS); 						\
 	_sys_result = __a0;						\
 	}								\
@@ -300,7 +301,8 @@
 	__asm__ volatile ( 						\
 	"scall\n\t" 							\
 	: "+r" (__a0)							\
-	: "r" (__a7), "r"(__a1), "r"(__a2), "r"(__a3), "r"(__a4), "r"(__a5), "r"(__a6)	\
+	: "r" (__a7), "r" (__a1), "r" (__a2), "r" (__a3),		\
+	  "r" (__a4), "r" (__a5), "r" (__a6)				\
 	: __SYSCALL_CLOBBERS); 						\
 	_sys_result = __a0;						\
 	}								\
