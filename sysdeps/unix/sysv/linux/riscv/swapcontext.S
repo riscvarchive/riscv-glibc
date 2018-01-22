@@ -59,10 +59,10 @@ LEAF (__swapcontext)
 	sw	a1, MCONTEXT_FSR(a0)
 #endif /* __riscv_float_abi_soft */
 
-/* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
+/* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, &oucp->uc_sigmask, _NSIG8) */
 	li	a3, _NSIG8
-	mv	a2, zero
-	add     a1, a0, UCONTEXT_SIGMASK
+	add	a2, a0, UCONTEXT_SIGMASK
+	add     a1, t0, UCONTEXT_SIGMASK
 	li	a0, SIG_SETMASK
 
 	li	a7, SYS_ify (rt_sigprocmask)
