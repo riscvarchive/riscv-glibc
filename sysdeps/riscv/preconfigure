@@ -20,7 +20,7 @@ riscv*)
 	with_fp_cond=1
     	;;
     "")
-    	float_machine=
+	float_machine=nofpu
 	with_fp_cond=0
     	;;
     *)
