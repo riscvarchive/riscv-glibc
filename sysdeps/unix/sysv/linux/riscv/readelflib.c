@@ -1,8 +1,6 @@
 /* Support for reading ELF files.
    Copyright (C) 1999-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Andreas Jaeger <aj@suse.de>, 1999 and
-		  Jakub Jelinek <jakub@redhat.com>, 1999.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
