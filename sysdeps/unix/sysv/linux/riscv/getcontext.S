@@ -27,7 +27,7 @@ LEAF (__getcontext)
 	SAVE_INT_REG (sp,   2, a0)
 	SAVE_INT_REG (s0,   8, a0)
 	SAVE_INT_REG (s1,   9, a0)
-	SAVE_INT_REG (x0,  10, a0)	/* return 0 */
+	SAVE_INT_REG (x0,  10, a0)	/* return 0 by overwriting a0.  */
 	SAVE_INT_REG (s2,  18, a0)
 	SAVE_INT_REG (s3,  19, a0)
 	SAVE_INT_REG (s4,  20, a0)

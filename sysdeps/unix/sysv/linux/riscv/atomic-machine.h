@@ -103,7 +103,7 @@ typedef uintmax_t uatomic_max_t;
     __oldval;								\
   })
 
-/* Atomic compare and exchange. */
+/* Atomic compare and exchange.  */
 
 # define atomic_compare_and_exchange_bool_acq(mem, new, old)	\
   __atomic_bool_bysize (__arch_compare_and_exchange_bool, int,	\
@@ -159,7 +159,7 @@ typedef uintmax_t uatomic_max_t;
   __atomic_val_bysize (__arch_exchange_and_add, int, mem, value,	\
 		       __ATOMIC_RELEASE)
 
-/* Miscellaneous. */
+/* Miscellaneous.  */
 
 # define asm_amo(which, ordering, mem, value) ({ 		\
   __atomic_check_size (mem);					\

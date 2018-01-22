@@ -32,7 +32,7 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
 
   _Static_assert (REG_NARGS == 8, "__makecontext assumes 8 argument registers");
 
-  /* Set up the stack. */
+  /* Set up the stack.  */
   sp = ((long int) ucp->uc_stack.ss_sp + ucp->uc_stack.ss_size) & ALMASK;
 
   /* Set up the register context.
@@ -46,7 +46,7 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
   ucp->uc_mcontext.__gregs[REG_SP] = sp;
   ucp->uc_mcontext.__gregs[REG_PC] = (long int) &__start_context;
 
-  /* Put args in a0-a7, then put any remaining args on the stack. */
+  /* Put args in a0-a7, then put any remaining args on the stack.  */
   ucp->uc_mcontext.__gregs[REG_A0 + 0] = a0;
   ucp->uc_mcontext.__gregs[REG_A0 + 1] = a1;
   ucp->uc_mcontext.__gregs[REG_A0 + 2] = a2;

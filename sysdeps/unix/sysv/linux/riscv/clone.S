@@ -46,19 +46,19 @@ LEAF (__clone)
 	mv		a3,a5
 	mv		a4,a6
 
-	/* Do the system call */
+	/* Do the system call.  */
 	li		a7,__NR_clone
 	scall
 
 	bltz		a0,L (error)
 	beqz		a0,L (thread_start)
 
-	/* Successful return from the parent */
+	/* Successful return from the parent.  */
 	ret
 
 L (invalid):
 	li		a0, -EINVAL
-	/* Something bad happened -- no child created */
+	/* Something bad happened -- no child created.  */
 L (error):
 	j		__syscall_error
 	END (__clone)

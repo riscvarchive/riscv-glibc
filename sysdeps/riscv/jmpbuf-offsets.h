@@ -18,6 +18,6 @@
 
 #include <jmpbuf-unwind.h>
 
-/* Helper for generic ____longjmp_chk(). */
+/* Helper for generic ____longjmp_chk().  */
 #define JB_FRAME_ADDRESS(buf) \
   ((void *) _jmpbuf_sp (buf))

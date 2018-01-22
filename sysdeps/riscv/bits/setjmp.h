@@ -23,7 +23,7 @@ typedef struct __jmp_buf_internal_tag
   {
     /* Program counter.  */
     long int __pc;
-    /* Callee-saved registers. */
+    /* Callee-saved registers.  */
     long int __regs[12];
     /* Stack pointer.  */
     long int __sp;

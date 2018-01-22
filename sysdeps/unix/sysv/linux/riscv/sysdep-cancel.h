@@ -50,23 +50,23 @@
     addi sp, sp, -STKSPACE;						\
     REG_S ra, STKOFF_RA(sp);						\
     cfi_rel_offset (ra, STKOFF_RA);					\
-    PUSHARGS_##args;			/* save syscall args */		\
+    PUSHARGS_##args;			/* Save syscall args.  */	\
     CENABLE;								\
-    REG_S a0, STKOFF_SVMSK(sp);		/* save mask */			\
-    POPARGS_##args;			/* restore syscall args */	\
+    REG_S a0, STKOFF_SVMSK(sp);		/* Save mask.  */		\
+    POPARGS_##args;			/* Restore syscall args.  */	\
     li a7, SYS_ify (syscall_name);					\
     scall;								\
-    REG_S a0, STKOFF_A0(sp);		/* save syscall result */	\
-    REG_L a0, STKOFF_SVMSK(sp);		/* pass mask as arg1 */		\
+    REG_S a0, STKOFF_A0(sp);		/* Save syscall result.  */	\
+    REG_L a0, STKOFF_SVMSK(sp);		/* Pass mask as arg1.  */	\
     CDISABLE;								\
-    REG_L ra, STKOFF_RA(sp);		/* restore return address */	\
-    REG_L a0, STKOFF_A0(sp);		/* restore syscall result */	\
+    REG_L ra, STKOFF_RA(sp);		/* Restore return address.  */	\
+    REG_L a0, STKOFF_A0(sp);		/* Restore syscall result.  */	\
     addi sp, sp, STKSPACE;						\
     bltz a0, 99b;							\
   L(pseudo_end):
 
 
-# define PUSHARGS_0	/* nothing to do */
+# define PUSHARGS_0	/* Nothing to do.  */
 # define PUSHARGS_1	PUSHARGS_0 REG_S a0, STKOFF_A0(sp); cfi_rel_offset (a0, STKOFF_A0);
 # define PUSHARGS_2	PUSHARGS_1 REG_S a1, STKOFF_A1(sp); cfi_rel_offset (a1, STKOFF_A1);
 # define PUSHARGS_3	PUSHARGS_2 REG_S a2, STKOFF_A2(sp); cfi_rel_offset (a2, STKOFF_A2);
@@ -74,7 +74,7 @@
 # define PUSHARGS_5	PUSHARGS_4 REG_S a4, STKOFF_A4(sp); cfi_rel_offset (a4, STKOFF_A4);
 # define PUSHARGS_6	PUSHARGS_5 REG_S a5, STKOFF_A5(sp); cfi_rel_offset (a5, STKOFF_A5);
 
-# define POPARGS_0	/* nothing to do */
+# define POPARGS_0	/* Nothing to do.  */
 # define POPARGS_1	POPARGS_0 REG_L a0, STKOFF_A0(sp);
 # define POPARGS_2	POPARGS_1 REG_L a1, STKOFF_A1(sp);
 # define POPARGS_3	POPARGS_2 REG_L a2, STKOFF_A2(sp);
