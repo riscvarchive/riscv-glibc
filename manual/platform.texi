@@ -121,11 +121,15 @@ when it is not allowed, the priority is set to medium.
 @appendixsec RISC-V-specific Facilities
 
 Cache management facilities specific to RISC-V systems that implement the Linux
-ABI are declared in @file{sysdeps/unix/sysv/linux/riscv/sys/cachectl.h}.
+ABI are declared in @file{sys/cachectl.h}.
 
-@deftypefun {void} __riscv_flush_icache(void *start, void *end, unsigned long int flags)
+@deftypefun {void} __riscv_flush_icache(void *@var{__start}, void *@var{__end},
+					unsigned long int @var{__flags})
 @safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
-Enforce ordering between stores and instruction cache fetches.  The flags
-variable is used to determine if this applies just to the local thread or to
-all threads in the system.
+Enforce ordering between stores and instruction cache fetches.  The range of
+addresses over which ordering is enforced is specified by @var{__start} and
+@var{__end}.  The @var{__flags} variable controls how the ordering is enforced,
+with @code{SYS_RISCV_FLUSH_ICACHE_LOCAL} specifying that the ordering is
+enforced only with respect to the local instruction stream (as opposed to all
+instruction streams).
 @end deftypefun
