@@ -27,13 +27,7 @@ typedef int (*func_type) (void *, void *, unsigned long int);
 static int __riscv_flush_icache_syscall (void *start, void *end,
 					 unsigned long int flags)
 {
-#ifdef __NR_riscv_flush_icache
 	return INLINE_SYSCALL (riscv_flush_icache, 3, start, end, flags);
-#else
-	/* FIXME: This should go away, as it's actually not quite correct. */
-	__asm__ volatile ("fence.i");
-	return 0;
-#endif
 }
 
 static func_type
