@@ -83,7 +83,7 @@ elf_machine_load_address (void)
 
 /* Initial entry point code for the dynamic linker.
    The C function `_dl_start' is the real entry point;
-   its return value is the user program's entry point. */
+   its return value is the user program's entry point.  */
 
 #define RTLD_START asm (\
 	".text\n\
@@ -124,7 +124,7 @@ elf_machine_load_address (void)
 #define ARCH_LA_PLTENTER riscv_gnu_pltenter
 #define ARCH_LA_PLTEXIT riscv_gnu_pltexit
 
-/* Bias .got.plt entry by the offset requested by the PLT header. */
+/* Bias .got.plt entry by the offset requested by the PLT header.  */
 #define elf_machine_plt_value(map, reloc, value) (value)
 
 static inline ElfW (Addr)

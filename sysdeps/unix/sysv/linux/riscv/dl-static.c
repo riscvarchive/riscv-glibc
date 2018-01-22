@@ -23,7 +23,7 @@
 void
 _dl_var_init (void *array[])
 {
-  /* It has to match "variables" below. */
+  /* It has to match "variables" below.  */
   enum
     {
       DL_PAGESIZE = 0

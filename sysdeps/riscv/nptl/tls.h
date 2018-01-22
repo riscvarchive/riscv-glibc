@@ -66,7 +66,7 @@ typedef struct
    + ((sizeof (tcbhead_t) + TLS_TCB_ALIGN - 1) & ~(TLS_TCB_ALIGN - 1)))
 
 /* The thread pointer tp points to the end of the TCB.
-   The pthread_descr structure is immediately in front of the TCB. */
+   The pthread_descr structure is immediately in front of the TCB.  */
 # define TLS_TCB_OFFSET	0
 
 /* Install the dtv pointer.  The pointer passed is to the element with
@@ -82,7 +82,7 @@ typedef struct
 # define GET_DTV(tcbp) \
   (((tcbhead_t *) (tcbp))[-1].dtv)
 
-/* Code to initially initialize the thread pointer. */
+/* Code to initially initialize the thread pointer.  */
 # define TLS_INIT_TP(tcbp) \
   ({ __thread_self = (char*)tcbp + TLS_TCB_OFFSET; NULL; })
 

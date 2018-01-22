@@ -30,7 +30,7 @@
 	.text
 LEAF (__setcontext)
 
-	mv	t0, a0					/* t0 <- ucp */
+	mv	t0, a0	/* Save ucp into t0.  */
 
 /* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
 	li	a3, _NSIG8

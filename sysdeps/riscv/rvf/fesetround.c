@@ -31,7 +31,7 @@ __fesetround (int round)
       riscv_setround (round);
       return 0;
     default:
-      return round; /* a nonzero value */
+      return round; /* A nonzero value.  */
     }
 }
 libm_hidden_def (__fesetround)
