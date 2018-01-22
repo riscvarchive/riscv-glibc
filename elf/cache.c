@@ -116,8 +116,10 @@ print_entry (const char *lib, int flag, unsigned int osversion,
       break;
     case FLAG_RISCV_FLOAT_ABI_SOFT:
       fputs (",soft-float", stdout);
+      break;
     case FLAG_RISCV_FLOAT_ABI_DOUBLE:
-      fputs (",soft-float", stdout);
+      fputs (",double-float", stdout);
+      break;
     case 0:
       break;
     default:
