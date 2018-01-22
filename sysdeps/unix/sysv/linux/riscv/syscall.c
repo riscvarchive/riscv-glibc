@@ -29,9 +29,7 @@ syscall (long int syscall_number, long int arg1, long int arg2, long int arg3,
 			      arg5, arg6, arg7);
 
   if (INTERNAL_SYSCALL_ERROR_P (ret, err))
-    {
-      return __syscall_error (ret);
-    }
+    return __syscall_error (ret);
 
   return ret;
 }
