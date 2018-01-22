@@ -57,7 +57,20 @@
 static inline int __attribute_used__
 elf_machine_matches_host (const ElfW (Ehdr) *ehdr)
 {
-  return ehdr->e_machine == EM_RISCV;
+  /* We can only run RISC-V binaries.  */
+  if (ehdr->e_machine != EM_RISCV)
+    return 1;
+
+#ifdef __ricsv_float_abi_double
+  /* Hard-float libraries */
+  if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) == EF_RISCV_FLOAT_ABI_DOUBLE)
+    return 1;
+#else
+  if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) == EF_RISCV_FLOAT_ABI_SOFT)
+    return 1;
+#endif
+
+  return 0;
 }
 
 /* Return the link-time address of _DYNAMIC.  */
