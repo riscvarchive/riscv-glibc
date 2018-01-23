@@ -17,8 +17,8 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <stdlib.h>
-#include <soft-fp.h>
-#include <quad.h>
+#include <soft-fp/soft-fp.h>
+#include <soft-fp/quad.h>
 
 long double
 __ieee754_sqrtl (const long double a)
