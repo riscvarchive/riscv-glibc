@@ -24,6 +24,15 @@ int process_elf64_file (const char *file_name, const char *lib, int *flag,
 			unsigned int *osversion, char **soname,
 			void *file_contents, size_t file_length);
 
+/* The ELF flags supported by our current glibc port:
+   - EF_RISCV_FLOAT_ABI: We support the soft and double ABIs.
+   - EF_RISCV_RVC: While the Linux ABI mandates the presence of the C
+     extension, we can still support libraries compiled without that extension
+     so we just ignore this flag.
+   - EF_RISCV_RVE: glibc (and Linux) don't support RV32E based systems.
+   - EF_RISCV_TSO: The TSO extension isn't supported, as doing so would require
+     some mechanism to ensure that the TSO extension is enabled which doesn't
+     currently exist.  */
 #define SUPPORTED_ELF_FLAGS (EF_RISCV_FLOAT_ABI | EF_RISCV_RVC)
 
 /* Returns 0 if everything is ok, != 0 in case of error.  */
@@ -62,7 +71,7 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
       case EF_RISCV_FLOAT_ABI_DOUBLE:
         *flag |= FLAG_RISCV_FLOAT_ABI_DOUBLE;
 	break;
-      case EF_RISCV_FLOAT_ABI_QUAD:
+      default:
         return 1;
     }
 
@@ -70,9 +79,9 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
   if (flags & EF_RISCV_RVC)
     return 1;
 
-  /* The remainder of the header bits are reserved, so just be on the safe side
-     and don't support them at all.  */
-  if (flags & SUPPORTED_ELF_FLAGS)
+  /* If there are any other ELF flags set then glibc doesn't support this
+     library.  */
+  if (flags & ~SUPPORTED_ELF_FLAGS)
     return 1;
 
   return ret;
