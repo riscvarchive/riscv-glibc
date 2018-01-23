@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <atomic.h>
 #include <sys/cachectl.h>
+#include <asm/syscalls.h>
 
 typedef int (*func_type) (void *, void *, unsigned long int);
 
