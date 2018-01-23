@@ -19,6 +19,10 @@ riscv*)
     	float_machine=rvd
 	with_fp_cond=1
     	;;
+    32)
+        echo "glibc does not yet support systems with the F but not D extensions" >&2
+	exit 1
+	;;
     "")
 	float_machine=nofpu
 	with_fp_cond=0
@@ -33,6 +37,10 @@ riscv*)
     soft)
     	abi_flen=0
     	;;
+    single)
+	echo "glibc does not yet support the single floating-point ABI" >&2
+	exit 1
+	;;
     double)
     	abi_flen=64
     	;;
