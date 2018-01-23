@@ -60,13 +60,13 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc,
 
       long reg_args = argc < REG_NARGS ? argc : REG_NARGS;
       for (i = 5; i < reg_args; i++)
-        ucp->uc_mcontext.gregs[REG_A0 + i] = va_arg (vl, long);
+        ucp->uc_mcontext.__gregs[REG_A0 + i] = va_arg (vl, long);
 
       long int stack_args = argc - reg_args;
       if (stack_args > 0)
 	{
 	  sp = (sp - stack_args * sizeof (long int)) & ALMASK;
-	  ucp->uc_mcontext.gregs[REG_SP] = sp;
+	  ucp->uc_mcontext.__gregs[REG_SP] = sp;
 	  for (i = 0; i < stack_args; i++)
 	    ((long int *) sp)[i] = va_arg (vl, long int);
 	}
