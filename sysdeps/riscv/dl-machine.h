@@ -59,18 +59,20 @@ elf_machine_matches_host (const ElfW (Ehdr) *ehdr)
 {
   /* We can only run RISC-V binaries.  */
   if (ehdr->e_machine != EM_RISCV)
-    return 1;
+    return 0;
 
+  /* Ensure the library's floating-point ABI matches that of the running
+     system.  For now we don't support mixing XLEN, so there's no need (or way)
+     to check it matches.  */
 #ifdef __ricsv_float_abi_double
-  /* Hard-float libraries */
-  if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) == EF_RISCV_FLOAT_ABI_DOUBLE)
-    return 1;
+  if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) != EF_RISCV_FLOAT_ABI_DOUBLE)
+    return 0;
 #else
-  if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) == EF_RISCV_FLOAT_ABI_SOFT)
-    return 1;
+  if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) != EF_RISCV_FLOAT_ABI_SOFT)
+    return 0;
 #endif
 
-  return 0;
+  return 1;
 }
 
 /* Return the link-time address of _DYNAMIC.  */
