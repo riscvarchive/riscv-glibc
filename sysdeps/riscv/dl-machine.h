@@ -64,7 +64,7 @@ elf_machine_matches_host (const ElfW (Ehdr) *ehdr)
   /* Ensure the library's floating-point ABI matches that of the running
      system.  For now we don't support mixing XLEN, so there's no need (or way)
      to check it matches.  */
-#ifdef __ricsv_float_abi_double
+#ifdef __riscv_float_abi_double
   if ((ehdr->e_flags & EF_RISCV_FLOAT_ABI) != EF_RISCV_FLOAT_ABI_DOUBLE)
     return 0;
 #else
