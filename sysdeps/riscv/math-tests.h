@@ -20,9 +20,14 @@
 /* Trapping exceptions are not supported on RISC-V.  */
 #define EXCEPTION_ENABLE_SUPPORTED(EXCEPT)	((EXCEPT) == 0)
 
+/* Despite not supporting trapping exceptions, we support setting
+   floating-point exception flags on hard-float targets.  These are not
+   supported on soft-float targets.  */
+#ifdef __riscv_float_abi_soft
 #define EXCEPTION_TESTS_float 0
 #define EXCEPTION_TESTS_double        0
 #define EXCEPTION_TESTS_long_double   0
+#endif
 
 /* RISC-V floating-point instructions do not preserve NaN payloads.  */
 #define SNAN_TESTS_PRESERVE_PAYLOAD	0
