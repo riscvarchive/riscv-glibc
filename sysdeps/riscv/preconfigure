@@ -24,7 +24,6 @@ riscv*)
 	exit 1
 	;;
     "")
-	float_machine=nofpu
 	with_fp_cond=0
     	;;
     *)
