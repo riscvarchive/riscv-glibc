@@ -6,8 +6,12 @@ riscv*)
     atomic=`$CC $CFLAGS $CPPFLAGS -E -dM -xc /dev/null | grep '#define __riscv_atomic' | cut -d' ' -f2`
     
     case "$xlen" in
-    32 | 64)
+    32)
+	echo "glibc does not yet support 32-bit systems" >&2
+	exit 1
     	;;
+    64)
+	;;
     *)
     	echo "Unable to determine XLEN" >&2
     	exit 1
@@ -24,6 +28,8 @@ riscv*)
 	exit 1
 	;;
     "")
+	echo "glibc does not yet support systems without the F extension" >&2
+	exit 1
 	with_fp_cond=0
     	;;
     *)
@@ -35,6 +41,8 @@ riscv*)
     case "$float_abi" in
     soft)
     	abi_flen=0
+	echo "glibc does not yet support the soft floating-point ABI" >&2
+	exit 1
     	;;
     single)
 	echo "glibc does not yet support the single floating-point ABI" >&2
