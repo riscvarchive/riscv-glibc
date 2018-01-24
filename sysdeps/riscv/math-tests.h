@@ -23,11 +23,14 @@
 /* Despite not supporting trapping exceptions, we support setting
    floating-point exception flags on hard-float targets.  These are not
    supported on soft-float targets.  */
-#ifdef __riscv_float_abi_soft
+#if __riscv_flen == 0
 #define EXCEPTION_TESTS_float 0
 #define EXCEPTION_TESTS_double        0
-#define EXCEPTION_TESTS_long_double   0
 #endif
+
+/* We don't support the Q extension yet, so long double is always soft float
+ * and therefor doesn't support exceptions.  */
+#define EXCEPTION_TESTS_long_double   0
 
 /* RISC-V floating-point instructions do not preserve NaN payloads.  */
 #define SNAN_TESTS_PRESERVE_PAYLOAD	0
