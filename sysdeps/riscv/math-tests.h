@@ -29,6 +29,13 @@
 # define EXCEPTION_TESTS_long_double   0
 #endif
 
+/* On soft-float targets we only support the "to nearest" rounding mode.  */
+#if __riscv_flen == 0
+# define ROUNDING_TESTS_float(MODE)		((MODE) == FE_TONEAREST)
+# define ROUNDING_TESTS_double(MODE)		((MODE) == FE_TONEAREST)
+# define ROUNDING_TESTS_long_double(MODE)	((MODE) == FE_TONEAREST)
+#endif
+
 /* RISC-V floating-point instructions do not preserve NaN payloads.  */
 #define SNAN_TESTS_PRESERVE_PAYLOAD	0
 
