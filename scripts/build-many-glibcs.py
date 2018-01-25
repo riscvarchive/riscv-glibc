@@ -331,10 +331,19 @@ class Context(object):
                         gcc_cfg=['--disable-multilib', '--enable-secureplt'])
         self.add_config(arch='riscv64',
                         os_name='linux-gnu',
-                        glibcs=[{'variant': 'rv64imafdc-lp64d',
-                                 'ccopts': '-march=rv64imafdc -mabi=lp64d'},
-                                {'variant': 'rv64imac-lp64',
-                                 'ccopts': '-march=rv64imac -mabi=lp64'}])
+                        variant='rv64imac-lp64',
+                        gcc_cfg=['--with-arch=rv64imac', '--with-abi=lp64',
+                                 '--disable-multilib'])
+        self.add_config(arch='riscv64',
+                        os_name='linux-gnu',
+                        variant='rv64imafdc-lp64',
+                        gcc_cfg=['--with-arch=rv64imafdc', '--with-abi=lp64',
+                                 '--disable-multilib'])
+        self.add_config(arch='riscv64',
+                        os_name='linux-gnu',
+                        variant='rv64imafdc-lp64d',
+                        gcc_cfg=['--with-arch=rv64imafdc', '--with-abi=lp64d',
+                                 '--disable-multilib'])
         self.add_config(arch='s390x',
                         os_name='linux-gnu',
                         glibcs=[{},
