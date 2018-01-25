@@ -11,3 +11,19 @@
    But new configurations without compatibility concerns for
    toolchains without .init_array support can use this to avoid the
    superfluous .init and .fini boilerplate code.  */
+
+#include <sys/asm.h>
+
+#ifdef PREINIT_FUNCTION
+
+#if PREINIT_FUNCTION_WEAK
+# error PREINIT_FUNCTION_WEAK is unsupported
+#endif
+
+/* This arranges for PREINIT_FUNCTION to be called upon loading a library that
+   contains crti.o.  */
+
+	.section .init_array, "aw"
+	.dc.a PREINIT_FUNCTION
+
+#endif
