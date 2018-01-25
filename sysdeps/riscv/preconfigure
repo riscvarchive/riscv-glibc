@@ -41,8 +41,6 @@ riscv*)
     case "$float_abi" in
     soft)
     	abi_flen=0
-	echo "glibc does not yet support the soft floating-point ABI" >&2
-	exit 1
     	;;
     single)
 	echo "glibc does not yet support the single floating-point ABI" >&2
