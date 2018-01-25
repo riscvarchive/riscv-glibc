@@ -28,8 +28,6 @@ riscv*)
 	exit 1
 	;;
     "")
-	echo "glibc does not yet support systems without the F extension" >&2
-	exit 1
 	with_fp_cond=0
     	;;
     *)
