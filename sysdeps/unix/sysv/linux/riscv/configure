@@ -254,3 +254,5 @@ case "$prefix" in
 esac
   ;;
 esac
+
+ldd_rewrite_script=sysdeps/unix/sysv/linux/riscv/ldd-rewrite.sed

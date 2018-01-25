@@ -42,3 +42,5 @@ ilp32d-riscv/rv32/*)
   LIBC_SLIBDIR_RTLDDIR([lib32/ilp32d], [lib])
   ;;
 esac
+
+ldd_rewrite_script=sysdeps/unix/sysv/linux/riscv/ldd-rewrite.sed
