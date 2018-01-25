@@ -75,10 +75,6 @@ process_elf_file (const char *file_name, const char *lib, int *flag,
         return 1;
     }
 
-  /* RISC-V Linux ABIs mandate the presence of the C extension.  */
-  if (flags & EF_RISCV_RVC)
-    return 1;
-
   /* If there are any other ELF flags set then glibc doesn't support this
      library.  */
   if (flags & ~SUPPORTED_ELF_FLAGS)
