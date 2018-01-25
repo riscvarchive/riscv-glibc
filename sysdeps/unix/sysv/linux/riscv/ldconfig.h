@@ -24,7 +24,7 @@
 #if __riscv_xlen == 64
 # define LD_SO_ABI "riscv64-lp64"
 #else
-# define LD_SO_ABI "riscv32-ilp32"
+# error "rv32i-based targets are not supported"
 #endif
 
 #define SYSDEP_KNOWN_INTERPRETER_NAMES				\

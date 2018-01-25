@@ -25,7 +25,5 @@
 #if __riscv_xlen == 64
 # define __WORDSIZE_TIME64_COMPAT32 1
 #else
-# define __WORDSIZE_TIME64_COMPAT32 0
-# define __WORDSIZE32_SIZE_ULONG    0
-# define __WORDSIZE32_PTRDIFF_LONG  0
+# error "rv32i-based targets are not supported"
 #endif
