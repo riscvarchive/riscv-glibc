@@ -38,7 +38,9 @@ __lookup_riscv_flush_icache (void)
 
   func_type func = _dl_vdso_vsym ("__vdso_flush_icache", &linux_version);
 
-  /* The vDSO is required, as there is no exposed system call equivalent.  */
+  /* If there is no vDSO entry then call the system call directly.  All Linux
+     versions provide the vDSO entry, but QEMU's user-mode emulation doesn't
+     provide a vDSO.  */
   if (!func)
     func = &__riscv_flush_icache_syscall;
 
