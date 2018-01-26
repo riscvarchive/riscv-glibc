@@ -26,7 +26,41 @@
 # define _DL_CACHE_DEFAULT_ID    (FLAG_RISCV_FLOAT_ABI_SOFT | FLAG_ELF_LIBC6)
 #endif
 
-#define _dl_cache_check_flags(flags)                    \
+#define _dl_cache_check_flags(flags)		    			\
   ((flags) == _DL_CACHE_DEFAULT_ID)
+
+/* If given a path to one of our library directories, adds every library
+   directory via add_dir (), otherwise just adds the giver directory.  On
+   RISC-V, libraries can be found in paths ending in:
+     - /lib64/lp64d
+     - /lib64/lp64
+     - /lib (only ld.so)
+   so this will add all of those paths.  */
+#define add_system_dir(dir) 						\
+  do							    		\
+    {									\
+      size_t len = strlen (dir);					\
+      char path[len + 10];						\
+      memcpy (path, dir, len + 1);					\
+      if (len >= 12 && ! memcmp(path + len - 12, "/lib64/lp64d", 12))	\
+	{								\
+	  len -= 8;							\
+	  path[len] = '\0';						\
+	}								\
+      if (len >= 11 && ! memcmp(path + len - 11, "/lib64/lp64", 11))	\
+	{								\
+	  len -= 7;							\
+	  path[len] = '\0';						\
+	}								\
+      add_dir (path);							\
+      if (len >= 4 && ! memcmp(path + len - 4, "/lib", 4))		\
+	{								\
+	  memcpy (path + len, "64/lp64d", 10);				\
+	  add_dir (path);						\
+	  memcpy (path + len, "64/lp64", 9);				\
+	  add_dir (path);						\
+	}								\
+    } while (0)
+
 
 #include_next <dl-cache.h>
