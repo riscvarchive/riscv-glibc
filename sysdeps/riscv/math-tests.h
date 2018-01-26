@@ -23,14 +23,14 @@
 /* Despite not supporting trapping exceptions, we support setting
    floating-point exception flags on hard-float targets.  These are not
    supported on soft-float targets.  */
-#ifdef __riscv_flen
+#ifndef __riscv_flen
 # define EXCEPTION_TESTS_float 0
 # define EXCEPTION_TESTS_double        0
 # define EXCEPTION_TESTS_long_double   0
 #endif
 
 /* On soft-float targets we only support the "to nearest" rounding mode.  */
-#ifdef __riscv_flen
+#ifndef __riscv_flen
 # define ROUNDING_TESTS_float(MODE)		((MODE) == FE_TONEAREST)
 # define ROUNDING_TESTS_double(MODE)		((MODE) == FE_TONEAREST)
 # define ROUNDING_TESTS_long_double(MODE)	((MODE) == FE_TONEAREST)
