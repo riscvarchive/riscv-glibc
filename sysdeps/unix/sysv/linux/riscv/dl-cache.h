@@ -49,7 +49,7 @@
   do							    		\
     {									\
       size_t len = strlen (dir);					\
-      char path[len + 10];						\
+      char path[len + 9];						\
       memcpy (path, dir, len + 1);					\
       if (len >= 12 && ! memcmp(path + len - 12, "/lib64/lp64d", 12))	\
 	{								\
@@ -64,9 +64,9 @@
       add_dir (path);							\
       if (len >= 4 && ! memcmp(path + len - 4, "/lib", 4))		\
 	{								\
-	  memcpy (path + len, "64/lp64d", 10);				\
+	  memcpy (path + len, "64/lp64d", 9);				\
 	  add_dir (path);						\
-	  memcpy (path + len, "64/lp64", 9);				\
+	  memcpy (path + len, "64/lp64", 8);				\
 	  add_dir (path);						\
 	}								\
     } while (0)
