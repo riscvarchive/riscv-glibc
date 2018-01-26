@@ -12,8 +12,6 @@
    toolchains without .init_array support can use this to avoid the
    superfluous .init and .fini boilerplate code.  */
 
-#include <sys/asm.h>
-
 #ifdef PREINIT_FUNCTION
 
 #if PREINIT_FUNCTION_WEAK
