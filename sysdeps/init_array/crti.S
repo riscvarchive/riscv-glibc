@@ -23,7 +23,7 @@
 /* This arranges for PREINIT_FUNCTION to be called upon loading a library that
    contains crti.o.  */
 
-	.section .init_array, "aw"
+	.section .init_array,"a",%init_array
 	.dc.a PREINIT_FUNCTION
 
 #endif
