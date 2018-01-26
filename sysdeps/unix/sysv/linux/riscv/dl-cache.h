@@ -35,7 +35,16 @@
      - /lib64/lp64d
      - /lib64/lp64
      - /lib (only ld.so)
-   so this will add all of those paths.  */
+   so this will add all of those paths.
+   
+   According to Joseph Myers:
+       My reasoning for that would be: generic autoconf-configured (etc.)
+       software may only know about using the lib directory, so you want the
+       lib directory to be searched regardless of the ABI - but it's also
+       useful to be able to e.g. list /usr/local/lib in /etc/ld.so.conf for all
+       architectures and have that automatically imply /usr/local/lib64/lp64d
+       etc. so that libraries can be found that come from software that does
+       use the ABI-specific directories.  */
 #define add_system_dir(dir) 						\
   do							    		\
     {									\
