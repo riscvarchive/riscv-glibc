@@ -55,7 +55,7 @@
 
 /* Return nonzero iff ELF header is compatible with the running host.  */
 static inline int __attribute_used__
-elf_machine_matches_host (const ElfW (Ehdr) *ehdr)
+elf_machine_matches_host (const ElfW(Ehdr) *ehdr)
 {
   /* We can only run RISC-V binaries.  */
   if (ehdr->e_machine != EM_RISCV)
@@ -76,10 +76,10 @@ elf_machine_matches_host (const ElfW (Ehdr) *ehdr)
 }
 
 /* Return the link-time address of _DYNAMIC.  */
-static inline ElfW (Addr)
+static inline ElfW(Addr)
 elf_machine_dynamic (void)
 {
-  extern ElfW (Addr) _GLOBAL_OFFSET_TABLE_ __attribute__ ((visibility ("hidden")));
+  extern ElfW(Addr) _GLOBAL_OFFSET_TABLE_ __attribute__ ((visibility ("hidden")));
   return _GLOBAL_OFFSET_TABLE_;
 }
 
@@ -88,10 +88,10 @@ elf_machine_dynamic (void)
 #define STRINGV_(...) # __VA_ARGS__
 
 /* Return the run-time load address of the shared object.  */
-static inline ElfW (Addr)
+static inline ElfW(Addr)
 elf_machine_load_address (void)
 {
-  ElfW (Addr) load_addr;
+  ElfW(Addr) load_addr;
   asm ("lla %0, _DYNAMIC" : "=r" (load_addr));
   return load_addr - elf_machine_dynamic ();
 }
@@ -142,11 +142,11 @@ elf_machine_load_address (void)
 /* Bias .got.plt entry by the offset requested by the PLT header.  */
 #define elf_machine_plt_value(map, reloc, value) (value)
 
-static inline ElfW (Addr)
+static inline ElfW(Addr)
 elf_machine_fixup_plt (struct link_map *map, lookup_t t,
-		       const ElfW (Sym) *refsym, const ElfW (Sym) *sym,
-		       const ElfW (Rela) *reloc,
-		       ElfW (Addr) *reloc_addr, ElfW (Addr) value)
+		       const ElfW(Sym) *refsym, const ElfW(Sym) *sym,
+		       const ElfW(Rela) *reloc,
+		       ElfW(Addr) *reloc_addr, ElfW(Addr) value)
 {
   return *reloc_addr = value;
 }
@@ -161,16 +161,16 @@ elf_machine_fixup_plt (struct link_map *map, lookup_t t,
 
 auto inline void
 __attribute__ ((always_inline))
-elf_machine_rela (struct link_map *map, const ElfW (Rela) *reloc,
-		  const ElfW (Sym) *sym, const struct r_found_version *version,
+elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
+		  const ElfW(Sym) *sym, const struct r_found_version *version,
 		  void *const reloc_addr, int skip_ifunc)
 {
-  ElfW (Addr) r_info = reloc->r_info;
+  ElfW(Addr) r_info = reloc->r_info;
   const unsigned long int r_type = ELFW (R_TYPE) (r_info);
-  ElfW (Addr) *addr_field = (ElfW (Addr) *) reloc_addr;
-  const ElfW (Sym) *const __attribute__ ((unused)) refsym = sym;
+  ElfW(Addr) *addr_field = (ElfW(Addr) *) reloc_addr;
+  const ElfW(Sym) *const __attribute__ ((unused)) refsym = sym;
   struct link_map *sym_map = RESOLVE_MAP (&sym, version, r_type);
-  ElfW (Addr) value = 0;
+  ElfW(Addr) value = 0;
   if (sym_map != NULL)
     value = sym_map->l_addr + sym->st_value + reloc->r_addend;
 
@@ -208,7 +208,7 @@ elf_machine_rela (struct link_map *map, const ElfW (Rela) *reloc,
 	    /* There's nothing to do if the symbol is in .tbss.  */
 	    if (__glibc_likely (sym->st_value >= sym_map->l_tls_initimage_size))
 	      break;
-	    value += (ElfW (Addr)) sym_map->l_tls_initimage - sym_map->l_addr;
+	    value += (ElfW(Addr)) sym_map->l_tls_initimage - sym_map->l_addr;
 	  }
 
 	size_t size = sym->st_size;
@@ -265,18 +265,18 @@ elf_machine_rela (struct link_map *map, const ElfW (Rela) *reloc,
 
 auto inline void
 __attribute__ ((always_inline))
-elf_machine_rela_relative (ElfW (Addr) l_addr, const ElfW (Rela) *reloc,
+elf_machine_rela_relative (ElfW(Addr) l_addr, const ElfW(Rela) *reloc,
 			  void *const reloc_addr)
 {
-  *(ElfW (Addr) *) reloc_addr = l_addr + reloc->r_addend;
+  *(ElfW(Addr) *) reloc_addr = l_addr + reloc->r_addend;
 }
 
 auto inline void
 __attribute__ ((always_inline))
-elf_machine_lazy_rel (struct link_map *map, ElfW (Addr) l_addr,
-		      const ElfW (Rela) *reloc, int skip_ifunc)
+elf_machine_lazy_rel (struct link_map *map, ElfW(Addr) l_addr,
+		      const ElfW(Rela) *reloc, int skip_ifunc)
 {
-  ElfW (Addr) *const reloc_addr = (void *) (l_addr + reloc->r_offset);
+  ElfW(Addr) *const reloc_addr = (void *) (l_addr + reloc->r_offset);
   const unsigned int r_type = ELFW (R_TYPE) (reloc->r_info);
 
   /* Check for unexpected PLT reloc type.  */
@@ -306,14 +306,14 @@ elf_machine_runtime_setup (struct link_map *l, int lazy, int profile)
   if (l->l_info[DT_JMPREL])
     {
       extern void _dl_runtime_resolve (void) __attribute__ ((visibility ("hidden")));
-      ElfW (Addr) *gotplt = (ElfW (Addr) *) D_PTR (l, l_info[DT_PLTGOT]);
+      ElfW(Addr) *gotplt = (ElfW(Addr) *) D_PTR (l, l_info[DT_PLTGOT]);
       /* If a library is prelinked but we have to relocate anyway,
 	 we have to be able to undo the prelinking of .got.plt.
 	 The prelinker saved the address of .plt for us here.  */
       if (gotplt[1])
 	l->l_mach.plt = gotplt[1] + l->l_addr;
-      gotplt[0] = (ElfW (Addr)) &_dl_runtime_resolve;
-      gotplt[1] = (ElfW (Addr)) l;
+      gotplt[0] = (ElfW(Addr)) &_dl_runtime_resolve;
+      gotplt[1] = (ElfW(Addr)) l;
     }
 #endif
 

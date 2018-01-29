@@ -39,14 +39,14 @@ typedef struct La_riscv_retval
 
 __BEGIN_DECLS
 
-extern ElfW (Addr) la_riscv_gnu_pltenter (ElfW (Sym) *__sym, unsigned int __ndx,
-					  uintptr_t *__refcook,
-					  uintptr_t *__defcook,
-					  La_riscv_regs *__regs,
-					  unsigned int *__flags,
-					  const char *__symname,
-					  long int *__framesizep);
-extern unsigned int la_riscv_gnu_pltexit (ElfW (Sym) *__sym, unsigned int __ndx,
+extern ElfW(Addr) la_riscv_gnu_pltenter (ElfW(Sym) *__sym, unsigned int __ndx,
+					 uintptr_t *__refcook,
+					 uintptr_t *__defcook,
+					 La_riscv_regs *__regs,
+					 unsigned int *__flags,
+					 const char *__symname,
+					 long int *__framesizep);
+extern unsigned int la_riscv_gnu_pltexit (ElfW(Sym) *__sym, unsigned int __ndx,
 					  uintptr_t *__refcook,
 					  uintptr_t *__defcook,
 					  const La_riscv_regs *__inregs,
