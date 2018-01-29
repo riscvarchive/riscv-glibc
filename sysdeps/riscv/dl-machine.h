@@ -217,7 +217,7 @@ elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
 	    const char *strtab = (const void *) D_PTR (map, l_info[DT_STRTAB]);
 	    if (sym->st_size > refsym->st_size)
 	      size = refsym->st_size;
-	    if (sym->st_size > refsym->st_size || GLRO (dl_verbose))
+	    if (sym->st_size > refsym->st_size || GLRO(dl_verbose))
 	      _dl_error_printf ("\
   %s: Symbol `%s' has different size in shared object, consider re-linking\n",
 				rtld_progname ?: "<program name unknown>",
