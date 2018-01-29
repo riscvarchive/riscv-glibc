@@ -240,9 +240,9 @@ elf_machine_rela (struct link_map *map, const ElfW(Rela) *reloc,
 	   common defn for _dl_rtld_map, which is incompatible with a
 	   weak decl in the same file.  */
 #  ifndef SHARED
-	weak_extern (GL (dl_rtld_map));
+	weak_extern (GL(dl_rtld_map));
 #  endif
-	if (map != &GL (dl_rtld_map)) /* Already done in rtld itself.  */
+	if (map != &GL(dl_rtld_map)) /* Already done in rtld itself.  */
 # endif
 	  *addr_field = map->l_addr + reloc->r_addend;
       break;

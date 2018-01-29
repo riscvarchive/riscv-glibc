@@ -138,7 +138,7 @@ typedef struct
     }									     \
   while (0)
 # define THREAD_GSCOPE_WAIT() \
-  GL (dl_wait_lookup_done) ()
+  GL(dl_wait_lookup_done) ()
 
 #endif /* __ASSEMBLER__ */
 
