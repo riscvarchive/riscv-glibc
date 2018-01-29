@@ -26,7 +26,7 @@
 # define REG_S sd
 # define REG_L ld
 #elif __riscv_xlen == 32
-#error "rv32i-based targets are not supported"
+# error "rv32i-based targets are not supported"
 #else
 # error __riscv_xlen must equal 32 or 64
 #endif
