@@ -34,7 +34,7 @@
 # define PSEUDO(name, syscall_name, args)				\
       .align 2;								\
   L(pseudo_start):							\
-  99: j __syscall_error;						\
+  99: tail __syscall_error;						\
   ENTRY (name)								\
     SINGLE_THREAD_P(t0);						\
     bnez t0, L(pseudo_cancel);  					\

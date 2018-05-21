@@ -64,7 +64,7 @@ ENTRY (__sigsetjmp)
   ret
 #else
   /* Make a tail call to __sigjmp_save; it takes the same args.  */
-  j __sigjmp_save
+  tail __sigjmp_save
 #endif
 
 

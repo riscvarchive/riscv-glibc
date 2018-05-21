@@ -92,7 +92,7 @@ LEAF (__setcontext)
 
 	jr	t1
 
-99:	j	__syscall_error
+99:	tail	__syscall_error
 
 PSEUDO_END (__setcontext)
 weak_alias (__setcontext, setcontext)
@@ -108,7 +108,7 @@ LEAF (__start_context)
 	/* Invoke subsequent context if present, else exit(0).  */
 	mv	a0, s2
 	beqz	s2, 1f
-	jal	__setcontext
-1:	j	exit
+	call	__setcontext
+1:	tail	exit
 
 PSEUDO_END (__start_context)
