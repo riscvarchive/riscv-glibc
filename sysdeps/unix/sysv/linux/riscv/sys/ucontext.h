@@ -49,10 +49,10 @@ typedef greg_t gregset_t[NGREG];
 /* Container for floating-point state.  */
 typedef union __riscv_fp_state fpregset_t;
 
+#endif
+
 /* Context to describe whole processor state.  */
 typedef struct sigcontext mcontext_t;
-
-#endif
 
 /* Userlevel context.  */
 typedef struct ucontext
