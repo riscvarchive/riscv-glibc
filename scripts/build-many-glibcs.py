@@ -330,6 +330,21 @@ class Context(object):
                         variant='e500v1',
                         gcc_cfg=['--disable-multilib', '--enable-secureplt',
                                  '--enable-obsolete'])
+        self.add_config(arch='riscv32',
+                        os_name='linux-gnu',
+                        variant='rv32imac-ilp32',
+                        gcc_cfg=['--with-arch=rv32imac', '--with-abi=ilp32',
+                                 '--disable-multilib'])
+        self.add_config(arch='riscv32',
+                        os_name='linux-gnu',
+                        variant='rv32imafdc-ilp32',
+                        gcc_cfg=['--with-arch=rv32imafdc', '--with-abi=ilp32',
+                                 '--disable-multilib'])
+        self.add_config(arch='riscv32',
+                        os_name='linux-gnu',
+                        variant='rv32imafdc-ilp32d',
+                        gcc_cfg=['--with-arch=rv32imafdc', '--with-abi=ilp32d',
+                                 '--disable-multilib'])
         self.add_config(arch='riscv64',
                         os_name='linux-gnu',
                         variant='rv64imac-lp64',
