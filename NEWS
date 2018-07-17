@@ -318,6 +318,9 @@ Major new features:
   requires at least binutils-2.30, gcc-7.3.0, and linux-4.15; and is supported
   for the following ISA and ABI pairs:
 
+    - rv32imac ilp32
+    - rv32imafdc ilp32
+    - rv32imafdc ilp32d
     - rv64imac lp64
     - rv64imafdc lp64
     - rv64imafdc lp64d
