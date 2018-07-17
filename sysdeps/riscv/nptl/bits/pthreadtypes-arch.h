@@ -32,7 +32,15 @@
 # define __SIZEOF_PTHREAD_BARRIER_T 		32
 # define __SIZEOF_PTHREAD_BARRIERATTR_T 	 4
 #else
-# error "rv32i-based systems are not supported"
+# define __SIZEOF_PTHREAD_ATTR_T 		32
+# define __SIZEOF_PTHREAD_MUTEX_T 		32
+# define __SIZEOF_PTHREAD_MUTEXATTR_T 		 4
+# define __SIZEOF_PTHREAD_COND_T 		48
+# define __SIZEOF_PTHREAD_CONDATTR_T 		 4
+# define __SIZEOF_PTHREAD_RWLOCK_T 		48
+# define __SIZEOF_PTHREAD_RWLOCKATTR_T 		 8
+# define __SIZEOF_PTHREAD_BARRIER_T 		20
+# define __SIZEOF_PTHREAD_BARRIERATTR_T 	 4
 #endif
 
 #define __PTHREAD_COMPAT_PADDING_MID
@@ -56,11 +64,26 @@ struct __pthread_rwlock_arch_t
   unsigned int __writers_futex;
   unsigned int __pad3;
   unsigned int __pad4;
+#if __riscv_xlen == 64
   int __cur_writer;
   int __shared;
   unsigned long int __pad1;
   unsigned long int __pad2;
   unsigned int __flags;
+#else
+# if __BYTE_ORDER == __BIG_ENDIAN
+  unsigned char __pad1;
+  unsigned char __pad2;
+  unsigned char __shared;
+  unsigned char __flags;
+# else
+  unsigned char __flags;
+  unsigned char __shared;
+  unsigned char __pad1;
+  unsigned char __pad2;
+# endif
+  int __cur_writer;
+#endif
 };
 
 #define __PTHREAD_RWLOCK_ELISION_EXTRA 		0
