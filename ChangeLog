@@ -9,6 +9,10 @@
 	* sysdeps/riscv/sys/asm.h: Likewise.
 	* sysdeps/unix/sysv/linux/riscv/rv32/jmp_buf-macros.h: New file.
 	* sysdeps/unix/sysv/linux/riscv/rv32/lockf64.c: Likewise.
+	* sysdeps/riscv/rv32/rvd/s_lrint.c: New file.
+	* sysdeps/riscv/rv32/rvd/s_lround.c: Likewise.
+	* sysdeps/riscv/rv32/rvf/s_lrintf.c: Likewise.
+	* sysdeps/riscv/rv32/rvf/s_lroundf.c: Likewise.
 
 2019-01-31  Siddhesh Poyarekar  <siddhesh@sourceware.org>
 
