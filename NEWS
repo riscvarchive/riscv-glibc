@@ -23,6 +23,12 @@ Major new features:
   toolchains.  It is recommended to use GCC 8 or newer when testing
   this option.
 
+* Support RISC-V port for 32-bit. The ISA and ABI pairs supported as follows:
+
+    - rv32imac ilp32
+    - rv32imafdc ilp32
+    - rv32imafdc ilp32d
+
 Deprecated and removed features, and other changes affecting compatibility:
 
 * The deprecated <sys/sysctl.h> header and the sysctl function have been
