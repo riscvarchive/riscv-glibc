@@ -3,6 +3,12 @@
 	* sysdeps/unix/sysv/linux/riscv/ldconfig.h (LD_SO_ABI): Support rv32.
 	* sysdeps/unix/sysv/linux/riscv/dl-cache.h (add_system_dir): Add
 	libraries path for rv32.
+	* sysdeps/riscv/bits/wordsize.h: Supprt rv32.
+	* sysdeps/riscv/nptl/bits/pthreadtypes-arch.h: Likewise.
+	* sysdeps/riscv/sfp-machine.h: Likewise.
+	* sysdeps/riscv/sys/asm.h: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/jmp_buf-macros.h: New file.
+	* sysdeps/unix/sysv/linux/riscv/rv32/lockf64.c: Likewise.
 
 2019-01-31  Siddhesh Poyarekar  <siddhesh@sourceware.org>
 
