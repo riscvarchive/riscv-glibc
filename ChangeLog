@@ -18,6 +18,20 @@
 	* sysdeps/riscv/rvd/libm-test-ulps-name: New file.
 	* sysdeps/riscv/rv64/rvd/libm-test-ulps: Remove file.
 	* sysdeps/riscv/rv64/rvd/libm-test-ulps-name: Remove file.
+	* sysdeps/unix/sysv/linux/riscv/rv32/c++-types.data: New file.
+	* sysdeps/unix/sysv/linux/riscv/rv32/ld.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libanl.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libc.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libcrypt.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libdl.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libm.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libresolv.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/librt.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libthread_db.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libutil.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/libBrokenLocale.abilist:
+	Likewise.
 
 2019-01-31  Siddhesh Poyarekar  <siddhesh@sourceware.org>
 
