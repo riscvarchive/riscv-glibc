@@ -32,6 +32,15 @@
 	* sysdeps/unix/sysv/linux/riscv/rv32/libutil.abilist: Likewise.
 	* sysdeps/unix/sysv/linux/riscv/rv32/libBrokenLocale.abilist:
 	Likewise.
+	* sysdeps/riscv/rv32/Implies-after: New file.
+	* sysdeps/riscv/rv32/rvd/Implies: Likewise.
+	* sysdeps/riscv/rv32/rvf/Implies: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv32/Implies: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/Makefile: Support rv32.
+	* sysdeps/unix/sysv/linux/riscv/configure: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/configure.ac: Likewise.
+	* sysdeps/unix/sysv/linux/riscv/shlib-versions: Likewise.
+	* sysdeps/riscv/preconfigure: Likewise.
 
 2019-01-31  Siddhesh Poyarekar  <siddhesh@sourceware.org>
 
