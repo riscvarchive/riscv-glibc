@@ -13,6 +13,11 @@
 	* sysdeps/riscv/rv32/rvd/s_lround.c: Likewise.
 	* sysdeps/riscv/rv32/rvf/s_lrintf.c: Likewise.
 	* sysdeps/riscv/rv32/rvf/s_lroundf.c: Likewise.
+	* sysdeps/riscv/nofpu/libm-test-ulps: Regenerate.
+	* sysdeps/riscv/rvd/libm-test-ulps: New file.
+	* sysdeps/riscv/rvd/libm-test-ulps-name: New file.
+	* sysdeps/riscv/rv64/rvd/libm-test-ulps: Remove file.
+	* sysdeps/riscv/rv64/rvd/libm-test-ulps-name: Remove file.
 
 2019-01-31  Siddhesh Poyarekar  <siddhesh@sourceware.org>
 
