@@ -1,6 +1,8 @@
 2018-02-01  Zong Li  <zong@andestech.com>
 
 	* sysdeps/unix/sysv/linux/riscv/ldconfig.h (LD_SO_ABI): Support rv32.
+	* sysdeps/unix/sysv/linux/riscv/dl-cache.h (add_system_dir): Add
+	libraries path for rv32.
 
 2019-01-31  Vineet Gupta  <vgupta@synopsys.com>
 
