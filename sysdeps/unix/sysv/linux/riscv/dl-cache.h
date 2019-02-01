@@ -51,7 +51,7 @@
   do							    		\
     {									\
       size_t len = strlen (dir);					\
-      char path[len + 9];						\
+      char path[len + 10];						\
       memcpy (path, dir, len + 1);					\
       if (len >= 13 && ! memcmp(path + len - 13, "/lib32/ilp32d", 13))	\
         {								\
