@@ -1423,7 +1423,7 @@ $(stdio_lim:h=st): $(..)stdio-common/stdio_lim.h.in $(..)Rules \
 	{ echo '#include "$(..)posix/bits/posix1_lim.h"';		\
 	} |								\
 	$(CC) -E -dM -MD -MP -MF $(@:st=dT) -MT '$(@:st=h) $(@:st=d)' 	\
-	      $(CPPUNDEFS) $(+includes) -xc - -o $(@:st=hT)
+	      $(CPPUNDEFS) $(CPPFLAGS) $(+includes) -xc - -o $(@:st=hT)
 	sed $(sed-remove-objpfx) $(sed-remove-dotdot)			\
 	    $(@:st=dT) > $(@:st=dt)
 	mv -f $(@:st=dt) $(@:st=d)
