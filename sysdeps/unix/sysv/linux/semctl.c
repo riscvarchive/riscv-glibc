@@ -22,6 +22,7 @@
 #include <sysdep.h>
 #include <shlib-compat.h>
 #include <errno.h>
+#include <struct__semid_ds32.h>
 #include <linux/posix_types.h>  /* For __kernel_mode_t.  */
 
 /* Define a `union semun' suitable for Linux here.  */
@@ -44,13 +45,54 @@ union semun
 static int
 semctl_syscall (int semid, int semnum, int cmd, union semun arg)
 {
-#ifdef __ASSUME_DIRECT_SYSVIPC_SYSCALLS
-  return INLINE_SYSCALL_CALL (semctl, semid, semnum, cmd | __IPC_64,
-			      arg.array);
-#else
-  return INLINE_SYSCALL_CALL (ipc, IPCOP_semctl, semid, semnum, cmd | __IPC_64,
-			      SEMCTL_ARG_ADDRESS (arg));
+  int ret;
+#if __IPC_TIME64
+  /* A temporary buffer is used to avoid both an issue where the export
+     semid_ds might not follow the kernel's expected layout (due
+     to {o,c}time{_high} alignment in 64-bit time case) and the issue where
+     some kernel versions might not clear the high bits when returning
+     then {o,c}time{_high} information.  */
+  struct __semid_ds32 tmp;
+  struct semid_ds *orig;
+  bool restore = false;
+  if (cmd == IPC_STAT || cmd == SEM_STAT || cmd == SEM_STAT_ANY)
+    {
+      tmp = (struct __semid_ds32) {
+        .sem_perm  = arg.buf->sem_perm,
+        .sem_otime = arg.buf->sem_otime,
+        .sem_otime_high = arg.buf->sem_otime >> 32,
+        .sem_ctime = arg.buf->sem_ctime,
+        .sem_ctime_high = arg.buf->sem_ctime >> 32,
+        .sem_nsems = arg.buf->sem_nsems,
+      };
+      orig = arg.buf;
+      arg.buf = (struct semid_ds*) &tmp;
+      restore = true;
+    }
 #endif
+
+#ifdef __ASSUME_DIRECT_SYSVIPC_SYSCALLS
+  ret = INLINE_SYSCALL_CALL (semctl, semid, semnum, cmd | __IPC_64,
+                             arg.array);
+#else
+  ret = INLINE_SYSCALL_CALL (ipc, IPCOP_semctl, semid, semnum, cmd | __IPC_64,
+                             SEMCTL_ARG_ADDRESS (arg));
+#endif
+
+#if __IPC_TIME64
+  if (ret >= 0 && restore)
+    {
+      arg.buf = orig;
+      arg.buf->sem_perm  = tmp.sem_perm;
+      arg.buf->sem_otime = tmp.sem_otime
+                           | ((__time64_t) tmp.sem_otime_high << 32);
+      arg.buf->sem_ctime = tmp.sem_ctime
+                           | ((__time64_t) tmp.sem_ctime_high << 32);
+      arg.buf->sem_nsems = tmp.sem_nsems;
+    }
+#endif
+
+    return ret;
 }
 
 int

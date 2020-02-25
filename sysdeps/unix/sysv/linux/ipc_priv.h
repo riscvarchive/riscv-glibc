@@ -43,6 +43,10 @@ struct __old_ipc_perm
   unsigned short int __seq;		/* Sequence number.  */
 };
 
+#define __IPC_TIME64 \
+ (__WORDSIZE == 32 && __TIMESIZE == 64 \
+     && (!defined __SYSCALL_WORDSIZE || __SYSCALL_WORDSIZE == 32))
+
 #define SEMCTL_ARG_ADDRESS(__arg) &__arg.array
 
 #define MSGRCV_ARGS(__msgp, __msgtyp) \
