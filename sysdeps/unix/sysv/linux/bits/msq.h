@@ -20,7 +20,7 @@
 #endif
 
 #include <bits/types.h>
-#include <bits/msq-pad.h>
+#include <bits/timesize.h>
 
 /* Define options for message queue functions.  */
 #define MSG_NOERROR	010000	/* no error if message is too big */

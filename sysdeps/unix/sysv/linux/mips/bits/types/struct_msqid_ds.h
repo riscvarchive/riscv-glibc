@@ -1,4 +1,4 @@
-/* Generic implementation of the message struct msqid_ds.
+/* MIPS implementation of the message struct msqid_ds.
    Copyright (C) 1995-2020 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -23,6 +23,7 @@
 /* Structure of record for one message inside the kernel.
    The type `struct msg' is opaque.  */
 #if __TIMESIZE == 32
+# ifdef __MIPSEL__
 struct msqid_ds
 {
   struct ipc_perm msg_perm; /* structure describing operation permission */
@@ -40,6 +41,25 @@ struct msqid_ds
   __syscall_ulong_t __glibc_reserved4;
   __syscall_ulong_t __glibc_reserved5;
 };
+# else
+struct msqid_ds
+{
+  struct ipc_perm msg_perm; /* structure describing operation permission */
+  unsigned long int __glibc_reserved1;
+  __time_t msg_stime;  /* time of last msgsnd command */
+  unsigned long int __glibc_reserved2;
+  __time_t msg_rtime;  /* time of last msgrcv command */
+  unsigned long int __glibc_reserved3;
+  __time_t msg_ctime;  /* time of last change */
+  __syscall_ulong_t __msg_cbytes; /* current number of bytes on queue */
+  msgqnum_t msg_qnum;   /* number of messages currently on queue */
+  msglen_t msg_qbytes;    /* max number of bytes allowed on queue */
+  __pid_t msg_lspid;    /* pid of last msgsnd() */
+  __pid_t msg_lrpid;    /* pid of last msgrcv() */
+  __syscall_ulong_t __glibc_reserved4;
+  __syscall_ulong_t __glibc_reserved5;
+};
+# endif
 #else
 struct msqid_ds
 {
