@@ -21,6 +21,7 @@
 #include <sysdep.h>
 #include <shlib-compat.h>
 #include <errno.h>
+#include <struct__msqid_ds32.h>
 #include <linux/posix_types.h>  /* For __kernel_mode_t.  */
 
 #ifndef DEFAULT_VERSION
@@ -34,12 +35,67 @@
 static int
 msgctl_syscall (int msqid, int cmd, struct msqid_ds *buf)
 {
-#ifdef __ASSUME_DIRECT_SYSVIPC_SYSCALLS
-  return INLINE_SYSCALL_CALL (msgctl, msqid, cmd | __IPC_64, buf);
-#else
-  return INLINE_SYSCALL_CALL (ipc, IPCOP_msgctl, msqid, cmd | __IPC_64, 0,
-			      buf);
+  int ret;
+#if __IPC_TIME64
+  /* A temporary buffer is used to avoid both an issue where the export
+     semid_ds might not follow the kernel's expected layout (due
+     to {s,r,c}time{_high} alignment in 64-bit time case) and the issue where
+     some kernel versions might not clear the high bits when returning
+     then {s,r,c}time{_high} information.  */
+  struct __msqid_ds32 tmp;
+  struct msqid_ds *orig;
+  bool restore = false;
+
+  if (cmd == IPC_STAT || cmd == MSG_STAT || cmd == MSG_STAT_ANY)
+    {
+      tmp = (struct __msqid_ds32) {
+        .msg_perm  = buf->msg_perm,
+        .msg_stime = buf->msg_stime,
+        .msg_stime_high = buf->msg_stime >> 32,
+        .msg_rtime = buf->msg_rtime,
+        .msg_rtime_high = buf->msg_rtime >> 32,
+        .msg_ctime = buf->msg_ctime,
+        .msg_ctime_high = buf->msg_ctime >> 32,
+        .__msg_cbytes = buf->__msg_cbytes,
+        .msg_qnum = buf->msg_qnum,
+        .msg_qbytes = buf->msg_qbytes,
+        .msg_lspid = buf->msg_lspid,
+        .msg_lrpid = buf->msg_lrpid,
+      };
+      orig = buf;
+      buf = (struct msqid_ds*) &tmp;
+      restore = true;
+    }
 #endif
+
+#ifdef __ASSUME_DIRECT_SYSVIPC_SYSCALLS
+  ret = INLINE_SYSCALL_CALL (msgctl, msqid, cmd | __IPC_64, buf);
+#else
+  ret = INLINE_SYSCALL_CALL (ipc, IPCOP_msgctl, msqid, cmd | __IPC_64, 0,
+                             buf);
+#endif
+
+#if __IPC_TIME64
+  if (ret >= 0 && restore)
+    {
+      buf = orig;
+
+      buf->msg_perm  = tmp.msg_perm;
+      buf->msg_stime = tmp.msg_stime
+                           | ((time_t) tmp.msg_stime_high << 32);
+      buf->msg_rtime = tmp.msg_rtime
+                           | ((time_t) tmp.msg_rtime_high << 32);
+      buf->msg_ctime = tmp.msg_ctime
+                           | ((time_t) tmp.msg_ctime_high << 32);
+      buf->__msg_cbytes = tmp.__msg_cbytes;
+      buf->msg_qnum = tmp.msg_qnum;
+      buf->msg_qbytes = tmp.msg_qbytes;
+      buf->msg_lspid = tmp.msg_lspid;
+      buf->msg_lrpid = tmp.msg_lrpid;
+    }
+#endif
+
+    return ret;
 }
 
 int
